@@ -1203,58 +1203,41 @@ public class CheatCheckout : MonoBehaviour {
 		return false;
 	}
 
-/*	void TPPriceButton(float button) {
-		cryptoDisplay.color = changeColor;
-		givenChange += button;
-		givenChange = (float)Math.Round(givenChange, 3);
-		cryptoDisplay.text = String.Concat(givenChange);
-	} */
-
-/*	List<float> TPPriceButtonSetup(string arg) {
+	KMSelectable[] TPPriceButtonSetup(string arg)
+	{
 		string price = String.Concat(arg.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries));
 		int totalButtons = 0;
-		List<float> array;
-		if (price.Length >= 8) {
+		KMSelectable[] array;
+		if (price.Length >= 8)
+		{
 			return null;
 		}
-		array = new List<float>();
-		int x = 0;
-		int index = 0;
-		int[] num = new int[price.Length];
 		foreach (char c in price) {
-			num[x] = int.Parse(String.Concat(c));
-			x++;
+			totalButtons += int.Parse(c.ToString());
 		}
-		x = 0;
-		foreach (int i in num) {
-			if (x == 0) {
-				array.Add(0.001f * float.Parse(i.ToString()));
-			}
-			if (x == 1)
-			{
-				array.Add(0.01f * float.Parse(i.ToString()));
-			}
-			if (x == 2)
-			{
-				array.Add(0.1f * float.Parse(i.ToString()));
-			}
-			if (x == 3)
-			{
-				array.Add(1f * float.Parse(i.ToString()));
-			}
-			if (x == 4)
-			{
-				array.Add(10f * float.Parse(i.ToString()));
-			}
-			if (x == 5) {
-				array.Add(100f * float.Parse(i.ToString()));
+		array = new KMSelectable[totalButtons+1];
+		int x = 0;
+		int index = 5;
+		int total = 0;
+		bool checkedIndex = false;
+		foreach (char c in price) {
+			if (c == '.') { continue; }
+			if (c == 0) { x++; index--; continue; }
+			while (!checkedIndex && index != price.Length - 1) { index--; }
+			if (!checkedIndex) { checkedIndex = true; }
+			for (int i = 0; i < int.Parse(price[x].ToString()); i++) {
+				array[total] = priceButtons[index];
+				Debug.Log(array[total]);
+				total++;
 			}
 			x++;
-		} 
+			index--;
+		}
+		array[total] = actionButtons[1];
 		return array;
-	}*/
+	}
 
-	#pragma warning disable 414
+#pragma warning disable 414
 	private readonly string TwitchHelpMessage = @"!{0} right/left/r/l [Presses the arrows either left or right to choose hack], !{0} lcd/screen/display [Presse the LCD screen for hacks], !{0} submit [Submits with nothing to slap the customer], !{0} submit <change> [Submits the answer into the module], !{0} stabilize <#/##> [Presses 'Stabilize' depending on what is needed], !{0} patch <None/#> [Press 'Patch' depending on what is needed]";
 	#pragma warning restore 414
 
@@ -1271,42 +1254,38 @@ public class CheatCheckout : MonoBehaviour {
 			while (hackedState) { }
 			while (isShowing) { }
 			yield return null;
-			DirectionalButton(directionalButtons[0]);
+			yield return new KMSelectable[] { directionalButtons[0] };
 		}
 		if (args[0].ToLower().EqualsAny("right", "r"))
 		{
 			while (hackedState) { }
 			while (isShowing) { }
 			yield return null;
-			DirectionalButton(directionalButtons[1]);
+			yield return new KMSelectable[] { directionalButtons[1] };
 		}
 		if (args[0].ToLower().EqualsAny("lcd", "screen", "display")) {
 			while (hackedState) { }
 			while (isShowing) { }
 			yield return null;
-			ActionButton(actionButtons[0]);
+			yield return new KMSelectable[] { actionButtons[0] };
 		}
 		if (args[0].ToLower().Equals("submit") && args.Length == 1) {
 			while (hackedState) { }
 			while (isShowing) { }
 			yield return null;
-			ActionButton(actionButtons[1]);
+			yield return new KMSelectable[] { actionButtons[1] };
 		}
 		if (args[0].ToLower().Equals("submit") && args.Length == 2) {
 			while (hackedState) { }
 			while (isShowing) { }
 			yield return null;
-		/*	List<float> button = TPPriceButtonSetup(args[1]);
-			foreach (float but in button) {
-				TPPriceButton(but);
-			}*/
-			ActionButton(actionButtons[1]);
+			yield return TPPriceButtonSetup(args[1]);
 		}
 		if (args[0].ToLower().Equals("clear") && args.Length == 1) {
 			while (hackedState) { }
 			while (isShowing) { }
 			yield return null;
-			ActionButton(actionButtons[2]);
+			yield return new KMSelectable[] { actionButtons[2] };
 		}
 		if (args[0].ToLower().Equals("stabilize") && args.Length == 2) {
 			while (hackedState) { }
@@ -1318,7 +1297,7 @@ public class CheatCheckout : MonoBehaviour {
 			while ((int)bomb.GetTime() % 10 != int.Parse(args[1]) && args[1].Length == 1) yield return "trycancel The button was not pressed due to a request to cancel.";
 			while ((int)bomb.GetTime() % 60 != int.Parse(args[1]) && args[1].Length == 2) yield return "trycancel The button was not pressed due to a request to cancel.";
 			yield return null;
-			ActionButton(actionButtons[3]);
+			yield return new KMSelectable[] { actionButtons[3] };
 		} 
 		if (args[0].ToLower().Equals("patch")) {
 			while (hackedState) { }
@@ -1329,7 +1308,7 @@ public class CheatCheckout : MonoBehaviour {
 			}
 			while (args.Length == 2 && (int)bomb.GetTime() % 10 != int.Parse(args[1])) yield return "trycancel The button was not pressed due to a request to cancel.";
 			yield return null;
-			ActionButton(actionButtons[4]);
+			yield return new KMSelectable[] { actionButtons[4] };
 		}
 	}
 

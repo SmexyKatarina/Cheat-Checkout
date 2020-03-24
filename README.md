@@ -1,1 +1,1 @@
-# Cheat Checkout
+#[ModKit Wiki](../../wiki)
