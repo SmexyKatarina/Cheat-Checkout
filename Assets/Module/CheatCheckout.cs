@@ -1178,16 +1178,6 @@ public class CheatCheckout : MonoBehaviour {
 
 	// TP Methods
 
-	void TPForceSolve() {
-		StopAllCoroutines();
-		UpdateVars();
-		cryptoDisplay.text = String.Concat(correctChange);
-		cryptoDisplay.color = changeColor;
-		modSolved = true;
-		GetComponent<KMBombModule>().HandlePass();
-		Debug.LogFormat("[Cheat Checkout #{0}]: Twitch auto solved the module. Lucky bastards.",modID);
-	}
-
 	bool CorrectArgument(string[] a) {
 		string[] valid = new string[] { "right", "left", "r", "l", "lcd", "screen", "display", "submit", "stabilize", "patch" };
 		foreach (string s in a)
@@ -1314,7 +1304,11 @@ public class CheatCheckout : MonoBehaviour {
 
 	IEnumerator TwitchHandleForcedSolve()
 	{
-		TPForceSolve();
+		while (hackedState) { }
+		while (isShowing) { }
+		while ((customerPaid - totalFromHacks) < 0) { yield return null; yield return new KMSelectable[] { actionButtons[1] }; }
+		yield return null;
+		yield return TPPriceButtonSetup(correctChange.ToString());
 		yield break;
 	}
 
