@@ -457,7 +457,7 @@ public class CheatCheckout : MonoBehaviour {
 		float hackPrice = hackPrices[Array.IndexOf(hackTypes, hackType)];
 		// Generated Programs Sent
 		float amount = rand.Range(4, 33);
-		// Generated Result NEEDS CHANGE
+		// Generated Result
 		bool result = rand.Range(0, 2) == 1 ? true : false; // True: Success, False: Failed
 		float percent = (float)Math.Round(rand.Range(0.0f, 100.0f), 1) / 100f;
 		string sResult = result ? "Success!" : "Failed! {0}% Hacked";
@@ -1217,7 +1217,6 @@ public class CheatCheckout : MonoBehaviour {
 			if (!checkedIndex) { checkedIndex = true; }
 			for (int i = 0; i < int.Parse(price[x].ToString()); i++) {
 				array[total] = priceButtons[index];
-				Debug.Log(array[total]);
 				total++;
 			}
 			x++;
@@ -1227,7 +1226,7 @@ public class CheatCheckout : MonoBehaviour {
 		return array;
 	}
 
-#pragma warning disable 414
+	#pragma warning disable 414
 	private readonly string TwitchHelpMessage = @"!{0} right/left/r/l [Presses the arrows either left or right to choose hack], !{0} lcd/screen/display [Presse the LCD screen for hacks], !{0} submit [Submits with nothing to slap the customer], !{0} submit <change> [Submits the answer into the module], !{0} stabilize <#/##> [Presses 'Stabilize' depending on what is needed], !{0} patch <None/#> [Press 'Patch' depending on what is needed]";
 	#pragma warning restore 414
 
@@ -1241,45 +1240,33 @@ public class CheatCheckout : MonoBehaviour {
 			yield return "sendtochaterror That is an incorrect command, please try again.";
 		}
 		if (args[0].ToLower().EqualsAny("left", "l")) {
-			while (hackedState) { }
-			while (isShowing) { }
 			yield return null;
 			yield return new KMSelectable[] { directionalButtons[0] };
 		}
 		if (args[0].ToLower().EqualsAny("right", "r"))
 		{
-			while (hackedState) { }
-			while (isShowing) { }
 			yield return null;
 			yield return new KMSelectable[] { directionalButtons[1] };
 		}
 		if (args[0].ToLower().EqualsAny("lcd", "screen", "display")) {
-			while (hackedState) { }
-			while (isShowing) { }
 			yield return null;
 			yield return new KMSelectable[] { actionButtons[0] };
 		}
 		if (args[0].ToLower().Equals("submit") && args.Length == 1) {
-			while (hackedState) { }
-			while (isShowing) { }
 			yield return null;
 			yield return new KMSelectable[] { actionButtons[1] };
 		}
 		if (args[0].ToLower().Equals("submit") && args.Length == 2) {
-			while (hackedState) { }
-			while (isShowing) { }
+			SetOriginalTexts();
+			hackedState = false;
 			yield return null;
 			yield return TPPriceButtonSetup(args[1]);
 		}
 		if (args[0].ToLower().Equals("clear") && args.Length == 1) {
-			while (hackedState) { }
-			while (isShowing) { }
 			yield return null;
 			yield return new KMSelectable[] { actionButtons[2] };
 		}
 		if (args[0].ToLower().Equals("stabilize") && args.Length == 2) {
-			while (hackedState) { }
-			while (isShowing) { }
 			int result;
 			if (!int.TryParse(args[1], out result)) {
 				yield return "sendtochaterror Incorrect number format.";
@@ -1289,23 +1276,26 @@ public class CheatCheckout : MonoBehaviour {
 			yield return null;
 			yield return new KMSelectable[] { actionButtons[3] };
 		} 
-		if (args[0].ToLower().Equals("patch")) {
-			while (hackedState) { }
-			while (isShowing) { }
+		if (args[0].ToLower().Equals("patch") && args.Length == 1) {
+			yield return null;
+			yield return new KMSelectable[] { actionButtons[4] };
+		}
+		if (args[0].ToLower().Equals("patch") && args.Length == 2) {
 			int result;
-			if (args.Length == 2 && !int.TryParse(args[1], out result)) {
+			if (args.Length == 2 && !int.TryParse(args[1], out result))
+			{
 				yield return "sendtochaterror Incorrect number format.";
 			}
 			while (args.Length == 2 && (int)bomb.GetTime() % 10 != int.Parse(args[1])) yield return "trycancel The button was not pressed due to a request to cancel.";
 			yield return null;
 			yield return new KMSelectable[] { actionButtons[4] };
 		}
+		yield break;
 	}
 
 	IEnumerator TwitchHandleForcedSolve()
 	{
-		while (hackedState) { }
-		while (isShowing) { }
+		while (hackedState && isShowing) { }
 		while ((customerPaid - totalFromHacks) < 0) { yield return null; yield return new KMSelectable[] { actionButtons[1] }; }
 		yield return null;
 		yield return TPPriceButtonSetup(correctChange.ToString());
