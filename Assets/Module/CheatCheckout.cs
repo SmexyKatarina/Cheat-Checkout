@@ -1251,6 +1251,7 @@ public class CheatCheckout : MonoBehaviour {
 		if (args[0].ToLower().EqualsAny("lcd", "screen", "display")) {
 			yield return null;
 			yield return new KMSelectable[] { actionButtons[0] };
+			while (isShowing) { yield return new WaitForSeconds(0.01f); }
 		}
 		if (args[0].ToLower().Equals("submit") && args.Length == 1) {
 			yield return null;
@@ -1295,7 +1296,6 @@ public class CheatCheckout : MonoBehaviour {
 
 	IEnumerator TwitchHandleForcedSolve()
 	{
-		while (hackedState && isShowing) { }
 		while ((customerPaid - totalFromHacks) < 0) { yield return null; yield return new KMSelectable[] { actionButtons[1] }; }
 		yield return null;
 		yield return TPPriceButtonSetup(correctChange.ToString());
