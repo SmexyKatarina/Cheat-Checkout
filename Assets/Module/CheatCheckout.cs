@@ -87,7 +87,7 @@ public class CheatCheckout : MonoBehaviour {
 	bool hackedState = false;
 
 	float totalFromHacks; // Will be in cryptocurrency
-	float customerPaid;
+	float customerPaid = 0;
 	float correctChange = 0;
 	float givenChange = 0;
 	int customerSlaps = 0;
@@ -175,11 +175,11 @@ public class CheatCheckout : MonoBehaviour {
 				Debug.LogFormat("[Cheat Checkout #{0}]: The correct amount of change was inputted. Module Solved.",modID);
 				return;
 			}
+			Debug.LogFormat("[Cheat Checkout #{0}]: The inputted amount of change was incorrect. Given {1} expected {2}.", modID, givenChange, correctChange);
 			GetComponent<KMBombModule>().HandleStrike();
 			givenChange = 0;
 			cryptoDisplay.text = String.Concat(customerPaid);
 			cryptoDisplay.color = customerColor;
-			Debug.LogFormat("[Cheat Checkout #{0}]: The inputted amount of change was incorrect. Given {1} expected {2}.", modID, givenChange, correctChange);
 		} else if (action.Equals("STABILIZE")) {
 			if (shieldStatus == 0) { return; }
 			int second = ((int)bomb.GetTime()) % 10;
@@ -354,7 +354,7 @@ public class CheatCheckout : MonoBehaviour {
 		bool success = rand.Range(0, 2) == 1 ? true : false; // True: Success, False: Failed #% Hacked
 		bool result = rand.Range(0, 2) == 1 ? true : false; // True: Permanently, False: Temporarily
 		string sResult;
-		float percent = (float)Math.Round(rand.Range(0.0f,100.0f),1)/100f;
+		float percent = rand.Range(1,100)/100f;
 		if (success) {
 			sResult = result ? "Crashed Permanently" : "Crashed Temporarily";
 		} else {
@@ -391,7 +391,7 @@ public class CheatCheckout : MonoBehaviour {
 		int amount = rand.Range(5, 21);
 		// Result of Hack NEEDS CHANGE
 		bool result = rand.Range(0, 2) == 1 ? true : false; // True: Success, False: Failed #% Hacked
-		float percent = (float)Math.Round(rand.Range(0.0f, 100.0f), 1) / 100f;
+		float percent = rand.Range(1, 100) / 100f;
 		string sResult = result ? "Success!" : "Failed! {0}% Hacked";
 		// Math Equation: Base Value * Computers Infected * (Security Level/10) * Worm Multiplier
 		string[] website = generatedWebsites[index].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
@@ -422,7 +422,7 @@ public class CheatCheckout : MonoBehaviour {
 		bool success = rand.Range(0, 2) == 1 ? true : false; // True: Success, False: Failed #% Hacked
 		bool result = rand.Range(0, 2) == 1 ? true : false; // True: Permanently, False: Infiltrated
 		string sResult;
-		float percent = (float)Math.Round(rand.Range(0.0f, 100.0f), 1) / 100f;
+		float percent = rand.Range(1, 100) / 100f;
 		if (success) {
 			sResult = result ? "Crashed Permanently" : "Infiltrated";
 		} else {
@@ -459,7 +459,7 @@ public class CheatCheckout : MonoBehaviour {
 		float amount = rand.Range(4, 33);
 		// Generated Result
 		bool result = rand.Range(0, 2) == 1 ? true : false; // True: Success, False: Failed
-		float percent = (float)Math.Round(rand.Range(0.0f, 100.0f), 1) / 100f;
+		float percent = rand.Range(1, 100) / 100f;
 		string sResult = result ? "Success!" : "Failed! {0}% Hacked";
 		// Math Equation: Base Value * Multiplier * (Security Value/8) * (Program/2);
 		string[] website = generatedWebsites[index].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
@@ -485,7 +485,7 @@ public class CheatCheckout : MonoBehaviour {
 		bool success = rand.Range(0, 2) == 1 ? true : false; // True: Success, False: Failed #% Hacked
 		bool result = rand.Range(0, 2) == 1 ? true : false; // True: Permanently, False: Infiltrated
 		string sResult;
-		float percent = (float)Math.Round(rand.Range(0.0f, 100.0f), 1) / 100f;
+		float percent = rand.Range(1, 100) / 100f;
 		if (success) {
 			sResult = result ? "Crashed Permanently" : "Infiltrated";
 		} else {
@@ -530,6 +530,7 @@ public class CheatCheckout : MonoBehaviour {
 	}
 
 	void GeneratedDiscounts() {
+		Debug.LogFormat("[Cheat Checkout #{0}]: The day being applied for discount/increase is: {1}", modID, day);
 		switch (day) {
 			case "Sunday":
 				for (int i = 0; i <= 4; i++) {
@@ -1202,12 +1203,17 @@ public class CheatCheckout : MonoBehaviour {
 		{
 			return null;
 		}
+		int y = price.Length-1;
 		foreach (char c in price) {
+			if (y == 6) {
+				totalButtons += int.Parse(c.ToString()) * 10;
+			}
 			totalButtons += int.Parse(c.ToString());
+			y--;
 		}
 		array = new KMSelectable[totalButtons+1];
 		int x = 0;
-		int index = 5;
+		int index = price.Length-1;
 		int total = 0;
 		bool checkedIndex = false;
 		foreach (char c in price) {
@@ -1215,9 +1221,18 @@ public class CheatCheckout : MonoBehaviour {
 			if (c == 0) { x++; index--; continue; }
 			while (!checkedIndex && index != price.Length - 1) { index--; }
 			if (!checkedIndex) { checkedIndex = true; }
-			for (int i = 0; i < int.Parse(price[x].ToString()); i++) {
-				array[total] = priceButtons[index];
-				total++;
+			if (index == 6)
+			{
+				for (int i = 0; i < int.Parse(price[x].ToString()) * 10; i++) {
+					array[total] = priceButtons[index-1];
+					total++;
+				}
+			} else {
+				for (int i = 0; i < int.Parse(price[x].ToString()); i++)
+				{
+					array[total] = priceButtons[index];
+					total++;
+				}
 			}
 			x++;
 			index--;
@@ -1251,7 +1266,7 @@ public class CheatCheckout : MonoBehaviour {
 		if (args[0].ToLower().EqualsAny("lcd", "screen", "display")) {
 			yield return null;
 			yield return new KMSelectable[] { actionButtons[0] };
-			while (isShowing) { yield return new WaitForSeconds(0.01f); }
+			while (isShowing) { yield return new WaitForSeconds(0.01f); yield return "trycancel Display will cycle, but any action has been cancelled."; }
 		}
 		if (args[0].ToLower().Equals("submit") && args.Length == 1) {
 			yield return null;
