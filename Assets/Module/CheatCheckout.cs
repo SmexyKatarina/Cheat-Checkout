@@ -169,7 +169,7 @@ public class CheatCheckout : MonoBehaviour {
 				GenerateCustomerPrice();
 				return;
 			}
-			if (givenChange == correctChange) {
+			if ((givenChange <= correctChange+0.011 && givenChange >= correctChange-0.011) || (givenChange == correctChange)) {
 				modSolved = true;
 				GetComponent<KMBombModule>().HandlePass();
 				Debug.LogFormat("[Cheat Checkout #{0}]: The correct amount of change was inputted. Module Solved.",modID);
