@@ -224,6 +224,7 @@ public class CheatCheckout : MonoBehaviour {
 					shieldSprites[1].enabled = false;
 					shieldSprites[2].enabled = true;
 					shieldGlitch = false;
+					countdownStarted = false;
 					StopCoroutine(ShieldGlitchButtons());
 					Debug.LogFormat("[Cheat Checkout #{0}]: Hacker Shield was patched.", modID);
 					return;
@@ -935,27 +936,27 @@ public class CheatCheckout : MonoBehaviour {
 				yield return new WaitForSeconds(0.5f);
 
 				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = GlitchInfo("Initiated on: " + information[0], 8);
+				hackLCDDisplay.text = GlitchInfo("Initiated on: " + information[0], 6);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Method: " + information[1], 6);
+				hackLCDDisplay.text = GlitchInfo("Method: " + information[1], 4);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("PC-Type: " + information[2], 10);
+				hackLCDDisplay.text = GlitchInfo("PC-Type: " + information[2], 8);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("PCs Used: " + information[3], 10);
+				hackLCDDisplay.text = GlitchInfo("PCs Used: " + information[3], 8);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Duration: " + information[4] + " Hours", 14);
+				hackLCDDisplay.text = GlitchInfo("Duration: " + information[4] + " Hours", 12);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = information[5].EqualsAny("Crashed Temporarily", "Crashed Permanently") ? 32 : 36;
-				hackLCDDisplay.text = GlitchInfo("Result: " + (information[5].EqualsAny("Crashed Temporarily", "Crashed Permanently") ? information[5] : String.Format(information[5], information[6])), 14);
+				hackLCDDisplay.text = GlitchInfo("Result: " + (information[5].EqualsAny("Crashed Temporarily", "Crashed Permanently") ? information[5] : String.Format(information[5], information[6])), 12);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 64;
@@ -968,27 +969,27 @@ public class CheatCheckout : MonoBehaviour {
 				yield return new WaitForSeconds(0.5f);
 
 				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = GlitchInfo("Initiated on: " + information[0], 8);
+				hackLCDDisplay.text = GlitchInfo("Initiated on: " + information[0], 6);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Method: " + information[1], 6);
+				hackLCDDisplay.text = GlitchInfo("Method: " + information[1], 4);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("PC-Type: " + information[2], 10);
+				hackLCDDisplay.text = GlitchInfo("PC-Type: " + information[2], 8);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Worm: " + information[3], 8);
+				hackLCDDisplay.text = GlitchInfo("Worm: " + information[3], 6);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Infected PCs: " + information[4], 8);
+				hackLCDDisplay.text = GlitchInfo("Infected PCs: " + information[4], 6);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 36;
-				hackLCDDisplay.text = GlitchInfo("Result: " + (information[5].Equals("Success!") ? "Success!" : String.Format(information[5], information[6])), 8);
+				hackLCDDisplay.text = GlitchInfo("Result: " + (information[5].Equals("Success!") ? "Success!" : String.Format(information[5], information[6])), 6);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 64;
@@ -1001,27 +1002,27 @@ public class CheatCheckout : MonoBehaviour {
 				yield return new WaitForSeconds(0.5f);
 
 				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = GlitchInfo("Initiated on: " + information[0], 8);
+				hackLCDDisplay.text = GlitchInfo("Initiated on: " + information[0], 6);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Method: " + information[1], 6);
+				hackLCDDisplay.text = GlitchInfo("Method: " + information[1], 4);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Vulnerability: " + information[2], 13);
+				hackLCDDisplay.text = GlitchInfo("Vulnerability: " + information[2], 11);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Complexity: " + information[3], 13);
+				hackLCDDisplay.text = GlitchInfo("Complexity: " + information[3], 11);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Batches: " + information[4], 7);
+				hackLCDDisplay.text = GlitchInfo("Batches: " + information[4], 5);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = information[5].EqualsAny("Crashed Permanently", "Infiltrated") ? 32 : 36;
-				hackLCDDisplay.text = GlitchInfo("Result: " + (information[5].EqualsAny("Crashed Permanently", "Infiltrated") ? information[5] : String.Format(information[5], information[6])), 14);
+				hackLCDDisplay.text = GlitchInfo("Result: " + (information[5].EqualsAny("Crashed Permanently", "Infiltrated") ? information[5] : String.Format(information[5], information[6])), 12);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 64;
@@ -1034,27 +1035,27 @@ public class CheatCheckout : MonoBehaviour {
 				yield return new WaitForSeconds(0.5f);
 
 				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = GlitchInfo("Initiated on: " + information[0], 8);
+				hackLCDDisplay.text = GlitchInfo("Initiated on: " + information[0], 6);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Method: " + information[1], 6);
+				hackLCDDisplay.text = GlitchInfo("Method: " + information[1], 4);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = GlitchInfo("Complexity: " + information[2], 8);
+				hackLCDDisplay.text = GlitchInfo("Complexity: " + information[2], 6);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = GlitchInfo("Hack Type: " + information[3], 8);
+				hackLCDDisplay.text = GlitchInfo("Hack Type: " + information[3], 6);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Programs: " + information[4], 7);
+				hackLCDDisplay.text = GlitchInfo("Programs: " + information[4], 5);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 36;
-				hackLCDDisplay.text = GlitchInfo("Result: " + (information[5].Equals("Success!") ? "Success!" : String.Format(information[5], information[6])), 8);
+				hackLCDDisplay.text = GlitchInfo("Result: " + (information[5].Equals("Success!") ? "Success!" : String.Format(information[5], information[6])), 6);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 64;
@@ -1066,23 +1067,23 @@ public class CheatCheckout : MonoBehaviour {
 				isShowing = true;
 				yield return new WaitForSeconds(0.5f);
 				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = GlitchInfo("Initiated on: " + information[0], 8);
+				hackLCDDisplay.text = GlitchInfo("Initiated on: " + information[0], 6);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Method: " + information[1], 6);
+				hackLCDDisplay.text = GlitchInfo("Method: " + information[1], 4);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 36;
-				hackLCDDisplay.text = GlitchInfo("Attack Type: " + information[2], 9);
+				hackLCDDisplay.text = GlitchInfo("Attack Type: " + information[2], 7);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Attempts: " + information[3], 6);
+				hackLCDDisplay.text = GlitchInfo("Attempts: " + information[3], 4);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = information[4].EqualsAny("Crashed Permanently", "Infiltrated") ? 32 : 36;
-				hackLCDDisplay.text = GlitchInfo("Result: " + (information[4].EqualsAny("Crashed Permanently", "Infiltrated") ? information[4] : String.Format(information[4], information[5])), 14);
+				hackLCDDisplay.text = GlitchInfo("Result: " + (information[4].EqualsAny("Crashed Permanently", "Infiltrated") ? information[4] : String.Format(information[4], information[5])), 12);
 				yield return new WaitForSeconds(2f);
 
 				hackLCDDisplay.fontSize = 64;
@@ -1097,7 +1098,7 @@ public class CheatCheckout : MonoBehaviour {
 	}
 
 	IEnumerator Countdown() {
-		StopCoroutine("ShieldGlitchButtons");
+		StopCoroutine(ShieldGlitchButtons());
 		countdownStarted = true;
 		foreach (TextMesh tm in priceTexts) {
 			tm.text = "!!!!";
@@ -1168,6 +1169,7 @@ public class CheatCheckout : MonoBehaviour {
 		starting = true;
 		wifiStatus = 2;
 		shieldStatus = 2;
+		customerSlaps = 0;
 		wifiSprites[0].enabled = false;
 		wifiSprites[1].enabled = false;
 		wifiSprites[2].enabled = true;
