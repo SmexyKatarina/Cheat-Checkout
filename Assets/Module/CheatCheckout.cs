@@ -254,6 +254,7 @@ public class CheatCheckout : MonoBehaviour {
 					givenChange = 0;
 					cryptoDisplay.text = String.Concat(customerPaid);
 					cryptoDisplay.color = customerColor;
+					countdownStarted = false;
 					Debug.LogFormat("[Cheat Checkout #{0}]: Strike was issued due to incorrect time press on Patch. Given {1} but expected {2}.", modID, second, serial);
 				}
 			}
@@ -1252,37 +1253,45 @@ public class CheatCheckout : MonoBehaviour {
 		string[] args = command.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 		if (args.Length >= 3) {
 			yield return "sendtochaterror That is not the correct amount of arguments, please try again.";
+			yield break;
 		}
 		if (!CorrectArgument(args)) {
 			yield return "sendtochaterror That is an incorrect command, please try again.";
+			yield break;
 		}
 		if (args[0].ToLower().EqualsAny("left", "l")) {
 			yield return null;
-			yield return new KMSelectable[] { directionalButtons[0] };
+			directionalButtons[0].OnInteract();
+			yield break;
 		}
 		if (args[0].ToLower().EqualsAny("right", "r"))
 		{
 			yield return null;
-			yield return new KMSelectable[] { directionalButtons[1] };
+			directionalButtons[1].OnInteract();
+			yield break;
 		}
 		if (args[0].ToLower().EqualsAny("lcd", "screen", "display")) {
 			yield return null;
-			yield return new KMSelectable[] { actionButtons[0] };
+			actionButtons[0].OnInteract();
 			while (isShowing) { yield return new WaitForSeconds(0.01f); yield return "trycancel Display will cycle, but any action has been cancelled."; }
+			yield break;
 		}
 		if (args[0].ToLower().Equals("submit") && args.Length == 1) {
 			yield return null;
-			yield return new KMSelectable[] { actionButtons[1] };
+			actionButtons[1].OnInteract();
+			yield break;
 		}
 		if (args[0].ToLower().Equals("submit") && args.Length == 2) {
 			SetOriginalTexts();
 			hackedState = false;
 			yield return null;
 			yield return TPPriceButtonSetup(args[1]);
+			yield break;
 		}
 		if (args[0].ToLower().Equals("clear") && args.Length == 1) {
 			yield return null;
-			yield return new KMSelectable[] { actionButtons[2] };
+			actionButtons[2].OnInteract();
+			yield break;
 		}
 		if (args[0].ToLower().Equals("stabilize") && args.Length == 2) {
 			int result;
@@ -1292,21 +1301,23 @@ public class CheatCheckout : MonoBehaviour {
 			while ((int)bomb.GetTime() % 10 != int.Parse(args[1]) && args[1].Length == 1) yield return "trycancel The button was not pressed due to a request to cancel.";
 			while ((int)bomb.GetTime() % 60 != int.Parse(args[1]) && args[1].Length == 2) yield return "trycancel The button was not pressed due to a request to cancel.";
 			yield return null;
-			yield return new KMSelectable[] { actionButtons[3] };
+			actionButtons[3].OnInteract();
+			yield break;
 		} 
 		if (args[0].ToLower().Equals("patch") && args.Length == 1) {
 			yield return null;
-			yield return new KMSelectable[] { actionButtons[4] };
+			actionButtons[4].OnInteract();
+			yield break;
 		}
 		if (args[0].ToLower().Equals("patch") && args.Length == 2) {
 			int result;
-			if (args.Length == 2 && !int.TryParse(args[1], out result))
-			{
+			if (!int.TryParse(args[1], out result)) {
 				yield return "sendtochaterror Incorrect number format.";
 			}
 			while (args.Length == 2 && (int)bomb.GetTime() % 10 != int.Parse(args[1])) yield return "trycancel The button was not pressed due to a request to cancel.";
 			yield return null;
-			yield return new KMSelectable[] { actionButtons[4] };
+			actionButtons[4].OnInteract();
+			yield break;
 		}
 		yield break;
 	}
