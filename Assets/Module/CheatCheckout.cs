@@ -85,6 +85,7 @@ public class CheatCheckout : MonoBehaviour {
 	int wifiStatus = 2; // WIFI Connection: 1-3 bars ( 0 = red, 1 = yellow, 2 = green )
 	int shieldStatus = 2; // Hacker Shield: 0-2 ( 0 = red, 1 = yellow, 2 = green )
 	bool hackedState = false;
+	bool tpActive = false;
 
 	float totalFromHacks; // Will be in cryptocurrency
 	float customerPaid = 0;
@@ -642,6 +643,7 @@ public class CheatCheckout : MonoBehaviour {
 			int chance = rand.Range(1, 11);
 			int random = rand.Range(0, 10);
 			bool setting = random.EqualsAny(0, 2, 4, 6, 8) ? true : false; // True: Wifi, False: Shield
+			while (tpActive) { yield return new WaitForSeconds(1f); }
 			if (chance == 1) {
 				if (setting) {
 					if (wifiStatus != 0) {
@@ -1251,6 +1253,7 @@ public class CheatCheckout : MonoBehaviour {
 	IEnumerator ProcessTwitchCommand(string command)
 	{
 		string[] args = command.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+		int correctionStatus;
 		if (args.Length >= 3) {
 			yield return "sendtochaterror That is not the correct amount of arguments, please try again.";
 			yield break;
@@ -1295,28 +1298,46 @@ public class CheatCheckout : MonoBehaviour {
 		}
 		if (args[0].ToLower().Equals("stabilize") && args.Length == 2) {
 			int result;
+			correctionStatus = wifiStatus;
+			tpActive = true;
 			if (!int.TryParse(args[1], out result)) {
 				yield return "sendtochaterror Incorrect number format.";
+			}
+			if (args[1].Length >= 3) {
+				yield return "sendtochaterror Incorrect number input.";
 			}
 			while ((int)bomb.GetTime() % 10 != int.Parse(args[1]) && args[1].Length == 1) yield return "trycancel The button was not pressed due to a request to cancel.";
 			while ((int)bomb.GetTime() % 60 != int.Parse(args[1]) && args[1].Length == 2) yield return "trycancel The button was not pressed due to a request to cancel.";
 			yield return null;
+			wifiStatus = correctionStatus;
 			actionButtons[3].OnInteract();
+			tpActive = false;
 			yield break;
 		} 
 		if (args[0].ToLower().Equals("patch") && args.Length == 1) {
 			yield return null;
+			correctionStatus = shieldStatus;
+			shieldStatus = correctionStatus;
+			tpActive = true;
 			actionButtons[4].OnInteract();
+			tpActive = false;
 			yield break;
 		}
 		if (args[0].ToLower().Equals("patch") && args.Length == 2) {
 			int result;
+			correctionStatus = shieldStatus;
+			tpActive = true;
 			if (!int.TryParse(args[1], out result)) {
 				yield return "sendtochaterror Incorrect number format.";
 			}
+			if (args[1].Length >= 2) {
+				yield return "sendtochaterror Incorrect number input.";
+			}
 			while (args.Length == 2 && (int)bomb.GetTime() % 10 != int.Parse(args[1])) yield return "trycancel The button was not pressed due to a request to cancel.";
 			yield return null;
+			shieldStatus = correctionStatus;
 			actionButtons[4].OnInteract();
+			tpActive = false;
 			yield break;
 		}
 		yield break;
