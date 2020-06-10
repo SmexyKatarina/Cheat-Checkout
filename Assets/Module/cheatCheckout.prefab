@@ -57,7 +57,7 @@ GameObject:
   - component: {fileID: 102749586092828644}
   - component: {fileID: 114643353580094706}
   m_Layer: 0
-  m_Name: 500 (1)
+  m_Name: 500
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 102236997299641046}
   - component: {fileID: 114478574216619100}
   m_Layer: 0
-  m_Name: Stabilize_TX
+  m_Name: STABILIZE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -146,7 +146,7 @@ GameObject:
   - component: {fileID: 102419785532963454}
   - component: {fileID: 114868265372005846}
   m_Layer: 0
-  m_Name: 0.01 (1)
+  m_Name: 0.01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -288,7 +288,7 @@ GameObject:
   - component: {fileID: 102443323216339888}
   - component: {fileID: 114238590425983952}
   m_Layer: 0
-  m_Name: 0.005 (1)
+  m_Name: 0.005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -325,7 +325,7 @@ GameObject:
   - component: {fileID: 102656970273975462}
   - component: {fileID: 114448675730266482}
   m_Layer: 0
-  m_Name: 0.05 (1)
+  m_Name: 0.05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -343,7 +343,7 @@ GameObject:
   - component: {fileID: 102230422579852426}
   - component: {fileID: 114299151829263932}
   m_Layer: 0
-  m_Name: 1 (1)
+  m_Name: 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -429,7 +429,7 @@ GameObject:
   - component: {fileID: 102834209253244248}
   - component: {fileID: 114125515771720780}
   m_Layer: 0
-  m_Name: Money_TX
+  m_Name: Customer_TX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -462,7 +462,7 @@ GameObject:
   - component: {fileID: 102702918836772676}
   - component: {fileID: 114958038801069486}
   m_Layer: 0
-  m_Name: 50 (1)
+  m_Name: 50
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -515,7 +515,7 @@ GameObject:
   - component: {fileID: 102418676002176398}
   - component: {fileID: 114404056485904032}
   m_Layer: 0
-  m_Name: Clear_TX
+  m_Name: CLEAR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -691,7 +691,7 @@ GameObject:
   - component: {fileID: 102082607380706392}
   - component: {fileID: 114914940485361536}
   m_Layer: 0
-  m_Name: Submit_TX
+  m_Name: SUBMIT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -847,7 +847,7 @@ GameObject:
   - component: {fileID: 102577876861002616}
   - component: {fileID: 114382972612282048}
   m_Layer: 0
-  m_Name: 100 (1)
+  m_Name: 100
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -930,7 +930,7 @@ GameObject:
   - component: {fileID: 102122992307125668}
   - component: {fileID: 114902127745503892}
   m_Layer: 0
-  m_Name: 0.1 (1)
+  m_Name: 0.1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -967,7 +967,7 @@ GameObject:
   - component: {fileID: 114520241080576970}
   - component: {fileID: 114108988641777288}
   - component: {fileID: 114156459678934850}
-  - component: {fileID: 114060017703944000}
+  - component: {fileID: 114066084485903390}
   m_Layer: 0
   m_Name: cheatCheckout
   m_TagString: Untagged
@@ -987,7 +987,7 @@ GameObject:
   - component: {fileID: 102605342561948076}
   - component: {fileID: 114023734116956864}
   m_Layer: 0
-  m_Name: 5 (1)
+  m_Name: 5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1056,7 +1056,7 @@ GameObject:
   - component: {fileID: 102660611769743176}
   - component: {fileID: 114512053730632370}
   m_Layer: 0
-  m_Name: 0.5 (1)
+  m_Name: 0.5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1163,7 +1163,7 @@ GameObject:
   - component: {fileID: 102166227204896634}
   - component: {fileID: 114377211134315632}
   m_Layer: 0
-  m_Name: Patch_TX
+  m_Name: PATCH
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1353,7 +1353,7 @@ GameObject:
   - component: {fileID: 102456583546407912}
   - component: {fileID: 114988760005994358}
   m_Layer: 0
-  m_Name: 10 (1)
+  m_Name: 10
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1444,7 +1444,7 @@ GameObject:
   - component: {fileID: 23587150417534692}
   - component: {fileID: 114190308611791480}
   m_Layer: 0
-  m_Name: Money
+  m_Name: Customer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1500,7 +1500,7 @@ GameObject:
   - component: {fileID: 102977545455077240}
   - component: {fileID: 114419364083407762}
   m_Layer: 0
-  m_Name: 0.001 (1)
+  m_Name: 0.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2038,12 +2038,12 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1311941152497582}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.58, z: 0}
-  m_LocalScale: {x: 1, y: 5, z: 1}
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -0.0175, y: 0.0129, z: 0.0617}
+  m_LocalScale: {x: 0.10875, y: 0.08437501, z: 0.0050000018}
   m_Children: []
-  m_Father: {fileID: 4828326131839638}
-  m_RootOrder: 0
+  m_Father: {fileID: 4772531763644006}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!4 &4453649155148232
 Transform:
@@ -2418,6 +2418,7 @@ Transform:
   m_Children:
   - {fileID: 4828326131839638}
   - {fileID: 4527008806575544}
+  - {fileID: 4430255916633988}
   m_Father: {fileID: 4978585533688022}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2482,8 +2483,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.0175, y: 0.01, z: 0.0617}
   m_LocalScale: {x: 0.10875, y: 0.005, z: 0.016874995}
-  m_Children:
-  - {fileID: 4430255916633988}
+  m_Children: []
   m_Father: {fileID: 4772531763644006}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4873,7 +4873,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - GUI/KT 3D Text
---- !u!114 &114060017703944000
+--- !u!114 &114066084485903390
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -4881,12 +4881,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1758277834634452}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 688ac5f69000f284cb0eda18b557f85d, type: 3}
+  m_Script: {fileID: 11500000, guid: 8087f9ee94bb2da40a1388d8b9324070, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bomb: {fileID: 114520241080576970}
-  bAudio: {fileID: 114312252875895856}
-  priceButtons:
+  _bomb: {fileID: 114520241080576970}
+  _audio: {fileID: 114312252875895856}
+  _priceButtons:
   - {fileID: 114803027815647328}
   - {fileID: 114099788368257502}
   - {fileID: 114949011781127918}
@@ -4899,18 +4899,18 @@ MonoBehaviour:
   - {fileID: 114771146818104932}
   - {fileID: 114144875234877298}
   - {fileID: 114316483031560392}
-  actionButtons:
+  _actionButtons:
   - {fileID: 114365741718253672}
+  - {fileID: 114013853463887346}
+  - {fileID: 114266578877167118}
   - {fileID: 114684429242575006}
   - {fileID: 114369358906245818}
   - {fileID: 114382003657763466}
   - {fileID: 114781141894833466}
-  directionalButtons:
-  - {fileID: 114013853463887346}
-  - {fileID: 114266578877167118}
-  cryptoDisplay: {fileID: 102834209253244248}
-  hackLCDDisplay: {fileID: 102068415912776956}
-  priceTexts:
+  _displayTexts:
+  - {fileID: 102834209253244248}
+  - {fileID: 102068415912776956}
+  _buttonTexts:
   - {fileID: 102977545455077240}
   - {fileID: 102419785532963454}
   - {fileID: 102122992307125668}
@@ -4923,29 +4923,31 @@ MonoBehaviour:
   - {fileID: 102605342561948076}
   - {fileID: 102702918836772676}
   - {fileID: 102749586092828644}
-  actionTexts:
   - {fileID: 102082607380706392}
   - {fileID: 102418676002176398}
   - {fileID: 102236997299641046}
   - {fileID: 102166227204896634}
-  wifiSprites:
+  - {fileID: 102061927185596588}
+  - {fileID: 102653743739697462}
+  _wifiSymbols:
   - {fileID: 212726235691359960}
   - {fileID: 212293861981951438}
   - {fileID: 212172912078066960}
-  shieldSprites:
+  _shieldSymbols:
   - {fileID: 212466901716301990}
   - {fileID: 212240264928692910}
   - {fileID: 212769705758829560}
-  cryptoSprites:
+  _cryptoSymbols:
+  - {fileID: 212073142647073398}
   - {fileID: 212297947105602540}
+  - {fileID: 212953187054198494}
   - {fileID: 212009916625698752}
   - {fileID: 212665754919930058}
+  - {fileID: 212736955487570508}
   - {fileID: 212862607579801480}
   - {fileID: 212546583242683756}
-  - {fileID: 212073142647073398}
-  - {fileID: 212736955487570508}
-  - {fileID: 212953187054198494}
   - {fileID: 212787544066681684}
+  _HIPSound: {fileID: 8300000, guid: 13aa3f12d93a0f94a8a3f59f98c4a835, type: 3}
 --- !u!114 &114083051063288268
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6522,7 +6524,7 @@ SpriteRenderer:
   m_Size: {x: 16, y: 13.23}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
 --- !u!212 &212240264928692910
 SpriteRenderer:
@@ -6918,7 +6920,7 @@ SpriteRenderer:
   m_Size: {x: 5.12, y: 5.12}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
 --- !u!212 &212787544066681684
 SpriteRenderer:

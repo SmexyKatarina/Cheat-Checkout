@@ -4,40 +4,47 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using KModkit;
-using rand = UnityEngine.Random;
+using rnd = UnityEngine.Random;
 
-public class CheatCheckout : MonoBehaviour {
+public class CheatCheckout : MonoBehaviour
+{
 
-	public KMBombInfo bomb;
-	public KMAudio bAudio;
+	public KMBombInfo _bomb;
+	public KMAudio _audio;
 
-	public KMSelectable[] priceButtons;
-	public KMSelectable[] actionButtons;
-	public KMSelectable[] directionalButtons;
+	public KMSelectable[] _priceButtons;
+	public KMSelectable[] _actionButtons;
 
-	public TextMesh cryptoDisplay;
-	public TextMesh hackLCDDisplay;
-	public TextMesh[] priceTexts;
-	public TextMesh[] actionTexts;
+	public TextMesh[] _displayTexts;
+	public TextMesh[] _buttonTexts;
 
-	public SpriteRenderer[] wifiSprites;
-	public SpriteRenderer[] shieldSprites;
-	public SpriteRenderer[] cryptoSprites;
+	public SpriteRenderer[] _wifiSymbols;
+	public SpriteRenderer[] _shieldSymbols;
+	public SpriteRenderer[] _cryptoSymbols;
+
+	public AudioClip _HIPSound;
 
 	// Specifically for Logging
-	static int modIDCount = 1;
-	int modID;
-	private bool modSolved = false;
-	bool starting = true;
-	bool countdownStarted = false;
-	bool shieldGlitch = false;
-	int hackModuleIndex = 0;
-	int resets = 0;
-	Color customerColor = new Color32(96, 188, 84,255);
-	Color changeColor = new Color32(204,0,0,255);
+	static int _modIDCount = 1;
+	int _modID;
+	private bool _modSolved = false;
+	//
+	string[] _solvedStringArray = new string[] // display1:display2:12pricebuttons:submit:clear:stabilize:patch
+	{
+		"YOU:DID IT!:YOUSOLVEDTHE:HARDEST:CHECKOUT:MODULE:POGCHAMP!",
+		"THAT:WAS NICE:OWOOWOOWOOWO:OWO:OWO:OWO:OWO",
+		"WHY:ARE YOU:WATCHINGPORN:BY:YOUR:SELF:?",
+		"EVERYTHING:IS:FINE........:.....:.....:HA HA:GOTTEM",
+		"_:CHLOE,:_:_:_:_:LOOK OUT.",
+		"YOU:CAN COUNT:UNLIKEME;KAT:WHO:CAN'T:COUNT:-w-",
+		"YOU:GOT:EVERYTHING__:WRONG!:DO:IT:AGAIN",
+		"AM I:A MODULE?:ORISTHISALL_:IN:MY:WIRING?:_",
+		"YOU'VE:GOT:ABOMBINME,OH:YOU'VE:GOT A:BOMB IN:ME"
+	};
 
-	string day;
-	string[] possibleWebsites = new string[] {
+	Color _originalColor = new Color32(96, 188, 84, 255);
+	Color _inputColor = new Color32(243, 246, 43, 255);
+	string[] _possibleWebsites = new string[] {
 		"repost.com:74:SM",
 		"pointercat.com:19:GA",
 		"usb.os:37:SE",
@@ -71,1128 +78,924 @@ public class CheatCheckout : MonoBehaviour {
 		"vilesight.ei:86:SM",
 		"random.site:100:SE"
 	};
-	string[] possibleHacks = new string[] { "DSA", "W", "CI", "XSS", "BFA" }; // Denial of Service Attack, Worm, Code Injection, Cross-Site Scripting, Brute Force Attack
-	string[] possibleCryptos = new string[] { "Bitdrop", "Crane", "Evol", "Linecoin", "Penpoint", "Berr", "Lapel", "Blade", "Qubit" }; // Bitdrop, Crane, Evol, Linecoin, Penpoint, Berr, Lapel, Blade, Qubit
-	float[] cryptoPrices = new float[] { 111f, 25f, 69f, 420f, 777f, 4.4f, 42f, 1234f, 0.5f };
-	string[] generatedHacks = new string[5];
-	string[] generatedWebsites = new string[5];
-	string generatedCryptoName;
-	float generatedCryptoPrice;
-	string[] hackInformation = new string[5];
-	float[] hackTotals = new float[5];
-	bool isShowing = false;
+	string[] _possibleHacks = new string[] { "DSA", "W", "CI", "XSS", "BFA" }; // Denial of Service Attack, Worm, Code Injection, Cross-Site Scripting, Brute Force Attack
+	string[] _possibleCryptos = new string[] { "Berr", "Bitdrop", "Blade", "Crane", "Evol", "Lapel", "Linecoin", "Penpoint", "Qubit" };
+	float[] _cryptoPrices = new float[] { 4.4f, 111f, 1234f, 25f, 69f, 42f, 420f, 777f, 0.5f };
 
-	int wifiStatus = 2; // WIFI Connection: 1-3 bars ( 0 = red, 1 = yellow, 2 = green )
-	int shieldStatus = 2; // Hacker Shield: 0-2 ( 0 = red, 1 = yellow, 2 = green )
-	bool hackedState = false;
-	bool tpActive = false;
+	List<object[]> _hackInformation = new List<object[]>();
+	List<string> _chosenHackNames = new List<string>();
+	List<string> _chosenWebsites = new List<string>();
+	int _chosenCryptocurrency = 0;
+	DayOfWeek _dow;
+	float[] _buttonPrices = new float[] { 0.001f, 0.01f, 0.1f, 1f, 10f, 100f, 0.005f, 0.05f, 0.5f, 5f, 50f, 500f };
 
-	float totalFromHacks; // Will be in cryptocurrency
-	float customerPaid = 0;
-	float correctChange = 0;
-	float givenChange = 0;
-	int customerSlaps = 0;
+	int _wifiStatus = 2; // 2 1 0:Green Yellow Red
+	int _shieldStatus = 2; // 2 1 0:Green Yellow Red
+	int _staticWifiStatus = -1;
+	int _staticShieldStatus = -1;
+	int _hackIndex = 0;
+	int _hackCycle = -1;
+	bool _beingHacked = false;
+	bool _blockDisplay = false;
+	bool _timerStopPlz = false;
+	bool _starting = true;
+	bool _restarting = false;
+	bool _glitchedButtons = false;
+	bool _glitchStopped = false;
+	bool _LCDGlitch = false;
 
-	void Awake() {
-		modID = modIDCount++;
-		day = DateTime.Now.DayOfWeek.ToString();
-		foreach (KMSelectable price in priceButtons) {
-			price.OnInteract += delegate () {
-				price.AddInteractionPunch();
-				bAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, price.transform);
-				if (!modSolved) {
-					PriceButton(price);
-				}
-				return false;
-			};
+	float _totalAmount = 0f;
+	float _givenChange = -1f;
+	float _customerGave = 0f;
+	float _staticCustomerGave = 0f;
+	int _customerSlaps = 0;
+
+	List<string> _currentHackInfo;
+
+	bool[] _currentGlitched = new bool[15];
+
+	int _timer = 45;
+
+	void Awake()
+	{
+		_modID = _modIDCount++;
+		_dow = DateTime.Today.DayOfWeek;
+
+		foreach (KMSelectable km in _priceButtons)
+		{
+			km.OnInteract += delegate () { if (_modSolved) return false; PriceButtons(km); return false; };
 		}
 
-		foreach (KMSelectable action in actionButtons) {
-			action.OnInteract += delegate () {
-				action.AddInteractionPunch();
-				bAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, action.transform);
-				if (!modSolved) {
-					ActionButton(action);
-				}
-				return false;
-			};
+		foreach (KMSelectable km in _actionButtons)
+		{
+			km.OnInteract += delegate () { if (_modSolved) return false; ActionButtons(km); return false; };
 		}
 
-		foreach (KMSelectable direction in directionalButtons) {
-			direction.OnInteract += delegate () {
-				direction.AddInteractionPunch();
-				bAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, direction.transform);
-				if (!modSolved) {
-	
-					DirectionalButton(direction);
-				}
-				return false;
-			};
-		}
 	}
 
-	void Start() {
-		GenerateModule();
-		hackLCDDisplay.text = "Hack #" + (hackModuleIndex + 1);
+	void Start()
+	{
+		GenerateHackInformation();
+		GenerateCustomerPrice();
+		StartCoroutine(ModuleTimer());
+		_displayTexts[1].text = "Hack #" + (_hackIndex + 1);
+		_currentHackInfo = ParseDisplayHackInfo(_hackIndex);
 	}
 
-	void PriceButton(KMSelectable button) {
-		if (isShowing) { return; }
-		if (shieldStatus == 0) { return; }
-		if (hackedState) {
-			GetComponent<KMBombModule>().HandleStrike();
-			Debug.LogFormat("[Cheat Checkout #{0}]: Module struck because it was in hacked state.", modID);
-			return;
-		}
-		float price = GetPrice(priceTexts[Array.IndexOf(priceButtons, button)].text);
-		cryptoDisplay.color = changeColor;
-		givenChange += price;
-		givenChange = (float)Math.Round(givenChange, 3);
-		cryptoDisplay.text = String.Concat(givenChange);
+	void PriceButtons(KMSelectable km)
+	{
+		int index = Array.IndexOf(_priceButtons, km);
+		if (_beingHacked) { return; }
+		if (_glitchedButtons && BeingGlitched(km)) { GetComponent<KMBombModule>().HandleStrike(); Debug.LogFormat("[Cheat Checkout #{0}]: Module struck due to the buttons being in their glitched state.", _modID); return; }
+		if (_givenChange == -1) _givenChange = 0f;
+		_givenChange = (float)Math.Round(_buttonPrices[index] + _givenChange, 3);
+		_displayTexts[0].color = _inputColor;
+		_displayTexts[0].text = _givenChange.ToString();
+
 	}
 
-	void ActionButton(KMSelectable button) {
-		if (isShowing) { return; }
-		if (hackedState) {
-			GetComponent<KMBombModule>().HandleStrike();
-			Debug.LogFormat("[Cheat Checkout #{0}]: Module struck because it was in hacked state.", modID);
-			return;
-		}
-		string action = button.name.Equals("Hack LCD") ? hackLCDDisplay.text : actionTexts[(Array.IndexOf(actionButtons, button) - 1)].text;
-		if (action.Equals("CLEAR")) {
-			if (shieldStatus == 0) { return; }
-			cryptoDisplay.text = String.Concat(customerPaid);
-			cryptoDisplay.color = customerColor;
-			givenChange = 0;
-		} else if (action.Equals("SUBMIT")) {
-			if (shieldStatus == 0) { return; }
-			if (customerPaid < totalFromHacks) {
-				GenerateCustomerPrice();
-				return;
-			}
-			if ((givenChange <= correctChange+0.011 && givenChange >= correctChange-0.011) || (givenChange == correctChange)) {
-				modSolved = true;
-				GetComponent<KMBombModule>().HandlePass();
-				Debug.LogFormat("[Cheat Checkout #{0}]: The correct amount of change was inputted. Module Solved.",modID);
-				return;
-			}
-			Debug.LogFormat("[Cheat Checkout #{0}]: The inputted amount of change was incorrect. Given {1} expected {2}.", modID, givenChange, correctChange);
-			GetComponent<KMBombModule>().HandleStrike();
-			givenChange = 0;
-			cryptoDisplay.text = String.Concat(customerPaid);
-			cryptoDisplay.color = customerColor;
-		} else if (action.Equals("STABILIZE")) {
-			if (shieldStatus == 0) { return; }
-			int second = ((int)bomb.GetTime()) % 10;
-			int seconds = ((int)bomb.GetTime()) % 60;
-			int serial = int.Parse(String.Concat(bomb.GetSerialNumber().ToCharArray()[5]));
-			int sum = SumNumbers(bomb.GetSerialNumberNumbers().ToList());
-			if (wifiStatus != 2)
-			{
-				if (wifiStatus == 1 && seconds == sum)
+	void ActionButtons(KMSelectable km)
+	{
+		int index = Array.IndexOf(_actionButtons, km);
+		if (_beingHacked && _actionButtons[index].name.ToLower() != "patch") { return; }
+		if (_actionButtons[index].name.ToLower() != "patch" && BeingGlitched(km)) { GetComponent<KMBombModule>().HandleStrike(); Debug.LogFormat("[Cheat Checkout #{0}]: Module struck due to the buttons being in their glitched state.", _modID); return; }
+		switch (index)
+		{
+			case 0: // LCD
+				if (_blockDisplay) { Debug.LogFormat("[Cheat Checkout #{0}]: Display didn't cycle due to display being blocked.", _modID); break; }
+				if (_hackCycle == _currentHackInfo.Count() - 1) { _hackCycle = -1; _displayTexts[1].characterSize = 0.02f; _displayTexts[1].text = "Hack #" + (_hackIndex + 1); break; }
+				++_hackCycle;
+				_displayTexts[1].characterSize = 0.0125f;
+				if (rnd.Range(0, 5) == 0 && _LCDGlitch)
 				{
-					wifiStatus = 2;
-					wifiSprites[1].enabled = false;
-					wifiSprites[2].enabled = true;
-					Debug.LogFormat("[Cheat Checkout #{0}]: Wifi was stabilized.", modID);
-					return;
-				}
-				else if (wifiStatus == 0 && second == serial)
-				{
-					wifiStatus = 2;
-					wifiSprites[0].enabled = false;
-					wifiSprites[2].enabled = true;
-					Debug.LogFormat("[Cheat Checkout #{0}]: Wifi was stabilized.", modID);
-					return;
+					_displayTexts[1].text = GlitchText(_currentHackInfo[_hackCycle]);
+					break;
 				}
 				else
 				{
+					_displayTexts[1].text = _currentHackInfo[_hackCycle];
+					break;
+				}
+			case 1: // Left
+				if (_hackIndex == 0) return;
+				--_hackIndex;
+				_currentHackInfo = ParseDisplayHackInfo(_hackIndex);
+				_displayTexts[1].characterSize = 0.02f;
+				_displayTexts[1].text = "Hack #" + (_hackIndex + 1);
+				_hackCycle = -1;
+				break;
+			case 2: // Right
+				if (_hackIndex == 4) return;
+				++_hackIndex;
+				_currentHackInfo = ParseDisplayHackInfo(_hackIndex);
+				_displayTexts[1].characterSize = 0.02f;
+				_displayTexts[1].text = "Hack #" + (_hackIndex + 1);
+				_hackCycle = -1;
+				break;
+			case 3: // submit
+				if (_customerGave == -1f && _givenChange == -1f) { Debug.LogFormat("[Cheat Checkout #{0}]: Slapped the customer for more money.", _modID); _customerSlaps++; GenerateCustomerPrice(); break; }
+				float answer = (float)Math.Round(_staticCustomerGave - _totalAmount, 3);
+				if (!(Helper.WithinRange(_givenChange, answer - 0.011f, answer + 0.011f) || _givenChange == answer))
+				{
+					Debug.LogFormat("[Cheat Checkout #{0}]: Incorrect amount of change. Given {1} but expected {2}.", _modID, _givenChange == -1 ? 0 : _givenChange, Math.Round(_customerGave - _totalAmount, 3));
 					GetComponent<KMBombModule>().HandleStrike();
-					wifiSprites[0].enabled = false;
-					wifiSprites[1].enabled = false;
-					wifiSprites[2].enabled = true;
-					wifiStatus = 2;
-					Debug.LogFormat("[Cheat Checkout #{0}]: Strike was issued due to incorrect time press on Stabilize. {1}", modID, wifiStatus == 1 ? String.Format("Given {0} but expected {1}.", second, serial) : String.Format("Given {0} but expected {1}.", seconds, sum));
+					_displayTexts[0].text = _staticCustomerGave.ToString();
+					_displayTexts[0].color = _originalColor;
+					_givenChange = -1f;
+					break;
 				}
-			}
-		} else if (action.Equals("PATCH")) {
-			int second = ((int)bomb.GetTime()) % 10;
-			int serial = int.Parse(String.Concat(bomb.GetSerialNumber().ToCharArray()[5]));
-			if (shieldStatus != 2) {
-				if (shieldStatus == 1)
+				else
 				{
-					shieldStatus = 2;
-					shieldSprites[1].enabled = false;
-					shieldSprites[2].enabled = true;
-					shieldGlitch = false;
-					countdownStarted = false;
-					StopCoroutine(ShieldGlitchButtons());
-					Debug.LogFormat("[Cheat Checkout #{0}]: Hacker Shield was patched.", modID);
-					return;
+					StopAllCoroutines();
+					ResetButtonTexts();
+					StartCoroutine(SolveAnimation());
 				}
-				else if (shieldStatus == 0 & second == serial)
+				break;
+			case 4: // clear
+				_givenChange = -1f;
+				_displayTexts[0].color = _originalColor;
+				_displayTexts[0].text = _staticCustomerGave.ToString();
+				break;
+			case 5: // stabilize
+				if (_wifiStatus == 2) { break; }
+				_staticWifiStatus = _wifiStatus;
+				if (_staticWifiStatus == 1)
 				{
-					shieldStatus = 2;
-					shieldSprites[0].enabled = false;
-					shieldSprites[2].enabled = true;
-					countdownStarted = false;
-					shieldGlitch = false;
-					StopCoroutine(ShieldGlitchButtons());
-					StopCoroutine(Countdown());
-					SetOriginalTexts();
-					Debug.LogFormat("[Cheat Checkout #{0}]: Hacker Shield was patched.", modID);
-					return;
-				} else {
-					GetComponent<KMBombModule>().HandleStrike();
-					shieldSprites[0].enabled = false;
-					shieldSprites[1].enabled = false;
-					shieldSprites[2].enabled = true;
-					StopCoroutine(ShieldGlitchButtons());
-					shieldGlitch = false;
-					shieldStatus = 2;
-					SetOriginalTexts();
-					StopCoroutine(Countdown());
-					givenChange = 0;
-					cryptoDisplay.text = String.Concat(customerPaid);
-					cryptoDisplay.color = customerColor;
-					countdownStarted = false;
-					Debug.LogFormat("[Cheat Checkout #{0}]: Strike was issued due to incorrect time press on Patch. Given {1} but expected {2}.", modID, second, serial);
+					int sum = _bomb.GetSerialNumberNumbers().Sum();
+					int digits = (int)_bomb.GetTime() % 60;
+					if (sum == digits)
+					{
+						StopAllCoroutines();
+						_restarting = true;
+						if (_shieldStatus == 1) { StartCoroutine(GlitchSeparator()); }
+						StartCoroutine(ModuleTimer());
+						ResetButtonTexts();
+						_displayTexts[1].text = "Hack #" + (_hackIndex + 1);
+						_displayTexts[1].color = _originalColor;
+						Debug.LogFormat("[Cheat Checkout #{0}]: Module was patched on a Wifi status of {1} and was successful.", _modID, _staticWifiStatus);
+
+						_wifiSymbols[_staticWifiStatus].enabled = false;
+						_wifiStatus = 2;
+						_wifiSymbols[_wifiStatus].enabled = true;
+						break;
+					}
+					else
+					{
+						Debug.LogFormat("[Cheat Checkout #{0}]: Module was patched on a Wifi status of {1} and was incorrect. Pressed on {2} but expected {3}.", _modID, _staticWifiStatus, digits, sum);
+						GetComponent<KMBombModule>().HandleStrike();
+						break;
+					}
 				}
-			}
-		} else if (button.name.Equals("Hack LCD") && hackLCDDisplay.text.Equals("Hack #" + (hackModuleIndex + 1)) && wifiStatus != 0) {
-			if (wifiStatus <= 1) {
-				StartCoroutine(GlitchedHackInformation());
-				return;
-			}
-			StartCoroutine(ShowHackInformation());
-		}
-	}
 
-	void DirectionalButton(KMSelectable button) {
-		if (isShowing) { return; }
-		if (shieldStatus == 0) { return; }
-		if (hackedState) {
-			GetComponent<KMBombModule>().HandleStrike();
-			Debug.LogFormat("[Cheat Checkout #{0}]: Module struck because it was in hacked state.", modID);
-			return;
-		}
-		if (button.name.Equals("Left")) {
-			if (hackModuleIndex == 0) {
-				return;
-			}
-			hackModuleIndex--;
-			hackLCDDisplay.text = "Hack #" + (hackModuleIndex + 1);
-		} else if (button.name.Equals("Right")) {
-			if (hackModuleIndex == 4)
-			{
-				return;
-			}
-			hackModuleIndex++;
-			hackLCDDisplay.text = "Hack #" + (hackModuleIndex + 1);
-		}
-	}
-
-	void GenerateModule() {
-		Debug.LogFormat("[Cheat Checkout #{0}]: After {1} resets, the module information is:",modID,resets);
-		GenerateRandomWebsites();
-		GenerateRandomHacks();
-		generatedCryptoName = possibleCryptos[rand.Range(0, 9)];
-		generatedCryptoPrice = cryptoPrices[Array.IndexOf(possibleCryptos, generatedCryptoName)];
-		cryptoSprites[Array.IndexOf(possibleCryptos, generatedCryptoName)].enabled = true;
-		Debug.LogFormat("[Cheat Checkout #{0}]: The generated cryptocurrency is: {1} with price of {2}.", modID, generatedCryptoName, generatedCryptoPrice);
-		GeneratedDiscounts();
-		totalFromHacks = (float)Math.Truncate(((hackTotals[0] + hackTotals[1] + hackTotals[2] + hackTotals[3] + hackTotals[4]) / generatedCryptoPrice) * 1000f) / 1000f;
-		Debug.LogFormat("[Cheat Checkout #{0}]: The total amount that is being charged, after disconts, is: {1}", modID, totalFromHacks);
-		GenerateCustomerPrice();
-		StartCoroutine(UpdateFeatures());
-	}
-
-	void GenerateRandomHacks() {
-		for (int i = 0; i <= 4; i++) {
-			generatedHacks[i] = possibleHacks[rand.Range(0, 5)];
-			switch (generatedHacks[i]) {
-				case "DSA":
-					GenerateDSAHack(i);
-					break;
-				case "W":
-					GenerateWHack(i);
-					break;
-				case "CI":
-					GenerateCIHack(i);
-					break;
-				case "XSS":
-					GenerateXSSHack(i);
-					break;
-				case "BFA":
-					GenerateBFAHack(i);
-					break;
-				default:
-					Debug.LogFormat("[Cheat Checkout #{0}]: The hacks are unable to be created.", modID);
-					break;
-			}
-		}
-	}
-
-	void GenerateRandomWebsites() {
-		string[] temp = new string[5];
-		for (int i = 0; i <= 4; i++) {
-			string s = possibleWebsites[rand.Range(0, 32)];
-			temp[i] = s.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries)[0];
-			generatedWebsites[i] = s;
-		}
-		Debug.LogFormat("[Cheat Checkout #{0}]: The chosen websites are: '{1}', '{2}', '{3}', '{4}', '{5}' ", modID, temp[0], temp[1], temp[2], temp[3], temp[4]);
-	}
-
-	void GenerateDSAHack(int index) {
-		// Generated PC Type 
-		string[] pcTypes = new string[] { "Basic", "Advance", "Super", "Quantum" };
-		float[] pcPrices = new float[] { 0.8f, 1.2f, 1.6f, 2.0f };
-		string pcType = pcTypes[rand.Range(0, 4)];
-		float pcPrice = pcPrices[Array.IndexOf(pcTypes, pcType)];
-		// Amount of PCs
-		int amount = rand.Range(5, 21);
-		// Duration (in hours)
-		float duration = (rand.Range(6, 19) / 10f);
-		// Result of the hack
-		bool success = rand.Range(0, 2) == 1 ? true : false; // True: Success, False: Failed #% Hacked
-		bool result = rand.Range(0, 2) == 1 ? true : false; // True: Permanently, False: Temporarily
-		string sResult;
-		float percent = rand.Range(1,100)/100f;
-		if (success) {
-			sResult = result ? "Crashed Permanently" : "Crashed Temporarily";
-		} else {
-			sResult = "Failed! {0}% Hacked";
-		}
-		// Math Equation: Base Value * Amount of PC * (Security Level / 5)  * Duration
-		string[] website = generatedWebsites[index].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-		float subTotal = (pcPrice) * (amount) * (float.Parse(website[1]) / 5f) * (duration);
-		hackInformation[index] = String.Concat(website[0] + ":DSA:" + pcType + ":" + amount + ":" + duration + ":" + sResult + ":" + (percent * 100f));
-		if (success) {
-			if (result) {
-				hackTotals[index] = (float)Math.Round((subTotal * 1.25f), 3);
-			} else {
-				hackTotals[index] = (float)Math.Round(subTotal, 3);
-			}
-		} else {
-			hackTotals[index] = (float)Math.Round((subTotal * percent), 3);
-		}
-		Debug.LogFormat("[Cheat Checkout #{0}]: The DSA hack (Hack #{1}) has information of -> Website: {2}, PC-Type: {3}, Amount of PCs: {4}, Duration: {5} hours, Result: {6} and Total Cost: {7}", modID, index + 1, website[0], pcType, amount, duration, success ? sResult : "Failed: " + (percent * 100) + "% Hacked", hackTotals[index]);
-	}
-
-	void GenerateWHack(int index) {
-		// Generated PC Type
-		string[] pcTypes = new string[] { "Defective", "Basic", "Advance", "Super", "Quantum" };
-		float[] pcPrices = new float[] { 0.5f, 0.9f, 1.3f, 1.75f, 2.1f };
-		string pcType = pcTypes[rand.Range(0, 5)];
-		float pcPrice = pcPrices[Array.IndexOf(pcTypes, pcType)];
-		// Type of Worm
-		string[] wormTypes = new string[] { "Normal", "Lethal", "Spreader" };
-		float[] wormMultipliers = new float[] { 1f, 2f, 0.5f };
-		string wormType = wormTypes[rand.Range(0, 3)];
-		float wormMulti = wormMultipliers[Array.IndexOf(wormTypes, wormType)];
-		// Amount Infected PCs
-		int amount = rand.Range(5, 21);
-		// Result of Hack NEEDS CHANGE
-		bool result = rand.Range(0, 2) == 1 ? true : false; // True: Success, False: Failed #% Hacked
-		float percent = rand.Range(1, 100) / 100f;
-		string sResult = result ? "Success!" : "Failed! {0}% Hacked";
-		// Math Equation: Base Value * Computers Infected * (Security Level/10) * Worm Multiplier
-		string[] website = generatedWebsites[index].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-		float subTotal = (pcPrice) * (amount) * (float.Parse(website[1]) / 10f) * (wormMulti);
-		hackInformation[index] = String.Concat(website[0] + ":W:" + pcType + ":" + wormType + ":" + amount + ":" + sResult + ":" + (percent * 100f));
-		if (result) {
-			hackTotals[index] = (float)Math.Round(subTotal, 3);
-		} else {
-			hackTotals[index] = (float)Math.Round((subTotal * percent), 3);
-		}
-		Debug.LogFormat("[Cheat Checkout #{0}]: The Worm hack (Hack #{1}) has information of -> Website: {2}, PC-Type: {3}, Type of Worm: {4}, Computers Infected: {5}, Result: {6} and Total Cost: {7}", modID, index + 1, website[0], pcType, wormType, amount, result ? sResult : "Failed: " + (percent * 100) + "% Hacked", hackTotals[index]);
-	}
-
-	void GenerateCIHack(int index) {
-		// Generated Vulnerabilitiy
-		string[] vulnerabilityTypes = new string[] { "SQL", "LDAP", "XPath", "NoSQL" };
-		float[] vulnerabilityPrices = new float[] { 0.9f, 1.8f, 1.25f, 2.2f };
-		string vulnerabilityType = vulnerabilityTypes[rand.Range(0, 4)];
-		float vulnerabilityPrice = vulnerabilityPrices[Array.IndexOf(vulnerabilityTypes, vulnerabilityType)];
-		// Generated Complexity
-		string[] complexityTypes = new string[] { "Simple", "Advance", "Complex" };
-		float[] complexityPrices = new float[] { 1f, 1.2f, 1.5f };
-		string complexityType = complexityTypes[rand.Range(0, 3)];
-		float complexityPrice = complexityPrices[Array.IndexOf(complexityTypes, complexityType)];
-		// Generated Batch Amounts
-		int amount = rand.Range(5, 21);
-		// Generated Result NEEDS CHANGE
-		bool success = rand.Range(0, 2) == 1 ? true : false; // True: Success, False: Failed #% Hacked
-		bool result = rand.Range(0, 2) == 1 ? true : false; // True: Permanently, False: Infiltrated
-		string sResult;
-		float percent = rand.Range(1, 100) / 100f;
-		if (success) {
-			sResult = result ? "Crashed Permanently" : "Infiltrated";
-		} else {
-			sResult = "Failed! {0}% Hacked";
-		}
-		// Math Equation: Base Currency * Code Complexity * Batch Amount * (Security Value/20)
-		string[] website = generatedWebsites[index].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-		float subTotal = (vulnerabilityPrice) * (complexityPrice) * (amount) * (float.Parse(website[1]) / 20f);
-		hackInformation[index] = String.Concat(website[0] + ":CI:" + vulnerabilityType + ":" + complexityType + ":" + amount + ":" + sResult + ":" + (percent * 100f));
-		if (success) {
-			if (result) {
-				hackTotals[index] = (float)Math.Round((subTotal * 1.25f), 3);
-			} else {
-				hackTotals[index] = (float)Math.Round((subTotal * 1.5f));
-			}
-		} else {
-			hackTotals[index] = (float)Math.Round((subTotal * percent), 3);
-		}
-		Debug.LogFormat("[Cheat Checkout #{0}]: The CI hack (Hack #{1}) has information of -> Website: {2}, Vulnerability Type: {3}, Complexity Type: {4}, Batch Amount: {5}, Result: {6} and Total Cost: {7}", modID, index + 1, website[0], vulnerabilityType, complexityType, amount, success ? sResult : "Failed: " + (percent * 100) + "% Hacked", hackTotals[index]);
-	}
-
-	void GenerateXSSHack(int index) {
-		// Generated Script Complexity
-		string[] complexityTypes = new string[] { "Ex-Basic", "Basic", "Advance", "Complex", "Unintelligible" };
-		float[] complexityPrices = new float[] { 0.5f, 1f, 1.5f, 2f, 2.5f };
-		string complexityType = complexityTypes[rand.Range(0, 5)];
-		float complexityPrice = complexityPrices[Array.IndexOf(complexityTypes, complexityType)];
-		// Generated Hack Type
-		string[] hackTypes = new string[] { "Non-Persistent", "Persistent", "Mutated XSS" };
-		float[] hackPrices = new float[] { 1f, 1.25f, 1.5f };
-		string hackType = hackTypes[rand.Range(0, 3)];
-		float hackPrice = hackPrices[Array.IndexOf(hackTypes, hackType)];
-		// Generated Programs Sent
-		float amount = rand.Range(4, 33);
-		// Generated Result
-		bool result = rand.Range(0, 2) == 1 ? true : false; // True: Success, False: Failed
-		float percent = rand.Range(1, 100) / 100f;
-		string sResult = result ? "Success!" : "Failed! {0}% Hacked";
-		// Math Equation: Base Value * Multiplier * (Security Value/8) * (Program/2);
-		string[] website = generatedWebsites[index].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-		float subTotal = complexityPrice * hackPrice * (float.Parse(website[1]) / 8f) * (amount / 2f);
-		hackInformation[index] = String.Concat(website[0] + ":XSS:" + complexityType + ":" + hackType + ":" + amount + ":" + sResult + ":" + (percent * 100f));
-		if (result) {
-			hackTotals[index] = (float)Math.Round(subTotal, 3);
-		} else {
-			hackTotals[index] = (float)Math.Round((subTotal * percent), 3);
-		}
-		Debug.LogFormat("[Cheat Checkout #{0}]: The XSS hack (Hack #{1}) has information of -> Website: {2}, Complexity Type: {3}, Hack Type: {4}, Programs: {5}, Result: {6} and Total Cost: {7}", modID, index + 1, website[0], complexityType, hackType, amount, result ? sResult : "Failed: " + (percent * 100) + "% Hacked", hackTotals[index]);
-	}
-
-	void GenerateBFAHack(int index) {
-		// Generated Attack
-		string[] attackTypes = new string[] { "Strong Inject", "Sneak", "Duplication" };
-		float[] attackPrices = new float[] { 2.2f, 1.6f, 1.9f };
-		string attackType = attackTypes[rand.Range(0, 3)];
-		float attackPrice = attackPrices[Array.IndexOf(attackTypes, attackType)];
-		// Generated Attempts
-		float amount = rand.Range(2, 11);
-		// Generated Result
-		bool success = rand.Range(0, 2) == 1 ? true : false; // True: Success, False: Failed #% Hacked
-		bool result = rand.Range(0, 2) == 1 ? true : false; // True: Permanently, False: Infiltrated
-		string sResult;
-		float percent = rand.Range(1, 100) / 100f;
-		if (success) {
-			sResult = result ? "Crashed Permanently" : "Infiltrated";
-		} else {
-			sResult = "Failed! {0}% Hacked";
-		}
-		// Math Equation: (Base Value * Attempt * Security Level)/5
-		string[] website = generatedWebsites[index].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-		float subTotal = (attackPrice * amount * float.Parse(website[1])) / 5f;
-
-		hackInformation[index] = String.Concat(website[0] + ":BFA:" + attackType + ":" + amount + ":" + sResult + ":" + (percent * 100f));
-		if (success) {
-			if (result) {
-				hackTotals[index] = (float)Math.Round((subTotal * 1.2f), 3);
-			} else {
-				hackTotals[index] = (float)Math.Round((subTotal * 1.4f), 3);
-			}
-		} else {
-			hackTotals[index] = (float)Math.Round((subTotal * percent), 3);
-		}
-		Debug.LogFormat("[Cheat Checkout #{0}]: The BFA hack (Hack #{1}) has information of -> Website: {2}, Attack Type: {3}, Attempts: {4}, Result: {5} and Total Cost: {6}", modID, index + 1, website[0], attackType, amount, success ? sResult : "Failed: " + (percent * 100) + "% Hacked", hackTotals[index]);
-	}
-
-	void GenerateCustomerPrice() {
-		if (customerSlaps == 0) {
-			customerPaid = (float)Math.Round(rand.Range(totalFromHacks * 0.5f, totalFromHacks * 1.5f), 3);
-			while (customerPaid < 0) {
-				customerPaid = (float)Math.Round(rand.Range(totalFromHacks * 0.5f, totalFromHacks * 1.5f), 3);
-			}
-			Debug.LogFormat("[Cheat Checkout #{0}]: The customer has tried to pay {1} for the hacks. {2}", modID, customerPaid, totalFromHacks > customerPaid ? "Customer didn't pay enough, slap him." : "Customer paid enough.");
-			correctChange = (customerPaid - totalFromHacks) < 0 ? 0 : (float)Math.Round((customerPaid - totalFromHacks), 3);
-			Debug.LogFormat("[Cheat Checkout #{0}]: The correct amount of change is: {1}", modID, correctChange == 0 ? "None" : String.Concat(correctChange));
-			cryptoDisplay.text = String.Concat(customerPaid);
-			customerSlaps++;
-			return;
-		}
-		customerPaid += (float)Math.Round(rand.Range(totalFromHacks * 0.5f, totalFromHacks * 1.5f), 3);
-		Debug.LogFormat("[Cheat Checkout #{0}]: The customer has been slapped {1} and now is paying {2} for their hacks.", modID, customerSlaps >= 2 ? String.Format("{0} times", customerSlaps) : "1 time", customerPaid);
-		correctChange = (customerPaid - totalFromHacks) < 0 ? 0 : (float)Math.Round((customerPaid - totalFromHacks), 3);
-		Debug.LogFormat("[Cheat Checkout #{0}]: The correct amount of change is: {1}", modID, correctChange == 0 ? "None" : String.Concat(correctChange));
-		cryptoDisplay.text = String.Concat(customerPaid);
-		customerSlaps++;
-	}
-
-	void GeneratedDiscounts() {
-		Debug.LogFormat("[Cheat Checkout #{0}]: The day being applied for discount/increase is: {1}", modID, day);
-		switch (day) {
-			case "Sunday":
-				for (int i = 0; i <= 4; i++) {
-					string[] website = generatedWebsites[i].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-					if (website[2].Equals("SE")) {
-						hackTotals[i] = (float)Math.Round(hackTotals[i] * 0.8f, 3);
-						Debug.LogFormat("[Cheat Checkout #{0}]: Discount on hack {1}! New price: {2}", modID, i + 1, hackTotals[i]);
+				if (_staticWifiStatus == 0)
+				{
+					int last = _bomb.GetSerialNumberNumbers().Last();
+					int digit = (int)_bomb.GetTime() % 10;
+					if (last == digit)
+					{
+						StopAllCoroutines();
+						_restarting = true;
+						if (_shieldStatus == 1) { StartCoroutine(GlitchSeparator()); }
+						StartCoroutine(ModuleTimer());
+						ResetButtonTexts();
+						_displayTexts[1].text = "Hack #" + (_hackIndex + 1);
+						_displayTexts[1].color = _originalColor;
+						Debug.LogFormat("[Cheat Checkout #{0}]: Module was patched on a Wifi status of {1} and was successful.", _modID, _staticWifiStatus);
+						_wifiSymbols[_staticWifiStatus].enabled = false;
+						_wifiStatus = 2;
+						_wifiSymbols[_wifiStatus].enabled = true;
+						break;
+					}
+					else
+					{
+						Debug.LogFormat("[Cheat Checkout #{0}]: Module was patched on a Wifi status of {1} and was incorrect. Pressed on {2} but expected {3}.", _modID, _staticWifiStatus, digit, last);
+						GetComponent<KMBombModule>().HandleStrike();
+						break;
 					}
 				}
 				break;
-			case "Monday":
-				for (int i = 0; i <= 4; i++) {
-					hackTotals[i] = (float)Math.Round(hackTotals[i] * 1.10f, 3);
-					Debug.LogFormat("[Cheat Checkout #{0}]: Increase on hack {1}! New price: {2}", modID, i + 1, hackTotals[i]);
+			case 6: // patch
+				if (_shieldStatus == 2) { break; }
+				_staticShieldStatus = _shieldStatus;
+				if (_staticShieldStatus == 1)
+				{
+					StopAllCoroutines();
+					_restarting = true;
+					if (_wifiStatus == 0) { StartCoroutine(GlitchDisplay()); }
+					StartCoroutine(ModuleTimer());
+					ResetButtonTexts();
+					Debug.LogFormat("[Cheat Checkout #{0}]: Module was patched on a Hacker Shield status of {1} and was successful.", _modID, _staticShieldStatus);
+					_shieldSymbols[_staticShieldStatus].enabled = false;
+					_shieldStatus = 2;
+					_shieldSymbols[_shieldStatus].enabled = true;
+					_currentGlitched = new bool[14];
+					break;
 				}
-				break;
-			case "Tuesday":
-				for (int i = 0; i <= 4; i++) {
-					string[] website = generatedWebsites[i].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-					if (website[2].Equals("GA"))
+
+				if (_staticShieldStatus == 0)
+				{
+					int last = _bomb.GetSerialNumberNumbers().Last();
+					int digit = (int)_bomb.GetTime() % 10;
+					if (last == digit)
 					{
-						hackTotals[i] = (float)Math.Round(hackTotals[i] * 0.8f, 3);
-						Debug.LogFormat("[Cheat Checkout #{0}]: Discount on hack {1}! New price: {2}", modID, i + 1, hackTotals[i]);
+						StopAllCoroutines();
+						_restarting = true;
+						if (_wifiStatus == 0) { StartCoroutine(GlitchDisplay()); }
+						StartCoroutine(ModuleTimer());
+						ResetButtonTexts();
+						Debug.LogFormat("[Cheat Checkout #{0}]: Module was patched on a Hacker Shield status of {1} and was successful.", _modID, _staticShieldStatus);
+						_shieldSymbols[_staticShieldStatus].enabled = false;
+						_shieldStatus = 2;
+						_shieldSymbols[_shieldStatus].enabled = true;
+						_currentGlitched = new bool[14];
+						break;
 					}
-				}
-				break;
-			case "Wednesday":
-				for (int i = 0; i <= 4; i++) {
-					string[] website = generatedWebsites[i].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-					if (website[2].Equals("IN"))
+					else
 					{
-						hackTotals[i] = (float)Math.Round(hackTotals[i] * 0.8f, 3);
-						Debug.LogFormat("[Cheat Checkout #{0}]: Discount on hack {1}! New price: {2}", modID, i + 1, hackTotals[i]);
-					}
-				}
-				break;
-			case "Thursday":
-				for (int i = 0; i <= 4; i++) {
-					string[] website = generatedWebsites[i].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-					if (website[2].Equals("SM"))
-					{
-						hackTotals[i] = (float)Math.Round(hackTotals[i] * 0.8f, 3);
-						Debug.LogFormat("[Cheat Checkout #{0}]: Discount on hack {1}! New price: {2}", modID, i + 1, hackTotals[i]);
-					}
-				}
-				break;
-			case "Friday":
-				for (int i = 0; i <= 4; i++) {
-					hackTotals[i] = (float)Math.Round(hackTotals[i] * 0.9f, 3);
-					Debug.LogFormat("[Cheat Checkout #{0}]: Discount on hack {1}! New price: {2}", modID, i + 1, hackTotals[i]);
-				}
-				break;
-			case "Saturday":
-				for (int i = 0; i <= 4; i++) {
-					string[] website = generatedWebsites[i].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-					if (website[2].Equals("ST"))
-					{
-						hackTotals[i] = (float)Math.Round(hackTotals[i] * 0.8f, 3);
-						Debug.LogFormat("[Cheat Checkout #{0}]: Discount on hack {1}! New price: {2}", modID, i + 1, hackTotals[i]);
+						Debug.LogFormat("[Cheat Checkout #{0}]: Module was patched on a Hacker Shield status of {1} and was incorrect. Pressed on {2} but expected {3}.", _modID, _staticShieldStatus, last, digit);
+						GetComponent<KMBombModule>().HandleStrike();
+						break;
 					}
 				}
 				break;
 			default:
-				Debug.LogFormat("[Cheat Checkout #{0}]: Unable to generate discounts.", modID);
 				break;
 		}
 	}
 
-	float GetPrice(string s) {
-		switch (s) {
-			case "0.001":
-				return 0.001f;
-			case "0.01":
-				return 0.01f;
-			case "0.1":
-				return 0.1f;
-			case "1":
-				return 1f;
-			case "10":
-				return 10f;
-			case "100":
-				return 100f;
-			case "0.005":
-				return 0.005f;
-			case "0.05":
-				return 0.05f;
-			case "0.5":
-				return 0.5f;
-			case "5":
-				return 5f;
-			case "50":
-				return 50f;
-			case "500":
-				return 500f;
-			default:
-				break;
-		}
-		return 0;
-	}
-
-	IEnumerator UpdateFeatures() {
-		if (starting) {
-			starting = false;
-			yield return new WaitForSeconds(25f);
-		}
-		while (!modSolved && !countdownStarted) {
-			int chance = rand.Range(1, 11);
-			int random = rand.Range(0, 10);
-			bool setting = random.EqualsAny(0, 2, 4, 6, 8) ? true : false; // True: Wifi, False: Shield
-			while (tpActive) { yield return new WaitForSeconds(1f); }
-			if (chance == 1) {
-				if (setting) {
-					if (wifiStatus != 0) {
-						wifiSprites[wifiStatus].enabled = false;
-						wifiSprites[wifiStatus - 1].enabled = true;
-						wifiStatus--;
-					}
-					if (wifiStatus == 0) {
-						wifiSprites[1].enabled = false;
-						wifiSprites[0].enabled = true;
-					}
-				} else {
-					if (shieldStatus != 0) {
-						shieldSprites[shieldStatus].enabled = false;
-						shieldSprites[shieldStatus - 1].enabled = true;
-						shieldStatus--;
-					} 
-					if (shieldStatus == 1 && !shieldGlitch) {
-						shieldGlitch = true;
-						StartCoroutine(ShieldGlitchButtons());
-					} 
-					if (shieldStatus == 0 && !countdownStarted) {
-						countdownStarted = true;
-						shieldSprites[1].enabled = false;
-						shieldSprites[0].enabled = true;
-						StartCoroutine(Countdown());
-						yield break;
-					}
-				}
-			}
-			yield return new WaitForSeconds(10f);
-		}
-	}
-
-	IEnumerator ShieldGlitchButtons() {
-		int[] xIndicies = new int[10];
-		int[] yIndicies = new int[10];
-		yield return new WaitForSeconds(2f);
-		while (!modSolved && !countdownStarted) {
-			int chance = rand.Range(1, 26);
-			if (chance == 1 && !hackedState && !countdownStarted) {
-				hackedState = true;
-				for (int i = 0; i <= 9; i++)
-				{
-					int x = rand.Range(0, 15);
-					int y = rand.Range(0, 15);
-					while (x == y)
-					{
-						y = rand.Range(0, 15);
-					}
-					TextMesh xTM = priceTexts[0];
-					TextMesh yTM = priceTexts[0];
-					switch (x)
-					{
-						case 0:
-						case 1:
-						case 2:
-						case 3:
-						case 4:
-						case 5:
-						case 6:
-						case 7:
-						case 8:
-						case 9:
-						case 10:
-						case 11:
-							xTM = priceTexts[x];
-							break;
-						case 12:
-						case 13:
-						case 14:
-							xTM = actionTexts[x - 12];
-							break;
-					}
-					switch (y)
-					{
-						case 0:
-						case 1:
-						case 2:
-						case 3:
-						case 4:
-						case 5:
-						case 6:
-						case 7:
-						case 8:
-						case 9:
-						case 10:
-						case 11:
-							yTM = priceTexts[y];
-							break;
-						case 12:
-						case 13:
-						case 14:
-							yTM = actionTexts[y - 12];
-							break;
-					}
-					xTM.text = GlitchInfo("!!!!", 5);
-					yTM.text = GlitchInfo("!!!!", 5);
-					xIndicies[i] = x;
-					yIndicies[i] = y;
-				}
-				yield return new WaitForSeconds(5f);
-				SetOriginalTexts();
-				hackedState = false;
-			}
-			yield return new WaitForSeconds(rand.Range(5f, 15f));
-			if (!shieldGlitch) {
-				yield break;
-			}
-		}
-		yield break;
-	}
-
-	IEnumerator ShowHackInformation() {
-		string[] information = hackInformation[hackModuleIndex].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-		switch (information[1]) {
-			// 64
-			case "DSA":
-				//hackInformation[index] = String.Concat(website[0]+":DSA:"+pcType+":"+amount+":"+duration+":"+aResult);
-				isShowing = true;
-				yield return new WaitForSeconds(0.5f);
-
-				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = "Initiated on: " + information[0];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = "Method: " + information[1];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = "PC-Type: " + information[2];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = "PCs Used: " + information[3];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = "Duration: " + information[4] + " Hours";
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = information[5].EqualsAny("Crashed Temporarily", "Crashed Permanently") ? 32 : 36;
-				hackLCDDisplay.text = "Result: " + (information[5].EqualsAny("Crashed Temporarily", "Crashed Permanently") ? information[5] : String.Format(information[5], information[6]));
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 64;
-				hackLCDDisplay.text = "Hack #" + (hackModuleIndex + 1);
-				isShowing = false;
-				break;
-			case "W":
-				// hackInformation[index] = String.Concat(website[0] + ":W:" + pcType + ":" + wormType + ":" + amount + ":" + aResult);
-				isShowing = true;
-				yield return new WaitForSeconds(0.5f);
-
-				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = "Initiated on: " + information[0];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = "Method: " + information[1];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = "PC-Type: " + information[2];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = "Worm: " + information[3];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = "Infected PCs: " + information[4];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 36;
-				hackLCDDisplay.text = "Result: " + (information[5].Equals("Success!") ? "Success!" : String.Format(information[5], information[6]));
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 64;
-				hackLCDDisplay.text = "Hack #" + (hackModuleIndex + 1);
-				isShowing = false;
-				break;
-			case "CI":
-				// hackInformation[index] = String.Concat(website[0] + ":CI:" + vulnerabilityType + ":" + complexityType + ":" + amount + ":" + aResult);
-				isShowing = true;
-				yield return new WaitForSeconds(0.5f);
-
-				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = "Initiated on: " + information[0];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = "Method: " + information[1];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = "Vulnerability: " + information[2];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = "Complexity: " + information[3];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = "Batches: " + information[4];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = information[5].EqualsAny("Crashed Permanently", "Infiltrated") ? 32 : 36;
-				hackLCDDisplay.text = "Result: " + (information[5].EqualsAny("Crashed Permanently", "Infiltrated") ? information[5] : String.Format(information[5], information[6]));
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 64;
-				hackLCDDisplay.text = "Hack #" + (hackModuleIndex + 1);
-				isShowing = false;
-				break;
-			case "XSS":
-				// hackInformation[index] = String.Concat(website[0] + ":CSS:" + complexityType + ":" + hackType + ":" + amount + ":" + aResult);
-				isShowing = true;
-				yield return new WaitForSeconds(0.5f);
-
-				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = "Initiated on: " + information[0];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = "Method: " + information[1];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = "Complexity: " + information[2];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = "Hack Type: " + information[3];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = "Programs: " + information[4];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 36;
-				hackLCDDisplay.text = "Result: " + (information[5].Equals("Success!") ? "Success!" : String.Format(information[5], information[6]));
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 64;
-				hackLCDDisplay.text = "Hack #" + (hackModuleIndex + 1);
-				isShowing = false;
-				break;
-			case "BFA":
-				// hackInformation[index] = String.Concat(website[0] + ":BFA:" + attackType + ":" + amount + ":" + aResult);
-				isShowing = true;
-				yield return new WaitForSeconds(0.5f);
-				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = "Initiated on: " + information[0];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = "Method: " + information[1];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 36;
-				hackLCDDisplay.text = "Attack Type: " + information[2];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = "Attempts: " + information[3];
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = information[4].EqualsAny("Crashed Permanently", "Infiltrated") ? 32 : 36;
-				hackLCDDisplay.text = "Result: " + (information[4].EqualsAny("Crashed Permanently", "Infiltrated") ? information[4] : String.Format(information[4], information[5]));
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 64;
-				hackLCDDisplay.text = "Hack #" + (hackModuleIndex + 1);
-				isShowing = false;
-				break;
-			default:
-				Debug.LogFormat("[Cheat Checkout #{0}]: Unable to generate text.", modID);
-				break;
-		}
-		yield break;
-	}
-
-	IEnumerator GlitchedHackInformation() {
-		string[] information = hackInformation[hackModuleIndex].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-		switch (information[1])
+	bool BeingGlitched(KMSelectable potent)
+	{
+		List<KMSelectable> _kms = new List<KMSelectable>();
+		if (potent.name.ToLower().EqualsAny("hack lcd", "left", "right", "patch")) return false;
+		foreach (KMSelectable km in _priceButtons)
 		{
-			// 64
+			_kms.Add(km);
+		}
+		foreach (KMSelectable km in _actionButtons)
+		{
+			if (km.name.ToLower().EqualsAny("hack lcd", "left", "right", "patch")) return false;
+			_kms.Add(km);
+		}
+		if (_currentGlitched[Array.IndexOf(_kms.ToArray(), potent)]) return true;
+		return false;
+	}
+
+	void GenerateHackInformation()
+	{
+
+		_chosenCryptocurrency = rnd.Range(0, _possibleCryptos.Length);
+		_cryptoSymbols[_chosenCryptocurrency].enabled = true;
+		Debug.LogFormat("[Cheat Checkout #{0}]: The chosen cryptocurrency for this module is: {1} which is {2}/1 {1}.", _modID, _possibleCryptos[_chosenCryptocurrency], _cryptoPrices[_chosenCryptocurrency]);
+		Debug.LogFormat("[Cheat Checkout #{0}]: The day of the week that this module has started on is: {1}.", _modID, _dow.ToString());
+
+		for (int loop = 0; loop <= 4; loop++)
+		{
+			int index = rnd.Range(0, _possibleHacks.Length);
+			string hack = _possibleHacks[index];
+			_chosenHackNames.Add(hack);
+
+			float result = 0;
+
+			object[] hinfo = HackInformation(hack);
+			string[] website = _possibleWebsites[rnd.Range(0, _possibleWebsites.Length)].Split(':');
+			_chosenWebsites.Add(website.Join(":"));
+			int SL = int.Parse(website[1]);
+			foreach (object s in hinfo)
+			{
+				switch (hack)
+				{
+					case "DSA":
+						result = (float)Math.Round(
+							float.Parse(hinfo[0].ToString())
+							* int.Parse(hinfo[1].ToString())
+							* (SL / 5.0f)
+							* float.Parse(hinfo[2].ToString()), 3)
+							* float.Parse(hinfo[3].ToString());
+						break;
+					case "W":
+						result = (float)Math.Round(
+							float.Parse(hinfo[0].ToString())
+							* int.Parse(hinfo[2].ToString())
+							* (SL / 10.0f)
+							* float.Parse(hinfo[1].ToString()), 3)
+							* float.Parse(hinfo[3].ToString());
+						break;
+					case "CI":
+						result = (float)Math.Round(
+							float.Parse(hinfo[0].ToString())
+							* float.Parse(hinfo[1].ToString())
+							* (SL / 20.0f)
+							* int.Parse(hinfo[2].ToString()), 3)
+							* float.Parse(hinfo[3].ToString());
+						break;
+					case "XSS":
+						result = (float)Math.Round(
+							float.Parse(hinfo[0].ToString())
+							* float.Parse(hinfo[1].ToString())
+							* (SL / 8.0f)
+							* (float.Parse(hinfo[2].ToString()) / 2.0f), 3)
+							* float.Parse(hinfo[3].ToString());
+						break;
+					case "BFA":
+						result = (float)Math.Round(
+							float.Parse(hinfo[0].ToString())
+							* int.Parse(hinfo[1].ToString())
+							* SL, 3)
+							* float.Parse(hinfo[2].ToString());
+						break;
+					default:
+						break;
+				}
+
+			}
+			List<object> temp = hinfo.ToList();
+			temp.Add(Math.Round(result, 3));
+			temp.Add(Math.Round(result * DayPercentage(website), 3));
+			temp.Add(Math.Round(result * DayPercentage(website) / _cryptoPrices[_chosenCryptocurrency], 3));
+			_hackInformation.Add(temp.ToArray());
+			_totalAmount += (float)Math.Round(result * DayPercentage(website) / _cryptoPrices[_chosenCryptocurrency], 3);
+		}
+
+		_totalAmount = (float)Math.Round(_totalAmount, 3);
+
+		for (int i = 0; i <= 4; i++)
+		{
+			Debug.LogFormat("[Cheat Checkout #{0}]: Hack information of Hack #{1} ({2}) is: {3}", _modID, (i + 1), _chosenHackNames[i], ParseHackLogging(_hackInformation[i], _chosenHackNames[i], _chosenWebsites[i].Split(':')[0]));
+		}
+		Debug.LogFormat("[Cheat Checkout #{0}]: Total amount for all hacks is: {1}.", _modID, _totalAmount);
+	}
+
+	void GenerateCustomerPrice()
+	{
+		float paid = 0f;
+		if (_customerSlaps == 0)
+		{
+			paid = (float)Math.Round(rnd.Range((float)Math.Round(_totalAmount - (_totalAmount * 0.25), 3), (float)Math.Round(_totalAmount + (_totalAmount * 0.25), 3)), 3);
+			_customerGave = paid < _totalAmount ? -1f : paid;
+			_staticCustomerGave = paid;
+			_displayTexts[0].text = paid.ToString();
+			Debug.Log(_customerGave == -1f ? String.Format("[Cheat Checkout #{0}]: The customer doesn't have enough to pay for the hacks. Requesting a slap.", _modID) : String.Format("[Cheat Checkout #{0}]: The customer is paying {1} which is enough to give {2} back as change.", _modID, _customerGave, Math.Round(_customerGave - _totalAmount, 3)));
+			return;
+		}
+		paid = (float)Math.Round(rnd.Range((float)Math.Round(_staticCustomerGave - (_staticCustomerGave * 0.05), 3), (float)Math.Round(_staticCustomerGave + (_staticCustomerGave * 0.5), 3)), 3);
+		_customerGave = paid < _totalAmount ? -1f : paid;
+		_staticCustomerGave = paid;
+		_displayTexts[0].text = paid.ToString();
+		Debug.Log(_customerGave == -1f ? String.Format("[Cheat Checkout #{0}]: After {1} slaps, the customer still doesn't have enough to pay for the hacks. Requesting another slap.", _modID, _customerSlaps) : String.Format("[Cheat Checkout #{0}]: After {1} slaps, the customer now has {2} which is enough to give {3} back as change.", _modID, _customerSlaps, _customerGave, Math.Round(_customerGave - _totalAmount, 3)));
+	}
+
+	string ParseHackLogging(object[] i, string hackName, string website)
+	{
+		switch (hackName)
+		{
 			case "DSA":
-				//hackInformation[index] = String.Concat(website[0]+":DSA:"+pcType+":"+amount+":"+duration+":"+aResult);
-				isShowing = true;
-				yield return new WaitForSeconds(0.5f);
-
-				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = GlitchInfo("Initiated on: " + information[0], 6);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Method: " + information[1], 4);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("PC-Type: " + information[2], 8);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("PCs Used: " + information[3], 8);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Duration: " + information[4] + " Hours", 12);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = information[5].EqualsAny("Crashed Temporarily", "Crashed Permanently") ? 32 : 36;
-				hackLCDDisplay.text = GlitchInfo("Result: " + (information[5].EqualsAny("Crashed Temporarily", "Crashed Permanently") ? information[5] : String.Format(information[5], information[6])), 12);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 64;
-				hackLCDDisplay.text = "Hack #" + (hackModuleIndex + 1);
-				isShowing = false;
-				break;
+				return String.Format("Website: {0}, Base Value: {1}, Amount of PCs: {2}, Hack Duration: {3}, Success/Failed Price Multiplier: {4}, Total Amount before DOTW & Crypto Divide: {5}, Total Amount After DOTW {6}, Total After Crypto Divide and Rounding: {7}.", website, i[0], i[1], i[2], i[3], i[4], i[5], i[6]);
 			case "W":
-				// hackInformation[index] = String.Concat(website[0] + ":W:" + pcType + ":" + wormType + ":" + amount + ":" + aResult);
-				isShowing = true;
-				yield return new WaitForSeconds(0.5f);
-
-				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = GlitchInfo("Initiated on: " + information[0], 6);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Method: " + information[1], 4);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("PC-Type: " + information[2], 8);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Worm: " + information[3], 6);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Infected PCs: " + information[4], 6);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 36;
-				hackLCDDisplay.text = GlitchInfo("Result: " + (information[5].Equals("Success!") ? "Success!" : String.Format(information[5], information[6])), 6);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 64;
-				hackLCDDisplay.text = "Hack #" + (hackModuleIndex + 1);
-				isShowing = false;
-				break;
+				return String.Format("Website: {0}, Base Value: {1}, Amount of Infected PCs: {2}, Multiplier: {3}, Success/Failed Price Multiplier: {4}, Total Amount before DOTW & Crypto Divide: {5}, Total Amount After DOTW {6}, Total After Crypto Divide and Rounding: {7}.", website, i[0], i[2], i[1], i[3], i[4], i[5], i[6]);
 			case "CI":
-				// hackInformation[index] = String.Concat(website[0] + ":CI:" + vulnerabilityType + ":" + complexityType + ":" + amount + ":" + aResult);
-				isShowing = true;
-				yield return new WaitForSeconds(0.5f);
-
-				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = GlitchInfo("Initiated on: " + information[0], 6);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Method: " + information[1], 4);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Vulnerability: " + information[2], 11);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Complexity: " + information[3], 11);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Batches: " + information[4], 5);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = information[5].EqualsAny("Crashed Permanently", "Infiltrated") ? 32 : 36;
-				hackLCDDisplay.text = GlitchInfo("Result: " + (information[5].EqualsAny("Crashed Permanently", "Infiltrated") ? information[5] : String.Format(information[5], information[6])), 12);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 64;
-				hackLCDDisplay.text = "Hack #" + (hackModuleIndex + 1);
-				isShowing = false;
-				break;
+				return String.Format("Website: {0}, Base Value: {1}, Complexity Multiplier: {2}, Batches: {3}, Success/Failed Price Multiplier: {4}, Total Amount before DOTW & Crypto Divide: {5}, Total Amount After DOTW {6}, Total After Crypto Divide and Rounding: {7}.", website, i[0], i[1], i[2], i[3], i[4], i[5], i[6]);
 			case "XSS":
-				// hackInformation[index] = String.Concat(website[0] + ":CSS:" + complexityType + ":" + hackType + ":" + amount + ":" + aResult);
-				isShowing = true;
-				yield return new WaitForSeconds(0.5f);
-
-				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = GlitchInfo("Initiated on: " + information[0], 6);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Method: " + information[1], 4);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = GlitchInfo("Complexity: " + information[2], 6);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = GlitchInfo("Hack Type: " + information[3], 6);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Programs: " + information[4], 5);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 36;
-				hackLCDDisplay.text = GlitchInfo("Result: " + (information[5].Equals("Success!") ? "Success!" : String.Format(information[5], information[6])), 6);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 64;
-				hackLCDDisplay.text = "Hack #" + (hackModuleIndex + 1);
-				isShowing = false;
-				break;
+				return String.Format("Website: {0}, Base Value: {1}, Hack Multiplier: {2}, Programs: {3}, Success/Failed Price Multiplier: {4}, Total Amount before DOTW & Crypto Divide: {5}, Total Amount After DOTW {6}, Total After Crypto Divide and Rounding: {7}.", website, i[0], i[1], i[2], i[3], i[4], i[5], i[6]);
 			case "BFA":
-				// hackInformation[index] = String.Concat(website[0] + ":BFA:" + attackType + ":" + amount + ":" + aResult);
-				isShowing = true;
-				yield return new WaitForSeconds(0.5f);
-				hackLCDDisplay.fontSize = 32;
-				hackLCDDisplay.text = GlitchInfo("Initiated on: " + information[0], 6);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Method: " + information[1], 4);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 36;
-				hackLCDDisplay.text = GlitchInfo("Attack Type: " + information[2], 7);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 48;
-				hackLCDDisplay.text = GlitchInfo("Attempts: " + information[3], 4);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = information[4].EqualsAny("Crashed Permanently", "Infiltrated") ? 32 : 36;
-				hackLCDDisplay.text = GlitchInfo("Result: " + (information[4].EqualsAny("Crashed Permanently", "Infiltrated") ? information[4] : String.Format(information[4], information[5])), 12);
-				yield return new WaitForSeconds(2f);
-
-				hackLCDDisplay.fontSize = 64;
-				hackLCDDisplay.text = "Hack #" + (hackModuleIndex + 1);
-				isShowing = false;
-				break;
+				return String.Format("Website: {0}, Base Value: {1}, Attempts: {2}, Success/Failed Price Multiplier: {3}, Total Amount before DOTW & Crypto Divide: {4}, Total Amount After DOTW {5}, Total After Crypto Divide and Rounding: {6}.", website, i[0], i[1], i[2], i[3], i[4], i[5]);
 			default:
-				Debug.LogFormat("[Cheat Checkout #{0}]: Unable to generate text.", modID);
-				break;
+				return null;
 		}
-		yield break;
 	}
 
-	IEnumerator Countdown() {
-		StopCoroutine(ShieldGlitchButtons());
-		countdownStarted = true;
-		foreach (TextMesh tm in priceTexts) {
-			tm.text = "!!!!";
+	List<string> ParseDisplayHackInfo(int index)
+	{
+		if (!Helper.WithinRange(index, 0, 4)) { return null; }
+		object[] hackInfo = _hackInformation[index];
+		List<string> displayInfo = new List<string>() { "Website: " + _chosenWebsites[index].Split(':')[0], "Hack Method: " + _chosenHackNames[index] };
+		switch (_chosenHackNames[index])
+		{
+			case "DSA":
+				displayInfo.Add("PC Type: " + new string[] { "Basic", "Advanced", "Supercomp.", "Quantum" }[Array.IndexOf(new float[] { 0.8f, 1.2f, 1.6f, 2f }, float.Parse(hackInfo[0].ToString()))]);
+				displayInfo.Add("PCs Used: " + int.Parse(hackInfo[1].ToString()));
+				displayInfo.Add("Duration: " + float.Parse(hackInfo[2].ToString()));
+				displayInfo.Add(float.Parse(hackInfo[3].ToString()).EqualsAny(1f, 1.25f)
+					? float.Parse(hackInfo[3].ToString()) == 1f ? "Success: Crashed Temp." : "Success: Crashed Perm."
+					: "Failed: " + float.Parse(hackInfo[3].ToString())
+					);
+				return displayInfo;
+			case "W":
+				displayInfo.Add("PC Type: " + new string[] { "Defective", "Basic", "Advanced", "Supercomp.", "Quantum" }[Array.IndexOf(new float[] { 0.5f, 0.9f, 1.3f, 1.75f, 2.1f }, float.Parse(hackInfo[0].ToString()))]);
+				displayInfo.Add("Worm Type: " + new string[] { "Normal", "Lethal", "Spreader" }[Array.IndexOf(new float[] { 1f, 2f, 0.5f }, float.Parse(hackInfo[1].ToString()))]);
+				displayInfo.Add("Infected PCs: " + int.Parse(hackInfo[2].ToString()));
+				displayInfo.Add(float.Parse(hackInfo[3].ToString()) == 1f
+					? "Successful"
+					: "Failed: " + float.Parse(hackInfo[3].ToString())
+					);
+				return displayInfo;
+			case "CI":
+				displayInfo.Add("Vulner. Type: " + new string[] { "SQL:", "LDAP", "XPath", "NoSQL" }[Array.IndexOf(new float[] { 0.9f, 1.8f, 1.25f, 2.2f }, float.Parse(hackInfo[0].ToString()))]);
+				displayInfo.Add("Complex. Type: " + new string[] { "Simple", "Advanced", "Complex" }[Array.IndexOf(new float[] { 1f, 1.2f, 1.5f }, float.Parse(hackInfo[1].ToString()))]);
+				displayInfo.Add("Batches: " + int.Parse(hackInfo[2].ToString()));
+				displayInfo.Add(float.Parse(hackInfo[3].ToString()).EqualsAny(1.25f, 1.5f)
+					? float.Parse(hackInfo[3].ToString()) == 1.25f ? "Success: Crashed Perm." : "Success: Host Inflitrated"
+					: "Failed: " + float.Parse(hackInfo[3].ToString())
+					);
+				return displayInfo;
+			case "XSS":
+				displayInfo.Add("Complex. Type: " + new string[] { "Ex. Basic", "Basic", "Advanced", "Complex", "Unintell." }[Array.IndexOf(new float[] { 0.5f, 1f, 1.5f, 2f, 2.5f }, float.Parse(hackInfo[0].ToString()))]);
+				displayInfo.Add("Hack Type: " + new string[] { "Non-Persist.", "Persist.", "Mutated XSS" }[Array.IndexOf(new float[] { 1f, 1.25f, 1.5f }, float.Parse(hackInfo[1].ToString()))]);
+				displayInfo.Add("Programs: " + int.Parse(hackInfo[2].ToString()));
+				displayInfo.Add(float.Parse(hackInfo[3].ToString()) == 1f
+					? "Successful"
+					: "Failed: " + float.Parse(hackInfo[3].ToString())
+					);
+				return displayInfo;
+			case "BFA":
+				displayInfo.Add("Att. Type: " + new string[] { "Str. Inject", "Sneak", "Duplication" }[Array.IndexOf(new float[] { 2.2f, 1.6f, 1.9f }, float.Parse(hackInfo[0].ToString()))]);
+				displayInfo.Add("Attempts: " + int.Parse(hackInfo[1].ToString()));
+				displayInfo.Add(float.Parse(hackInfo[3].ToString()).EqualsAny(1.2f, 1.4f)
+					? float.Parse(hackInfo[3].ToString()) == 1.2f ? "Success: Crashed Perm." : "Success: Host Inflitrated"
+					: "Failed: " + float.Parse(hackInfo[3].ToString())
+					);
+				return displayInfo;
+			default:
+				return null;
 		}
-		foreach (TextMesh tm in actionTexts) {
-			if (tm.name.Equals("Patch_TX")) { break; }
-			tm.text = "!!!!";
-		}
-		yield return new WaitForSeconds(30f);
-		if (!countdownStarted) { yield break; }
-		RestartModule();
-		yield break;
 	}
 
-	void RestartModule() {
-		resets++;
-		UpdateVars();
+	object[] HackInformation(string hack)
+	{
+		List<object> list = new List<object>();
+		switch (hack)
+		{
+			case "DSA":
+				float DSAPCPrice = new float[] { 0.8f, 1.2f, 1.6f, 2.0f }[rnd.Range(0, 4)];
+				int DSAPCAmount = rnd.Range(5, 21);
+				float DSADuration = (float)Math.Round(rnd.Range(1.0f, 3.0f), 3);
+				float DSASuccess = rnd.Range(0, 2) == 0 ? 1f : 1.25f;
+				float DSAFailedPercent = (float)Math.Round(rnd.Range(1.0f, 100.0f)) / 100;
+				bool DSAFailed = rnd.Range(0, 2) == 0 ? false : true;
+				if (DSAFailed)
+				{
+					list.Add(DSAPCPrice);
+					list.Add(DSAPCAmount);
+					list.Add(DSADuration);
+					list.Add(DSAFailedPercent);
+				}
+				else
+				{
+					list.Add(DSAPCPrice);
+					list.Add(DSAPCAmount);
+					list.Add(DSADuration);
+					list.Add(DSASuccess);
+				}
+				return list.ToArray();
+			case "W":
+				float WPCPrice = new float[] { 0.5f, 0.9f, 1.3f, 1.75f, 2.1f }[rnd.Range(0, 5)];
+				float WType = new float[] { 1f, 2f, 0.5f }[rnd.Range(0, 3)];
+				int WInfected = rnd.Range(5, 21);
+				int WSuccess = 1;
+				float WFailedPercent = (float)Math.Round(rnd.Range(1.0f, 100.0f)) / 100;
+				bool WFailed = rnd.Range(0, 2) == 0 ? false : true;
+				if (WFailed)
+				{
+					list.Add(WPCPrice);
+					list.Add(WType);
+					list.Add(WInfected);
+					list.Add(WFailedPercent);
+
+				}
+				else
+				{
+					list.Add(WPCPrice);
+					list.Add(WType);
+					list.Add(WInfected);
+					list.Add(WSuccess);
+				}
+				return list.ToArray();
+			case "CI":
+				float CIVulType = new float[] { 0.9f, 1.8f, 1.25f, 2.2f }[rnd.Range(0, 4)];
+				float CIComType = new float[] { 1f, 1.2f, 1.5f }[rnd.Range(0, 3)];
+				int CIBatches = rnd.Range(5, 21);
+				float CISuccess = rnd.Range(0, 2) == 0 ? 1.25f : 1.5f;
+				float CIFailedPercent = (float)Math.Round(rnd.Range(1.0f, 100.0f)) / 100;
+				bool CIFailed = rnd.Range(0, 2) == 0 ? false : true;
+				if (CIFailed)
+				{
+					list.Add(CIVulType);
+					list.Add(CIComType);
+					list.Add(CIBatches);
+					list.Add(CIFailedPercent);
+				}
+				else
+				{
+					list.Add(CIVulType);
+					list.Add(CIComType);
+					list.Add(CIBatches);
+					list.Add(CISuccess);
+				}
+				return list.ToArray();
+			case "XSS":
+				float XSSComType = new float[] { 0.5f, 1f, 1.5f, 2f, 2.5f }[rnd.Range(0, 5)];
+				float XSSHackType = new float[] { 1f, 1.25f, 1.5f }[rnd.Range(0, 3)];
+				int XSSPrograms = rnd.Range(5, 21);
+				int XSSSuccess = 1;
+				float XSSFailedPercent = (float)Math.Round(rnd.Range(1.0f, 100.0f)) / 100;
+				bool XSSFailed = rnd.Range(0, 2) == 0 ? false : true;
+				if (XSSFailed)
+				{
+					list.Add(XSSComType);
+					list.Add(XSSHackType);
+					list.Add(XSSPrograms);
+					list.Add(XSSFailedPercent);
+
+				}
+				else
+				{
+					list.Add(XSSComType);
+					list.Add(XSSHackType);
+					list.Add(XSSPrograms);
+					list.Add(XSSSuccess);
+				}
+				return list.ToArray();
+			case "BFA":
+				float BFAAttType = new float[] { 2.2f, 1.6f, 1.9f }[rnd.Range(0, 3)];
+				int BFAAttempts = rnd.Range(5, 21);
+				float BFASuccess = rnd.Range(0, 1) == 0 ? 1.2f : 1.4f;
+				float BFAFailedPercent = (float)Math.Round(rnd.Range(1.0f, 100.0f)) / 100;
+				bool BFAFailed = rnd.Range(0, 2) == 0 ? false : true;
+				if (BFAFailed)
+				{
+					list.Add(BFAAttType);
+					list.Add(BFAAttempts);
+					list.Add(BFAFailedPercent);
+				}
+				else
+				{
+					list.Add(BFAAttType);
+					list.Add(BFAAttempts);
+					list.Add(BFASuccess);
+				}
+				return list.ToArray();
+			default:
+				return null;
+		}
+	}
+
+	float DayPercentage(string[] website)
+	{
+		switch (_dow.ToString())
+		{
+			case "Sunday":
+				if (website[2] == "SE") return 0.8f;
+				return 1.0f;
+			case "Monday":
+				return 1.1f;
+			case "Tuesday":
+				if (website[2] == "GA") return 0.8f;
+				return 1.0f;
+			case "Wednesday":
+				if (website[2] == "IN") return 0.8f;
+				return 1.0f;
+			case "Thursday":
+				if (website[2] == "SM") return 0.8f;
+				return 1.0f;
+			case "Friday":
+				return 0.9f;
+			case "Saturday":
+				if (website[2] == "ST") return 0.8f;
+				return 1.0f;
+			default:
+				return 1.0f;
+		}
+	}
+
+	char[] GetCharactersVIAString(int amount, string s)
+	{
+		List<char> list = new List<char>();
+		for (int i = 0; i < amount; i++)
+		{
+			int rand = rnd.Range(0, s.Length);
+			while (list.Contains(s[rand]))
+			{
+				rand = rnd.Range(0, s.Length);
+			}
+			list.Add(s[rand]);
+		}
+		return list.ToArray();
+	}
+
+	void ResetButtonTexts()
+	{
+		foreach (TextMesh tm in _buttonTexts)
+		{
+			if (tm.name.ToLower().EqualsAny("left_tx", "right_tx")) { tm.color = _originalColor; continue; }
+			tm.text = tm.name;
+			tm.color = _originalColor;
+		}
+		_displayTexts[0].text = _staticCustomerGave.ToString();
+		_displayTexts[0].color = _originalColor;
+		if (_wifiStatus != 0)
+		{
+			_displayTexts[1].text = "Hack #" + (_hackIndex + 1);
+			_displayTexts[1].color = _originalColor;
+		}
+		return;
+	}
+
+	void StartDisplayBlock()
+	{
+		_blockDisplay = true;
+		Debug.LogFormat("[Cheat Checkout #{0}]: Blocking display because of low wifi connection.", _modID);
+		StopAllCoroutines();
+		_displayTexts[1].color = new Color32(117, 4, 15, 255);
+		StartCoroutine(GlitchDisplay());
+		StartCoroutine(ModuleTimer());
+	}
+
+	void StartHackSequence()
+	{
+		_beingHacked = true;
+		Debug.LogFormat("[Cheat Checkout #{0}]: Hacking sequence started, text will now gl-{1} ERROR 404", _modID, GetCharactersVIAString(12, "abcdefghijklmnopqrstuvwxyz1234567890_+!@#$%^&*(),/.';][<?>:{}|").Join(""));
+		StopAllCoroutines();
+		_displayTexts[0].text = "PAY ATTENTION";
+		_displayTexts[1].text = "TO ME";
+		_cryptoSymbols[_chosenCryptocurrency].enabled = false;
+		foreach (TextMesh tm in _displayTexts)
+		{
+			tm.color = new Color32(117, 4, 15, 255);
+		}
+		foreach (TextMesh tm in _buttonTexts)
+		{
+			tm.color = new Color32(117, 4, 15, 255);
+		}
+		StartCoroutine(GlitchAllTexts());
+		StartCoroutine(WarningSound());
+		StartCoroutine(ThyHackTimer());
+	}
+
+	void ThyBecomeHacked()
+	{
+		if (_timerStopPlz)
+		{
+			ResetButtonTexts();
+			StopAllCoroutines();
+			StartCoroutine(ModuleTimer());
+			_cryptoSymbols[_chosenCryptocurrency].enabled = true;
+			return;
+		}
+		StopAllCoroutines();
+		ResetButtonTexts();
+		_displayTexts[0].text = _customerGave.ToString();
+		_displayTexts[1].text = "Hack #" + (_hackIndex + 1);
+		_shieldSymbols[0].enabled = false;
+		_shieldSymbols[1].enabled = false;
+		_shieldSymbols[2].enabled = true;
+		_wifiSymbols[0].enabled = false;
+		_wifiSymbols[1].enabled = false;
+		_wifiSymbols[2].enabled = true;
+		_cryptoSymbols[_chosenCryptocurrency].enabled = false;
+		ModuleResetVars();
 		GetComponent<KMBombModule>().HandleStrike();
-		Debug.LogFormat("[Cheat Checkout #{0}]: A strike has been issued as well the module has been reset because it has been hacked!", modID);
-		GenerateModule();
-		SetOriginalTexts();
+		Debug.LogFormat("[Cheat Checkout #{0}]: Module was successfully hacked and data has been deleted. Restarting module...", _modID);
+		Start();
 	}
 
-	string GlitchInfo(string s, int amount) {
-		char[] array = s.ToCharArray();
-		for (int i = 0; i <= amount; i++) {
-			char[] characters = new char[] { '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', ' ' };
-			char randomCharacter = characters[rand.Range(0, 11)];
-			array[rand.Range(0, array.Length)] = randomCharacter;
-		}
-		return combineCharArray(array);
+	void ModuleResetVars()
+	{
+		_totalAmount = 0f;
+		_givenChange = -1f;
+		_customerGave = 0f;
+		_staticCustomerGave = 0f;
+		_customerSlaps = 0;
+		_hackCycle = -1;
+		_hackIndex = 0;
+		_wifiStatus = 2;
+		_shieldStatus = 2;
+		_staticWifiStatus = -1;
+		_staticShieldStatus = -1;
+		_hackInformation.Clear();
+		_chosenHackNames.Clear();
+		_chosenWebsites.Clear();
+		_beingHacked = false;
+		_blockDisplay = false;
+		_timerStopPlz = false;
+		_starting = true;
+		_glitchedButtons = false;
+		_glitchStopped = false;
+		_LCDGlitch = false;
 	}
 
-	string combineCharArray(char[] array) {
-		string s = "";
-		for (int i = 0; i <= array.Length - 1; i++) {
-			s += array[i];
-		}
+	void GlitchText(TextMesh tm)
+	{
+
+		if (tm.name.ToLower().EqualsAny("patch", "left_tx", "right_tx")) return;
+		char[] chars = GetCharactersVIAString(4, "abcdefghijklmnopqrstuvwxyz1234567890_+!@#$%^&*(),/.';][<?>:{}|");
+		tm.text = chars.Join("");
+	}
+
+	string GlitchText(string s)
+	{
+		char[] chars = GetCharactersVIAString(4, "abcdefghijklmnopqrstuvwxyz1234567890_+!@#$%^&*(),/.';][<?>:{}|");
+		s = chars.Join("");
 		return s;
 	}
 
-	void SetOriginalTexts() {
+	void ModuleAction()
+	{
+		// 0 for wifi, 1 for shield
+		int arnd = rnd.Range(0, 2);
+		switch (arnd)
+		{
+			case 0:
+				if (_wifiStatus == 0) break;
+				_wifiSymbols[_wifiStatus].enabled = false;
+				_wifiStatus--;
+				_wifiSymbols[_wifiStatus].enabled = true;
+				if (_wifiStatus == 1)
+				{
+					_LCDGlitch = true;
+					break;
+				}
+				else
+				if (_wifiStatus == 0)
+				{
+					StartDisplayBlock();
+					break;
+				}
+				break;
+			case 1:
+				if (_shieldStatus == 0) break;
+				_shieldSymbols[_shieldStatus].enabled = false;
+				_shieldStatus--;
+				_shieldSymbols[_shieldStatus].enabled = true;
+				if (_shieldStatus == 1)
+				{
+					StartCoroutine(GlitchSeparator());
+					break;
+				}
+				else
+				if (_shieldStatus == 0)
+				{
+					StartHackSequence();
+					break;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+
+	IEnumerator GlitchSeparator()
+	{
+		while (true)
+		{
+			_currentGlitched = new bool[15];
+			List<TextMesh> tms = new List<TextMesh>();
+			for (int x = 0; x <= 3; x++)
+			{
+				int rand = rnd.Range(0, _buttonTexts.Length - 3);
+				while (tms.Contains(_buttonTexts[rand]))
+				{
+					rand = rnd.Range(0, _buttonTexts.Length - 3);
+				}
+				_currentGlitched[rand] = true;
+				tms.Add(_buttonTexts[rand]);
+			}
+			StartCoroutine(GlitchCertainTexts(tms.ToArray()));
+			_glitchedButtons = true;
+			yield return new WaitForSeconds(5f);
+			_glitchedButtons = false;
+			_glitchStopped = true;
+			ResetButtonTexts();
+			yield return new WaitForSeconds(15f);
+		}
+	}
+
+	IEnumerator GlitchCertainTexts(TextMesh[] texts)
+	{
+		while (true)
+		{
+			if (_glitchStopped) { if (!_modSolved) { ResetButtonTexts(); } _glitchStopped = false; yield break; }
+			foreach (TextMesh tm in texts)
+			{
+				GlitchText(tm);
+			}
+			yield return new WaitForSeconds(0.01f);
+		}
+	}
+
+	IEnumerator GlitchAllTexts()
+	{
+		while (true)
+		{
+			if (_glitchStopped) { ResetButtonTexts(); _glitchStopped = false; yield break; }
+			foreach (TextMesh tm in _buttonTexts)
+			{
+				GlitchText(tm);
+			}
+			yield return new WaitForSeconds(0.01f);
+		}
+	}
+
+	IEnumerator GlitchDisplay()
+	{
+		while (true)
+		{
+			char[] chars = GetCharactersVIAString(8, "abcdefghijklmnopqrstuvwxyz1234567890_+!@#$%^&*(),/.';][<?>:{}|");
+			_displayTexts[1].text = chars.Join("");
+			yield return new WaitForSeconds(0.01f);
+		}
+	}
+
+	IEnumerator ModuleTimer()
+	{
+		if (_starting || _restarting)
+		{
+			_starting = false;
+			_restarting = false;
+			while (_timer != 0) { --_timer; yield return new WaitForSeconds(1f); }
+			_timer = 45;
+		}
+		while (true)
+		{
+			ModuleAction();
+			while (_timer != 0) { --_timer; yield return new WaitForSeconds(1f); }
+			_timer = 45;
+		}
+	}
+
+	IEnumerator WarningSound()
+	{
+		while (true)
+		{
+			_audio.PlaySoundAtTransform(_HIPSound.name, this.transform);
+			yield return new WaitForSeconds(_HIPSound.length + 0.25f);
+		}
+	}
+
+	IEnumerator ThyHackTimer()
+	{
+		yield return new WaitForSeconds(30f);
+		ThyBecomeHacked();
+		yield break;
+	}
+
+	IEnumerator SolveAnimation()
+	{
+		_modSolved = true;
+		_cryptoSymbols[_chosenCryptocurrency].enabled = false;
+		_shieldSymbols[0].enabled = false;
+		_shieldSymbols[1].enabled = false;
+		_shieldSymbols[2].enabled = true;
+		_wifiSymbols[0].enabled = false;
+		_wifiSymbols[1].enabled = false;
+		_wifiSymbols[2].enabled = true;
+		string[] s = _solvedStringArray[rnd.Range(0, _solvedStringArray.Length)].Split(':');
+		StartCoroutine(GlitchCertainTexts(new TextMesh[] { _displayTexts[0], _displayTexts[1] }));
+		foreach (TextMesh tm in _buttonTexts)
+		{
+			tm.text = "";
+			yield return new WaitForSeconds(0.10f);
+		}
+		_glitchStopped = true;
+		_displayTexts[0].text = "";
+		_displayTexts[1].text = "";
+		yield return new WaitForSeconds(0.25f);
+		_displayTexts[0].text = s[0].Replace("_", "") ?? "";
+		yield return new WaitForSeconds(0.1f);
+		_displayTexts[1].text = s[1].Replace("_", "") ?? "";
 		int i = 0;
-		foreach (TextMesh tm in priceTexts) {
-			tm.text = priceButtons[i].name;
-			tm.fontSize = 28;
-			i++;
+		if (s.Length >= 3)
+		{
+			foreach (char c in s[2] ?? "")
+			{
+				_buttonTexts[i].text = c.ToString().Replace("_", "") ?? "";
+				_buttonTexts[i].characterSize = 0.25f;
+				i++;
+				yield return new WaitForSeconds(0.1f);
+			}
+			for (int x = 12; x <= 15; x++)
+			{
+				_buttonTexts[x].text = s[x - 9].Replace("_", "") ?? "";
+				yield return new WaitForSeconds(0.1f);
+			}
 		}
-		i = 0;
-		foreach (TextMesh tm in actionTexts) {
-			tm.text = actionButtons[i+1].name;
-			tm.fontSize = 32;
-			i++;
-		}
-		hackedState = false;
+		GetComponent<KMBombModule>().HandlePass();
+		Debug.LogFormat("[Cheat Checkout #{0}]: A correct amount of change was given. Module has been solved!", _modID);
+		yield break;
 	}
 
-	int SumNumbers(List<int> list) {
-		int ans = 0;
-		foreach (int i in list) {
-			ans += i;
-		}
-		return ans;
-	}
+	// TP
 
-	void UpdateVars() {
-		countdownStarted = false;
-		starting = true;
-		wifiStatus = 2;
-		shieldStatus = 2;
-		customerSlaps = 0;
-		wifiSprites[0].enabled = false;
-		wifiSprites[1].enabled = false;
-		wifiSprites[2].enabled = true;
-		shieldSprites[0].enabled = false;
-		shieldSprites[1].enabled = false;
-		shieldSprites[2].enabled = true;
-		cryptoSprites[Array.IndexOf(possibleCryptos,generatedCryptoName)].enabled = false;
-	}
-
-	// TP Methods
-
-	bool CorrectArgument(string[] a) {
-		string[] valid = new string[] { "right", "left", "r", "l", "lcd", "screen", "display", "submit", "stabilize", "patch" };
+	bool CorrectArgument(string[] a)
+	{
+		string[] valid = new string[] { "hack", "lcd", "screen", "display", "submit", "sub", "stabilize", "stbl", "patch" };
 		foreach (string s in a)
 		{
 			int result;
-			if (int.TryParse(s, out result)) {
+			if (int.TryParse(s, out result))
+			{
 				return true;
 			}
-			if (valid.Contains(s)) {
+			if (valid.Contains(s))
+			{
 				return true;
 			}
 		}
@@ -1208,147 +1011,255 @@ public class CheatCheckout : MonoBehaviour {
 		{
 			return null;
 		}
-		int y = price.Length-1;
-		foreach (char c in price) {
-			if (y == 6) {
+		int y = price.Length - 1;
+		foreach (char c in price)
+		{
+			if (y == 6)
+			{
 				totalButtons += int.Parse(c.ToString()) * 10;
 			}
 			totalButtons += int.Parse(c.ToString());
 			y--;
 		}
-		array = new KMSelectable[totalButtons+1];
+		array = new KMSelectable[totalButtons + 1];
 		int x = 0;
-		int index = price.Length-1;
+		int index = price.Length - 1;
 		int total = 0;
 		bool checkedIndex = false;
-		foreach (char c in price) {
+		foreach (char c in price)
+		{
 			if (c == '.') { continue; }
 			if (c == 0) { x++; index--; continue; }
 			while (!checkedIndex && index != price.Length - 1) { index--; }
 			if (!checkedIndex) { checkedIndex = true; }
 			if (index == 6)
 			{
-				for (int i = 0; i < int.Parse(price[x].ToString()) * 10; i++) {
-					array[total] = priceButtons[index-1];
+				for (int i = 0; i < int.Parse(price[x].ToString()) * 10; i++)
+				{
+					array[total] = _priceButtons[index - 1];
 					total++;
 				}
-			} else {
+			}
+			else
+			{
 				for (int i = 0; i < int.Parse(price[x].ToString()); i++)
 				{
-					array[total] = priceButtons[index];
+					array[total] = _priceButtons[index];
 					total++;
 				}
 			}
 			x++;
 			index--;
 		}
-		array[total] = actionButtons[1];
+		array[total] = _actionButtons[3];
 		return array;
 	}
 
-	#pragma warning disable 414
-	private readonly string TwitchHelpMessage = @"!{0} right/left/r/l [Presses the arrows either left or right to choose hack], !{0} lcd/screen/display [Presse the LCD screen for hacks], !{0} submit [Submits with nothing to slap the customer], !{0} submit <change> [Submits the answer into the module], !{0} stabilize <#/##> [Presses 'Stabilize' depending on what is needed], !{0} patch <None/#> [Press 'Patch' depending on what is needed]";
-	#pragma warning restore 414
+#pragma warning disable 414
+	private readonly string TwitchHelpMessage = @"!{0} hack <index> [Goes to <index> hack], !{0} lcd/screen/display <amount/cycle,c> [Cycles the LCD or goes forward that many times], !{0} submit [Submits with nothing to slap the customer], !{0} submit <change> [Submits the answer into the module], !{0} stabilize <#/##> [Presses 'Stabilize' depending on what is needed], !{0} patch <None/#> [Press 'Patch' depending on what is needed]";
+#pragma warning restore 414
 
 	IEnumerator ProcessTwitchCommand(string command)
 	{
-		string[] args = command.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-		int correctionStatus;
-		if (args.Length >= 3) {
+		int stw = _wifiStatus;
+		int sts = _shieldStatus;
+		string[] args = command.ToLower().Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+		if (args.Length >= 3)
+		{
 			yield return "sendtochaterror That is not the correct amount of arguments, please try again.";
 			yield break;
 		}
-		if (!CorrectArgument(args)) {
+		if (!CorrectArgument(args))
+		{
 			yield return "sendtochaterror That is an incorrect command, please try again.";
 			yield break;
 		}
-		if (args[0].ToLower().EqualsAny("left", "l")) {
-			yield return null;
-			directionalButtons[0].OnInteract();
-			yield break;
-		}
-		if (args[0].ToLower().EqualsAny("right", "r"))
+		switch (args[0])
 		{
-			yield return null;
-			directionalButtons[1].OnInteract();
-			yield break;
-		}
-		if (args[0].ToLower().EqualsAny("lcd", "screen", "display")) {
-			yield return null;
-			actionButtons[0].OnInteract();
-			while (isShowing) { yield return new WaitForSeconds(0.01f); yield return "trycancel Display will cycle, but any action has been cancelled."; }
-			yield break;
-		}
-		if (args[0].ToLower().Equals("submit") && args.Length == 1) {
-			yield return null;
-			actionButtons[1].OnInteract();
-			yield break;
-		}
-		if (args[0].ToLower().Equals("submit") && args.Length == 2) {
-			SetOriginalTexts();
-			hackedState = false;
-			yield return null;
-			yield return TPPriceButtonSetup(args[1]);
-			yield break;
-		}
-		if (args[0].ToLower().Equals("clear") && args.Length == 1) {
-			yield return null;
-			actionButtons[2].OnInteract();
-			yield break;
-		}
-		if (args[0].ToLower().Equals("stabilize") && args.Length == 2) {
-			int result;
-			correctionStatus = wifiStatus;
-			tpActive = true;
-			if (!int.TryParse(args[1], out result)) {
-				yield return "sendtochaterror Incorrect number format.";
-			}
-			if (args[1].Length >= 3) {
-				yield return "sendtochaterror Incorrect number input.";
-			}
-			while ((int)bomb.GetTime() % 10 != int.Parse(args[1]) && args[1].Length == 1) yield return "trycancel The button was not pressed due to a request to cancel.";
-			while ((int)bomb.GetTime() % 60 != int.Parse(args[1]) && args[1].Length == 2) yield return "trycancel The button was not pressed due to a request to cancel.";
-			yield return null;
-			wifiStatus = correctionStatus;
-			actionButtons[3].OnInteract();
-			tpActive = false;
-			yield break;
-		} 
-		if (args[0].ToLower().Equals("patch") && args.Length == 1) {
-			yield return null;
-			correctionStatus = shieldStatus;
-			shieldStatus = correctionStatus;
-			tpActive = true;
-			actionButtons[4].OnInteract();
-			tpActive = false;
-			yield break;
-		}
-		if (args[0].ToLower().Equals("patch") && args.Length == 2) {
-			int result;
-			correctionStatus = shieldStatus;
-			tpActive = true;
-			if (!int.TryParse(args[1], out result)) {
-				yield return "sendtochaterror Incorrect number format.";
-			}
-			if (args[1].Length >= 2) {
-				yield return "sendtochaterror Incorrect number input.";
-			}
-			while (args.Length == 2 && (int)bomb.GetTime() % 10 != int.Parse(args[1])) yield return "trycancel The button was not pressed due to a request to cancel.";
-			yield return null;
-			shieldStatus = correctionStatus;
-			actionButtons[4].OnInteract();
-			tpActive = false;
-			yield break;
+			case "hack":
+				if (args.Length != 2)
+				{
+					yield return "sendtochaterror Invalid amount of arguments for this subcommand.";
+					yield break;
+				}
+				int result;
+				if (int.TryParse(args[1], out result))
+				{
+					if (!result.InRange(1, 5) || result * -1 > 0)
+					{
+						yield return "sendtochaterror Invalid index.";
+						yield break;
+					}
+					while (_glitchedButtons) yield return null;
+					while (_hackIndex + 1 != result && _hackIndex + 1 > result) { _actionButtons[1].OnInteract(); }
+					while (_hackIndex + 1 != result && _hackIndex + 1 < result) { _actionButtons[2].OnInteract(); }
+					yield break;
+				}
+				else
+				{
+					yield return "sendtochaterror Invalid format for command";
+					yield break;
+				}
+			case "lcd":
+			case "screen":
+			case "display":
+				if (args.Length != 2)
+				{
+					yield return "sendtochaterror Invalid amount of arguments for this subcommand.";
+					yield break;
+				}
+				int resulta;
+				if (args[1].EqualsAny("cycle", "c"))
+				{
+					yield return null;
+					while (_hackCycle != -1) { yield return null; _actionButtons[0].OnInteract(); }
+					_actionButtons[0].OnInteract();
+					yield return new WaitForSeconds(1.5f);
+					while (_hackCycle != -1) { yield return null; _actionButtons[0].OnInteract(); yield return "trywaitcancel 1.5 Cycling cancelled due to a request to."; }
+					yield break;
+				}
+				else if (int.TryParse(args[1], out resulta))
+				{
+					if (resulta * -1 > 0)
+					{
+						yield return "sendtochaterror Invalid format for command";
+						yield break;
+					}
+					for (int i = 0; i < resulta; i++)
+					{
+						yield return null;
+						_actionButtons[0].OnInteract();
+						yield return new WaitForSeconds(0.75f);
+					}
+					yield break;
+				}
+				else
+				{
+					yield return "sendtochaterror Invalid format for command";
+					yield break;
+				}
+			case "submit":
+			case "sub":
+				if (args.Length >= 3)
+				{
+					yield return "sendtochaterror Invalid amount of arguments for this subcommand.";
+					yield break;
+				}
+				float resultb;
+				if (args.Length == 1)
+				{
+					yield return null;
+					_actionButtons[3].OnInteract();
+					yield break;
+				}
+				else if (args.Length == 2 && float.TryParse(args[1], out resultb))
+				{
+					if (resultb * -1 > 0)
+					{
+						yield return "sendtochaterror Invalid format for command";
+						yield break;
+					}
+					yield return null;
+					yield return TPPriceButtonSetup(resultb.ToString());
+					yield break;
+				}
+				else 
+				{
+					yield return "sendtochaterror Invalid format for command";
+					yield break;
+				}
+			case "stabilize":
+			case "stbl":
+				if (args.Length != 2)
+				{
+					yield return "sendtochaterror Invalid amount of arguments for this subcommand.";
+					yield break;
+				}
+				int resultc;
+				if (!int.TryParse(args[1], out resultc)) 
+				{
+					yield return "sendtochaterror Invalid format for command";
+					yield break;
+				}
+				if (resultc * -1 > 0)
+				{
+					yield return "sendtochaterror Invalid format for command";
+					yield break;
+				}
+				if (args[1].Length == 1)
+				{
+					while ((int)_bomb.GetTime() % 10 != resultc) { yield return null; if (_wifiStatus != stw) { yield return "sendtochat Press was cancelled because status has changed."; yield break; } yield return "trycancel Press cancelled due to request."; }
+					if (_currentGlitched[14]) { yield return "sendtochat Press was denied due to the button being glitched after on right time."; yield break; } 
+					yield return null;
+					_actionButtons[5].OnInteract();
+					yield break;
+				}
+				else if (args[1].Length == 2) 
+				{
+					while ((int)_bomb.GetTime() % 60 != resultc) { yield return null; if (_wifiStatus != stw) { yield return "sendtochat Press was cancelled because status has changed."; yield break; } yield return "trycancel Press cancelled due to request."; }
+					yield return null;
+					_actionButtons[5].OnInteract();
+					yield break;
+				}
+				break;
+			case "patch":
+				if (args.Length >= 3)
+				{
+					yield return "sendtochaterror Invalid amount of arguments for this subcommand.";
+					yield break;
+				}
+				int resultd;
+				if (!int.TryParse(args[1], out resultd))
+				{
+					yield return "sendtochaterror Invalid format for command";
+					yield break;
+				}
+				if (resultd * -1 > 0) {
+					yield return "sendtochaterror Invalid format for command";
+					yield break;
+				}
+
+				if (args.Length == 1)
+				{
+					yield return null;
+					_actionButtons[6].OnInteract();
+					yield break;
+				}
+				else if (args.Length == 2)
+				{
+					if (!resultd.InRange(0,9))
+					{
+						yield return "sendtochaterror Invalid format for command";
+						yield break;
+					}
+					while ((int)_bomb.GetTime() % 10 != resultd) { yield return null; if (_shieldStatus != sts) { yield return "sendtochat Press was cancelled because status has changed."; yield break; } yield return "trycancel Press cancelled due to request."; }
+					yield return null;
+					_actionButtons[6].OnInteract();
+					yield break;
+				}
+				break;
+			default:
+				break;
 		}
 		yield break;
 	}
 
 	IEnumerator TwitchHandleForcedSolve()
 	{
-		while ((customerPaid - totalFromHacks) < 0) { yield return null; yield return new KMSelectable[] { actionButtons[1] }; }
 		yield return null;
-		yield return TPPriceButtonSetup(correctChange.ToString());
+		while (_customerGave == -1) { yield return true; yield return new KMSelectable[] { _actionButtons[3] }; }
+		yield return TPPriceButtonSetup(Math.Round(_customerGave - _totalAmount, 3).ToString());
 		yield break;
 	}
 
+}
+
+public static class Helper
+{
+	public static bool WithinRange<T>(this T value, T min, T max) where T : IComparable<T>
+	{
+		if (value.CompareTo(min) < 0) return false;
+		if (value.CompareTo(max) > 0) return false;
+		return true;
+	}
 }
