@@ -659,7 +659,7 @@ public class TwitchPlaysID : MonoBehaviour
 			if (moved.HasValue && !moved.Value)
 			{
 				Debug.LogFormat("Twitch Plays handler {0}.{1} reports invalid command (by returning empty sequence).",
-					methodDeclaringTypeFullName, methodName);
+					methodDeclaringTypeFullName, methodName);	
 				yield break;
 			}
 			else if (!moved.HasValue)

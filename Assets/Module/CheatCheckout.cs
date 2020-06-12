@@ -103,6 +103,7 @@ public class CheatCheckout : MonoBehaviour
 	bool _glitchedButtons = false;
 	bool _glitchStopped = false;
 	bool _LCDGlitch = false;
+	bool _forcedSolve = false;
 
 	float _totalAmount = 0f;
 	float _givenChange = -1f;
@@ -112,9 +113,9 @@ public class CheatCheckout : MonoBehaviour
 
 	List<string> _currentHackInfo;
 
-	bool[] _currentGlitched = new bool[15];
+	bool[] _currentGlitched = new bool[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
 
-	int _timer = 45;
+	int _timer = 60;
 
 	void Awake()
 	{
@@ -140,25 +141,26 @@ public class CheatCheckout : MonoBehaviour
 		StartCoroutine(ModuleTimer());
 		_displayTexts[1].text = "Hack #" + (_hackIndex + 1);
 		_currentHackInfo = ParseDisplayHackInfo(_hackIndex);
+		ModuleAction();
 	}
 
 	void PriceButtons(KMSelectable km)
 	{
 		int index = Array.IndexOf(_priceButtons, km);
-		if (_beingHacked) { return; }
-		if (_glitchedButtons && BeingGlitched(km)) { GetComponent<KMBombModule>().HandleStrike(); Debug.LogFormat("[Cheat Checkout #{0}]: Module struck due to the buttons being in their glitched state.", _modID); return; }
+		if (_beingHacked && !_forcedSolve) { return; }
+		if (_glitchedButtons && BeingGlitched(km) && !_forcedSolve) { GetComponent<KMBombModule>().HandleStrike(); Debug.LogFormat("[Cheat Checkout #{0}]: Module struck due to the buttons being in their glitched state.", _modID); return; }
 		if (_givenChange == -1) _givenChange = 0f;
 		_givenChange = (float)Math.Round(_buttonPrices[index] + _givenChange, 3);
 		_displayTexts[0].color = _inputColor;
 		_displayTexts[0].text = _givenChange.ToString();
-
 	}
 
 	void ActionButtons(KMSelectable km)
 	{
 		int index = Array.IndexOf(_actionButtons, km);
-		if (_beingHacked && _actionButtons[index].name.ToLower() != "patch") { return; }
-		if (_actionButtons[index].name.ToLower() != "patch" && BeingGlitched(km)) { GetComponent<KMBombModule>().HandleStrike(); Debug.LogFormat("[Cheat Checkout #{0}]: Module struck due to the buttons being in their glitched state.", _modID); return; }
+		if (_beingHacked && _actionButtons[index].name.ToLower() != "patch" && !_forcedSolve) { return; }
+		Debug.Log(BeingGlitched(km));
+		if (_glitchedButtons && _actionButtons[index].name.ToLower() != "patch"  && BeingGlitched(km) && !_forcedSolve) { GetComponent<KMBombModule>().HandleStrike(); Debug.LogFormat("[Cheat Checkout #{0}]: Module struck due to the buttons being in their glitched state.", _modID); return; }
 		switch (index)
 		{
 			case 0: // LCD
@@ -302,7 +304,8 @@ public class CheatCheckout : MonoBehaviour
 						_restarting = true;
 						if (_wifiStatus == 0) { StartCoroutine(GlitchDisplay()); }
 						StartCoroutine(ModuleTimer());
-						ResetButtonTexts();
+						_timerStopPlz = true;
+						ThyBecomeHacked();
 						Debug.LogFormat("[Cheat Checkout #{0}]: Module was patched on a Hacker Shield status of {1} and was successful.", _modID, _staticShieldStatus);
 						_shieldSymbols[_staticShieldStatus].enabled = false;
 						_shieldStatus = 2;
@@ -333,7 +336,7 @@ public class CheatCheckout : MonoBehaviour
 		}
 		foreach (KMSelectable km in _actionButtons)
 		{
-			if (km.name.ToLower().EqualsAny("hack lcd", "left", "right", "patch")) return false;
+			if (km.name.ToLower().EqualsAny("hack lcd", "left", "right", "patch")) continue;
 			_kms.Add(km);
 		}
 		if (_currentGlitched[Array.IndexOf(_kms.ToArray(), potent)]) return true;
@@ -736,7 +739,10 @@ public class CheatCheckout : MonoBehaviour
 		{
 			ResetButtonTexts();
 			StopAllCoroutines();
+			_restarting = true;
+			_timer = 60;
 			StartCoroutine(ModuleTimer());
+			_beingHacked = false;
 			_cryptoSymbols[_chosenCryptocurrency].enabled = true;
 			return;
 		}
@@ -846,7 +852,7 @@ public class CheatCheckout : MonoBehaviour
 	{
 		while (true)
 		{
-			_currentGlitched = new bool[15];
+			_currentGlitched = new bool[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
 			List<TextMesh> tms = new List<TextMesh>();
 			for (int x = 0; x <= 3; x++)
 			{
@@ -911,13 +917,14 @@ public class CheatCheckout : MonoBehaviour
 			_starting = false;
 			_restarting = false;
 			while (_timer != 0) { --_timer; yield return new WaitForSeconds(1f); }
-			_timer = 45;
+			_timer = 60;
 		}
 		while (true)
 		{
+			if (_modSolved) { break; } 
 			ModuleAction();
 			while (_timer != 0) { --_timer; yield return new WaitForSeconds(1f); }
-			_timer = 45;
+			_timer = 60;
 		}
 	}
 
@@ -1056,7 +1063,7 @@ public class CheatCheckout : MonoBehaviour
 	}
 
 #pragma warning disable 414
-	private readonly string TwitchHelpMessage = @"!{0} hack <index> [Goes to <index> hack], !{0} lcd/screen/display <amount/cycle,c> [Cycles the LCD or goes forward that many times], !{0} submit [Submits with nothing to slap the customer], !{0} submit <change> [Submits the answer into the module], !{0} stabilize <#/##> [Presses 'Stabilize' depending on what is needed], !{0} patch <None/#> [Press 'Patch' depending on what is needed]";
+	private readonly string TwitchHelpMessage = @"!{0} hack <index> [Goes to <index> hack], !{0} lcd/screen/display <amount/cycle,c> [Cycles the LCD or goes forward that many times], !{0} submit/sub [Submits with nothing to slap the customer], !{0} submit/sub <change> [Submits the answer into the module], !{0} stabilize/stbl <#/##> [Presses 'Stabilize' depending on what is needed], !{0} patch <None/#> [Press 'Patch' depending on what is needed]";
 #pragma warning restore 414
 
 	IEnumerator ProcessTwitchCommand(string command)
@@ -1091,8 +1098,8 @@ public class CheatCheckout : MonoBehaviour
 						yield break;
 					}
 					while (_glitchedButtons) yield return null;
-					while (_hackIndex + 1 != result && _hackIndex + 1 > result) { _actionButtons[1].OnInteract(); }
-					while (_hackIndex + 1 != result && _hackIndex + 1 < result) { _actionButtons[2].OnInteract(); }
+					while (_hackIndex + 1 != result && _hackIndex + 1 > result) { yield return null;  _actionButtons[1].OnInteract(); }
+					while (_hackIndex + 1 != result && _hackIndex + 1 < result) { yield return null;  _actionButtons[2].OnInteract(); }
 					yield break;
 				}
 				else
@@ -1178,18 +1185,17 @@ public class CheatCheckout : MonoBehaviour
 				int resultc;
 				if (!int.TryParse(args[1], out resultc)) 
 				{
-					yield return "sendtochaterror Invalid format for command";
+					yield return "sendtochaterror Invalid format for command.";
 					yield break;
 				}
 				if (resultc * -1 > 0)
 				{
-					yield return "sendtochaterror Invalid format for command";
+					yield return "sendtochaterror Invalid format for command.";
 					yield break;
 				}
 				if (args[1].Length == 1)
 				{
 					while ((int)_bomb.GetTime() % 10 != resultc) { yield return null; if (_wifiStatus != stw) { yield return "sendtochat Press was cancelled because status has changed."; yield break; } yield return "trycancel Press cancelled due to request."; }
-					if (_currentGlitched[14]) { yield return "sendtochat Press was denied due to the button being glitched after on right time."; yield break; } 
 					yield return null;
 					_actionButtons[5].OnInteract();
 					yield break;
@@ -1208,17 +1214,6 @@ public class CheatCheckout : MonoBehaviour
 					yield return "sendtochaterror Invalid amount of arguments for this subcommand.";
 					yield break;
 				}
-				int resultd;
-				if (!int.TryParse(args[1], out resultd))
-				{
-					yield return "sendtochaterror Invalid format for command";
-					yield break;
-				}
-				if (resultd * -1 > 0) {
-					yield return "sendtochaterror Invalid format for command";
-					yield break;
-				}
-
 				if (args.Length == 1)
 				{
 					yield return null;
@@ -1227,6 +1222,17 @@ public class CheatCheckout : MonoBehaviour
 				}
 				else if (args.Length == 2)
 				{
+					int resultd;
+					if (!int.TryParse(args[1], out resultd))
+					{
+						yield return "sendtochaterror Invalid format for command";
+						yield break;
+					}
+					if (resultd * -1 > 0)
+					{
+						yield return "sendtochaterror Invalid format for command";
+						yield break;
+					}
 					if (!resultd.InRange(0,9))
 					{
 						yield return "sendtochaterror Invalid format for command";
@@ -1246,9 +1252,14 @@ public class CheatCheckout : MonoBehaviour
 
 	IEnumerator TwitchHandleForcedSolve()
 	{
+		_forcedSolve = true;
+		while (_customerGave == -1) { yield return null; _actionButtons[3].OnInteract(); }
 		yield return null;
-		while (_customerGave == -1) { yield return true; yield return new KMSelectable[] { _actionButtons[3] }; }
-		yield return TPPriceButtonSetup(Math.Round(_customerGave - _totalAmount, 3).ToString());
+		foreach (KMSelectable km in TPPriceButtonSetup(((float)Math.Round(_customerGave - _totalAmount, 3)).ToString())) 
+		{
+			km.OnInteract();
+			yield return new WaitForSeconds(0.1f);
+		}
 		yield break;
 	}
 
