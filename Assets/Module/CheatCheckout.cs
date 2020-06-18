@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using KModkit;
 using rnd = UnityEngine.Random;
+using System.Text.RegularExpressions;
 
 public class CheatCheckout : MonoBehaviour
 {
@@ -113,7 +114,7 @@ public class CheatCheckout : MonoBehaviour
 
 	List<string> _currentHackInfo;
 
-	bool[] _currentGlitched = new bool[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
+	bool[] _currentGlitched = new bool[15];
 
 	int _timer = 60;
 
@@ -138,10 +139,10 @@ public class CheatCheckout : MonoBehaviour
 	{
 		GenerateHackInformation();
 		GenerateCustomerPrice();
-		StartCoroutine(ModuleTimer());
+		//StartCoroutine(ModuleTimer());
 		_displayTexts[1].text = "Hack #" + (_hackIndex + 1);
 		_currentHackInfo = ParseDisplayHackInfo(_hackIndex);
-		ModuleAction();
+		StartCoroutine(GlitchSeparator());
 	}
 
 	void PriceButtons(KMSelectable km)
@@ -852,7 +853,7 @@ public class CheatCheckout : MonoBehaviour
 	{
 		while (true)
 		{
-			_currentGlitched = new bool[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
+			_currentGlitched = new bool[15];
 			List<TextMesh> tms = new List<TextMesh>();
 			for (int x = 0; x <= 3; x++)
 			{
@@ -869,6 +870,7 @@ public class CheatCheckout : MonoBehaviour
 			yield return new WaitForSeconds(5f);
 			_glitchedButtons = false;
 			_glitchStopped = true;
+			_currentGlitched = new bool[15];
 			ResetButtonTexts();
 			yield return new WaitForSeconds(15f);
 		}
@@ -1090,6 +1092,7 @@ public class CheatCheckout : MonoBehaviour
 					yield break;
 				}
 				int result;
+				if (_blockDisplay) yield break;
 				if (int.TryParse(args[1], out result))
 				{
 					if (!result.InRange(1, 5) || result * -1 > 0)
@@ -1116,6 +1119,7 @@ public class CheatCheckout : MonoBehaviour
 					yield break;
 				}
 				int resulta;
+				if (_blockDisplay) yield break;
 				if (args[1].EqualsAny("cycle", "c"))
 				{
 					yield return null;
@@ -1156,6 +1160,7 @@ public class CheatCheckout : MonoBehaviour
 				if (args.Length == 1)
 				{
 					yield return null;
+					while (_glitchedButtons && BeingGlitched(_actionButtons[3])) yield return null; 
 					_actionButtons[3].OnInteract();
 					yield break;
 				}
@@ -1167,7 +1172,16 @@ public class CheatCheckout : MonoBehaviour
 						yield break;
 					}
 					yield return null;
-					yield return TPPriceButtonSetup(resultb.ToString());
+					List<KMSelectable> butts = TPPriceButtonSetup(resultb.ToString()).ToList();
+					while (butts.Count != 0) 
+					{
+						Debug.Log(BeingGlitched(butts[0]));
+						while (_glitchedButtons && BeingGlitched(butts[0])) { yield return null; }
+						butts[0].OnInteract();
+						butts.RemoveAt(0);
+						yield return new WaitForSeconds(0.15f);
+					}
+					yield return "solve";
 					yield break;
 				}
 				else 
@@ -1195,14 +1209,14 @@ public class CheatCheckout : MonoBehaviour
 				}
 				if (args[1].Length == 1)
 				{
-					while ((int)_bomb.GetTime() % 10 != resultc) { yield return null; if (_wifiStatus != stw) { yield return "sendtochat Press was cancelled because status has changed."; yield break; } yield return "trycancel Press cancelled due to request."; }
+					while ((int)_bomb.GetTime() % 10 != resultc || (_glitchedButtons && BeingGlitched(_actionButtons[5]))) { yield return null; if (_wifiStatus != stw) { yield return "sendtochat Press was cancelled because status has changed."; yield break; } yield return "trycancel Press cancelled due to request."; }
 					yield return null;
 					_actionButtons[5].OnInteract();
 					yield break;
 				}
 				else if (args[1].Length == 2) 
 				{
-					while ((int)_bomb.GetTime() % 60 != resultc) { yield return null; if (_wifiStatus != stw) { yield return "sendtochat Press was cancelled because status has changed."; yield break; } yield return "trycancel Press cancelled due to request."; }
+					while ((int)_bomb.GetTime() % 60 != resultc || (_glitchedButtons && BeingGlitched(_actionButtons[5]))) { yield return null; if (_wifiStatus != stw) { yield return "sendtochat Press was cancelled because status has changed."; yield break; } yield return "trycancel Press cancelled due to request."; }
 					yield return null;
 					_actionButtons[5].OnInteract();
 					yield break;
@@ -1217,6 +1231,7 @@ public class CheatCheckout : MonoBehaviour
 				if (args.Length == 1)
 				{
 					yield return null;
+					
 					_actionButtons[6].OnInteract();
 					yield break;
 				}
