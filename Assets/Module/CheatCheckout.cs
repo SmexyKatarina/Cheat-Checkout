@@ -99,10 +99,7 @@ public class CheatCheckout : MonoBehaviour
 	bool _beingHacked = false;
 	bool _blockDisplay = false;
 	bool _timerStopPlz = false;
-	bool _starting = true;
-	bool _restarting = false;
 	bool _glitchedButtons = false;
-	bool _glitchStopped = false;
 	bool _LCDGlitch = false;
 	bool _forcedSolve = false;
 
@@ -116,7 +113,7 @@ public class CheatCheckout : MonoBehaviour
 
 	bool[] _currentGlitched = new bool[15];
 
-	int _timer = 60;
+	int _moduleTimer = 75;
 
 	void Awake()
 	{
@@ -142,7 +139,7 @@ public class CheatCheckout : MonoBehaviour
 		//StartCoroutine(ModuleTimer());
 		_displayTexts[1].text = "Hack #" + (_hackIndex + 1);
 		_currentHackInfo = ParseDisplayHackInfo(_hackIndex);
-		StartCoroutine(GlitchSeparator());
+		StartCoroutine(ModuleTimer());
 	}
 
 	void PriceButtons(KMSelectable km)
@@ -160,18 +157,23 @@ public class CheatCheckout : MonoBehaviour
 	{
 		int index = Array.IndexOf(_actionButtons, km);
 		if (_beingHacked && _actionButtons[index].name.ToLower() != "patch" && !_forcedSolve) { return; }
-		Debug.Log(BeingGlitched(km));
-		if (_glitchedButtons && _actionButtons[index].name.ToLower() != "patch"  && BeingGlitched(km) && !_forcedSolve) { GetComponent<KMBombModule>().HandleStrike(); Debug.LogFormat("[Cheat Checkout #{0}]: Module struck due to the buttons being in their glitched state.", _modID); return; }
+		if (_glitchedButtons && _actionButtons[index].name.ToLower() != "patch" && BeingGlitched(km) && !_forcedSolve) { GetComponent<KMBombModule>().HandleStrike(); Debug.LogFormat("[Cheat Checkout #{0}]: Module struck due to the buttons being in their glitched state.", _modID); return; }
 		switch (index)
 		{
 			case 0: // LCD
 				if (_blockDisplay) { Debug.LogFormat("[Cheat Checkout #{0}]: Display didn't cycle due to display being blocked.", _modID); break; }
 				if (_hackCycle == _currentHackInfo.Count() - 1) { _hackCycle = -1; _displayTexts[1].characterSize = 0.02f; _displayTexts[1].text = "Hack #" + (_hackIndex + 1); break; }
-				++_hackCycle;
+				_hackCycle++;
 				_displayTexts[1].characterSize = 0.0125f;
 				if (rnd.Range(0, 5) == 0 && _LCDGlitch)
 				{
-					_displayTexts[1].text = GlitchText(_currentHackInfo[_hackCycle]);
+					string chars = "abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()";
+					string s = "";
+					for (int i = 0; i <= 5; i++)
+					{
+						s += chars[rnd.Range(0, chars.Length)];
+					}
+					_displayTexts[1].text = s;
 					break;
 				}
 				else
@@ -181,7 +183,7 @@ public class CheatCheckout : MonoBehaviour
 				}
 			case 1: // Left
 				if (_hackIndex == 0) return;
-				--_hackIndex;
+				_hackIndex--;
 				_currentHackInfo = ParseDisplayHackInfo(_hackIndex);
 				_displayTexts[1].characterSize = 0.02f;
 				_displayTexts[1].text = "Hack #" + (_hackIndex + 1);
@@ -189,7 +191,7 @@ public class CheatCheckout : MonoBehaviour
 				break;
 			case 2: // Right
 				if (_hackIndex == 4) return;
-				++_hackIndex;
+				_hackIndex++;
 				_currentHackInfo = ParseDisplayHackInfo(_hackIndex);
 				_displayTexts[1].characterSize = 0.02f;
 				_displayTexts[1].text = "Hack #" + (_hackIndex + 1);
@@ -229,23 +231,34 @@ public class CheatCheckout : MonoBehaviour
 					if (sum == digits)
 					{
 						StopAllCoroutines();
-						_restarting = true;
 						if (_shieldStatus == 1) { StartCoroutine(GlitchSeparator()); }
 						StartCoroutine(ModuleTimer());
 						ResetButtonTexts();
 						_displayTexts[1].text = "Hack #" + (_hackIndex + 1);
 						_displayTexts[1].color = _originalColor;
 						Debug.LogFormat("[Cheat Checkout #{0}]: Module was patched on a Wifi status of {1} and was successful.", _modID, _staticWifiStatus);
-
 						_wifiSymbols[_staticWifiStatus].enabled = false;
 						_wifiStatus = 2;
 						_wifiSymbols[_wifiStatus].enabled = true;
+						_LCDGlitch = false;
+						_blockDisplay = false;
 						break;
 					}
 					else
 					{
 						Debug.LogFormat("[Cheat Checkout #{0}]: Module was patched on a Wifi status of {1} and was incorrect. Pressed on {2} but expected {3}.", _modID, _staticWifiStatus, digits, sum);
 						GetComponent<KMBombModule>().HandleStrike();
+						StopAllCoroutines();
+						if (_shieldStatus == 1) { StartCoroutine(GlitchSeparator()); }
+						StartCoroutine(ModuleTimer());
+						ResetButtonTexts();
+						_displayTexts[1].text = "Hack #" + (_hackIndex + 1);
+						_displayTexts[1].color = _originalColor;
+						_wifiSymbols[_staticWifiStatus].enabled = false;
+						_wifiStatus = 2;
+						_wifiSymbols[_wifiStatus].enabled = true;
+						_LCDGlitch = false;
+						_blockDisplay = false;
 						break;
 					}
 				}
@@ -257,7 +270,6 @@ public class CheatCheckout : MonoBehaviour
 					if (last == digit)
 					{
 						StopAllCoroutines();
-						_restarting = true;
 						if (_shieldStatus == 1) { StartCoroutine(GlitchSeparator()); }
 						StartCoroutine(ModuleTimer());
 						ResetButtonTexts();
@@ -267,12 +279,23 @@ public class CheatCheckout : MonoBehaviour
 						_wifiSymbols[_staticWifiStatus].enabled = false;
 						_wifiStatus = 2;
 						_wifiSymbols[_wifiStatus].enabled = true;
+						_blockDisplay = false;
 						break;
 					}
 					else
 					{
 						Debug.LogFormat("[Cheat Checkout #{0}]: Module was patched on a Wifi status of {1} and was incorrect. Pressed on {2} but expected {3}.", _modID, _staticWifiStatus, digit, last);
 						GetComponent<KMBombModule>().HandleStrike();
+						StopAllCoroutines();
+						if (_shieldStatus == 1) { StartCoroutine(GlitchSeparator()); }
+						StartCoroutine(ModuleTimer());
+						ResetButtonTexts();
+						_displayTexts[1].text = "Hack #" + (_hackIndex + 1);
+						_displayTexts[1].color = _originalColor;
+						_wifiSymbols[_staticWifiStatus].enabled = false;
+						_wifiStatus = 2;
+						_wifiSymbols[_wifiStatus].enabled = true;
+						_blockDisplay = false;
 						break;
 					}
 				}
@@ -283,15 +306,14 @@ public class CheatCheckout : MonoBehaviour
 				if (_staticShieldStatus == 1)
 				{
 					StopAllCoroutines();
-					_restarting = true;
-					if (_wifiStatus == 0) { StartCoroutine(GlitchDisplay()); }
 					StartCoroutine(ModuleTimer());
 					ResetButtonTexts();
 					Debug.LogFormat("[Cheat Checkout #{0}]: Module was patched on a Hacker Shield status of {1} and was successful.", _modID, _staticShieldStatus);
 					_shieldSymbols[_staticShieldStatus].enabled = false;
 					_shieldStatus = 2;
 					_shieldSymbols[_shieldStatus].enabled = true;
-					_currentGlitched = new bool[14];
+					_currentGlitched = new bool[15];
+					_glitchedButtons = false;
 					break;
 				}
 
@@ -302,8 +324,6 @@ public class CheatCheckout : MonoBehaviour
 					if (last == digit)
 					{
 						StopAllCoroutines();
-						_restarting = true;
-						if (_wifiStatus == 0) { StartCoroutine(GlitchDisplay()); }
 						StartCoroutine(ModuleTimer());
 						_timerStopPlz = true;
 						ThyBecomeHacked();
@@ -311,13 +331,23 @@ public class CheatCheckout : MonoBehaviour
 						_shieldSymbols[_staticShieldStatus].enabled = false;
 						_shieldStatus = 2;
 						_shieldSymbols[_shieldStatus].enabled = true;
-						_currentGlitched = new bool[14];
+						_currentGlitched = new bool[15];
+						_beingHacked = false;
 						break;
 					}
 					else
 					{
 						Debug.LogFormat("[Cheat Checkout #{0}]: Module was patched on a Hacker Shield status of {1} and was incorrect. Pressed on {2} but expected {3}.", _modID, _staticShieldStatus, last, digit);
 						GetComponent<KMBombModule>().HandleStrike();
+						StopAllCoroutines();
+						StartCoroutine(ModuleTimer());
+						_timerStopPlz = true;
+						ThyBecomeHacked();
+						_shieldSymbols[_staticShieldStatus].enabled = false;
+						_shieldStatus = 2;
+						_shieldSymbols[_shieldStatus].enabled = true;
+						_currentGlitched = new bool[15];
+						_beingHacked = false;
 						break;
 					}
 				}
@@ -513,9 +543,9 @@ public class CheatCheckout : MonoBehaviour
 			case "BFA":
 				displayInfo.Add("Att. Type: " + new string[] { "Str. Inject", "Sneak", "Duplication" }[Array.IndexOf(new float[] { 2.2f, 1.6f, 1.9f }, float.Parse(hackInfo[0].ToString()))]);
 				displayInfo.Add("Attempts: " + int.Parse(hackInfo[1].ToString()));
-				displayInfo.Add(float.Parse(hackInfo[3].ToString()).EqualsAny(1.2f, 1.4f)
-					? float.Parse(hackInfo[3].ToString()) == 1.2f ? "Success: Crashed Perm." : "Success: Host Inflitrated"
-					: "Failed: " + float.Parse(hackInfo[3].ToString())
+				displayInfo.Add(float.Parse(hackInfo[2].ToString()).EqualsAny(1.2f, 1.4f)
+					? float.Parse(hackInfo[2].ToString()) == 1.2f ? "Success: Crashed Perm." : "Success: Host Inflitrated"
+					: "Failed: " + float.Parse(hackInfo[2].ToString())
 					);
 				return displayInfo;
 			default:
@@ -709,7 +739,7 @@ public class CheatCheckout : MonoBehaviour
 		Debug.LogFormat("[Cheat Checkout #{0}]: Blocking display because of low wifi connection.", _modID);
 		StopAllCoroutines();
 		_displayTexts[1].color = new Color32(117, 4, 15, 255);
-		StartCoroutine(GlitchDisplay());
+		_displayTexts[1].text = "-----";
 		StartCoroutine(ModuleTimer());
 	}
 
@@ -729,7 +759,6 @@ public class CheatCheckout : MonoBehaviour
 		{
 			tm.color = new Color32(117, 4, 15, 255);
 		}
-		StartCoroutine(GlitchAllTexts());
 		StartCoroutine(WarningSound());
 		StartCoroutine(ThyHackTimer());
 	}
@@ -740,8 +769,6 @@ public class CheatCheckout : MonoBehaviour
 		{
 			ResetButtonTexts();
 			StopAllCoroutines();
-			_restarting = true;
-			_timer = 60;
 			StartCoroutine(ModuleTimer());
 			_beingHacked = false;
 			_cryptoSymbols[_chosenCryptocurrency].enabled = true;
@@ -777,36 +804,21 @@ public class CheatCheckout : MonoBehaviour
 		_shieldStatus = 2;
 		_staticWifiStatus = -1;
 		_staticShieldStatus = -1;
+		_moduleTimer = 75;
 		_hackInformation.Clear();
 		_chosenHackNames.Clear();
 		_chosenWebsites.Clear();
 		_beingHacked = false;
 		_blockDisplay = false;
 		_timerStopPlz = false;
-		_starting = true;
 		_glitchedButtons = false;
-		_glitchStopped = false;
 		_LCDGlitch = false;
-	}
-
-	void GlitchText(TextMesh tm)
-	{
-
-		if (tm.name.ToLower().EqualsAny("patch", "left_tx", "right_tx")) return;
-		char[] chars = GetCharactersVIAString(4, "abcdefghijklmnopqrstuvwxyz1234567890_+!@#$%^&*(),/.';][<?>:{}|");
-		tm.text = chars.Join("");
-	}
-
-	string GlitchText(string s)
-	{
-		char[] chars = GetCharactersVIAString(4, "abcdefghijklmnopqrstuvwxyz1234567890_+!@#$%^&*(),/.';][<?>:{}|");
-		s = chars.Join("");
-		return s;
 	}
 
 	void ModuleAction()
 	{
 		// 0 for wifi, 1 for shield
+		StopAllCoroutines();
 		int arnd = rnd.Range(0, 2);
 		switch (arnd)
 		{
@@ -847,6 +859,9 @@ public class CheatCheckout : MonoBehaviour
 			default:
 				break;
 		}
+		if (_shieldStatus == 1) { StartCoroutine(GlitchSeparator()); }
+		if (_wifiStatus == 0) { StartDisplayBlock(); }
+		StartCoroutine(ModuleTimer());
 	}
 
 	IEnumerator GlitchSeparator()
@@ -865,68 +880,29 @@ public class CheatCheckout : MonoBehaviour
 				_currentGlitched[rand] = true;
 				tms.Add(_buttonTexts[rand]);
 			}
-			StartCoroutine(GlitchCertainTexts(tms.ToArray()));
+			foreach (TextMesh tm in tms)
+			{
+				tm.text = "-----";
+			}
 			_glitchedButtons = true;
 			yield return new WaitForSeconds(5f);
 			_glitchedButtons = false;
-			_glitchStopped = true;
 			_currentGlitched = new bool[15];
 			ResetButtonTexts();
 			yield return new WaitForSeconds(15f);
 		}
 	}
 
-	IEnumerator GlitchCertainTexts(TextMesh[] texts)
-	{
-		while (true)
-		{
-			if (_glitchStopped) { if (!_modSolved) { ResetButtonTexts(); } _glitchStopped = false; yield break; }
-			foreach (TextMesh tm in texts)
-			{
-				GlitchText(tm);
-			}
-			yield return new WaitForSeconds(0.01f);
-		}
-	}
-
-	IEnumerator GlitchAllTexts()
-	{
-		while (true)
-		{
-			if (_glitchStopped) { ResetButtonTexts(); _glitchStopped = false; yield break; }
-			foreach (TextMesh tm in _buttonTexts)
-			{
-				GlitchText(tm);
-			}
-			yield return new WaitForSeconds(0.01f);
-		}
-	}
-
-	IEnumerator GlitchDisplay()
-	{
-		while (true)
-		{
-			char[] chars = GetCharactersVIAString(8, "abcdefghijklmnopqrstuvwxyz1234567890_+!@#$%^&*(),/.';][<?>:{}|");
-			_displayTexts[1].text = chars.Join("");
-			yield return new WaitForSeconds(0.01f);
-		}
-	}
-
 	IEnumerator ModuleTimer()
 	{
-		if (_starting || _restarting)
-		{
-			_starting = false;
-			_restarting = false;
-			while (_timer != 0) { --_timer; yield return new WaitForSeconds(1f); }
-			_timer = 60;
-		}
+		_moduleTimer = 75;
 		while (true)
 		{
-			if (_modSolved) { break; } 
+			if (_modSolved) { break; }
+			if (_moduleTimer == 0) { _moduleTimer = 75; }
+			_moduleTimer--;
+			while (_moduleTimer != 0) { _moduleTimer--; yield return new WaitForSeconds(1f); }
 			ModuleAction();
-			while (_timer != 0) { --_timer; yield return new WaitForSeconds(1f); }
-			_timer = 60;
 		}
 	}
 
@@ -957,13 +933,13 @@ public class CheatCheckout : MonoBehaviour
 		_wifiSymbols[1].enabled = false;
 		_wifiSymbols[2].enabled = true;
 		string[] s = _solvedStringArray[rnd.Range(0, _solvedStringArray.Length)].Split(':');
-		StartCoroutine(GlitchCertainTexts(new TextMesh[] { _displayTexts[0], _displayTexts[1] }));
+		_displayTexts[0].text = "";
+		_displayTexts[1].text = "";
 		foreach (TextMesh tm in _buttonTexts)
 		{
 			tm.text = "";
 			yield return new WaitForSeconds(0.10f);
 		}
-		_glitchStopped = true;
 		_displayTexts[0].text = "";
 		_displayTexts[1].text = "";
 		yield return new WaitForSeconds(0.25f);
@@ -993,20 +969,12 @@ public class CheatCheckout : MonoBehaviour
 
 	// TP
 
-	bool CorrectArgument(string[] a)
+	bool CorrectArgument(string s)
 	{
 		string[] valid = new string[] { "hack", "lcd", "screen", "display", "submit", "sub", "stabilize", "stbl", "patch" };
-		foreach (string s in a)
+		if (valid.Contains(s))
 		{
-			int result;
-			if (int.TryParse(s, out result))
-			{
-				return true;
-			}
-			if (valid.Contains(s))
-			{
-				return true;
-			}
+			return true;
 		}
 		return false;
 	}
@@ -1065,7 +1033,7 @@ public class CheatCheckout : MonoBehaviour
 	}
 
 #pragma warning disable 414
-	private readonly string TwitchHelpMessage = @"!{0} hack <index> [Goes to <index> hack], !{0} lcd/screen/display <amount/cycle,c> [Cycles the LCD or goes forward that many times], !{0} submit/sub [Submits with nothing to slap the customer], !{0} submit/sub <change> [Submits the answer into the module], !{0} stabilize/stbl <#/##> [Presses 'Stabilize' depending on what is needed], !{0} patch <None/#> [Press 'Patch' depending on what is needed]";
+	private readonly string TwitchHelpMessage = @"!{0} hack <index> [Goes to <index> hack], !{0} lcd/screen/display <amount/cycle,c/fullcycle,fc> [Goes forward on a specific hack information, cycle the whole lcd or cycle all 5 hacks], !{0} submit/sub [Submits with nothing to slap the customer], !{0} submit/sub <change> [Submits the answer into the module], !{0} stabilize/stbl <#/##> [Presses 'Stabilize' depending on what is needed], !{0} patch <None/#> [Press 'Patch' depending on what is needed]";
 #pragma warning restore 414
 
 	IEnumerator ProcessTwitchCommand(string command)
@@ -1078,7 +1046,7 @@ public class CheatCheckout : MonoBehaviour
 			yield return "sendtochaterror That is not the correct amount of arguments, please try again.";
 			yield break;
 		}
-		if (!CorrectArgument(args))
+		if (!CorrectArgument(args[0]))
 		{
 			yield return "sendtochaterror That is an incorrect command, please try again.";
 			yield break;
@@ -1095,14 +1063,14 @@ public class CheatCheckout : MonoBehaviour
 				if (_blockDisplay) yield break;
 				if (int.TryParse(args[1], out result))
 				{
-					if (!result.InRange(1, 5) || result * -1 > 0)
+					if (!result.EqualsAny(1, 2, 3, 4, 5))
 					{
 						yield return "sendtochaterror Invalid index.";
 						yield break;
 					}
 					while (_glitchedButtons) yield return null;
-					while (_hackIndex + 1 != result && _hackIndex + 1 > result) { yield return null;  _actionButtons[1].OnInteract(); }
-					while (_hackIndex + 1 != result && _hackIndex + 1 < result) { yield return null;  _actionButtons[2].OnInteract(); }
+					while (_hackIndex != result - 1 && _hackIndex > result - 1) { yield return null; _actionButtons[1].OnInteract(); }
+					while (_hackIndex != result - 1 && _hackIndex < result - 1) { yield return null; _actionButtons[2].OnInteract(); }
 					yield break;
 				}
 				else
@@ -1120,6 +1088,25 @@ public class CheatCheckout : MonoBehaviour
 				}
 				int resulta;
 				if (_blockDisplay) yield break;
+				if (args[1].EqualsAny("fullcycle", "fc"))
+				{
+					yield return null;
+					while (_hackIndex != 0) { yield return null; _actionButtons[1].OnInteract(); }
+					while (_hackCycle != -1) { yield return null; _actionButtons[0].OnInteract(); }
+					int count = 0;
+					while (count != 6)
+					{
+						yield return null;
+						_actionButtons[0].OnInteract();
+						yield return new WaitForSeconds(1.5f);
+						while (_hackCycle != -1) { yield return null; _actionButtons[0].OnInteract(); yield return "trywaitcancel 1.5 Cyclng cancelled due to a request to."; }
+						_actionButtons[2].OnInteract();
+						yield return new WaitForSeconds(0.75f);
+						count++;
+					}
+					while (_hackIndex != 0) { yield return null; _actionButtons[1].OnInteract(); }
+					yield break;
+				}
 				if (args[1].EqualsAny("cycle", "c"))
 				{
 					yield return null;
@@ -1160,7 +1147,7 @@ public class CheatCheckout : MonoBehaviour
 				if (args.Length == 1)
 				{
 					yield return null;
-					while (_glitchedButtons && BeingGlitched(_actionButtons[3])) yield return null; 
+					while (_glitchedButtons && BeingGlitched(_actionButtons[3])) yield return null;
 					_actionButtons[3].OnInteract();
 					yield break;
 				}
@@ -1173,7 +1160,7 @@ public class CheatCheckout : MonoBehaviour
 					}
 					yield return null;
 					List<KMSelectable> butts = TPPriceButtonSetup(resultb.ToString()).ToList();
-					while (butts.Count != 0) 
+					while (butts.Count != 0)
 					{
 						Debug.Log(BeingGlitched(butts[0]));
 						while (_glitchedButtons && BeingGlitched(butts[0])) { yield return null; }
@@ -1184,7 +1171,7 @@ public class CheatCheckout : MonoBehaviour
 					yield return "solve";
 					yield break;
 				}
-				else 
+				else
 				{
 					yield return "sendtochaterror Invalid format for command";
 					yield break;
@@ -1197,7 +1184,7 @@ public class CheatCheckout : MonoBehaviour
 					yield break;
 				}
 				int resultc;
-				if (!int.TryParse(args[1], out resultc)) 
+				if (!int.TryParse(args[1], out resultc))
 				{
 					yield return "sendtochaterror Invalid format for command.";
 					yield break;
@@ -1214,7 +1201,7 @@ public class CheatCheckout : MonoBehaviour
 					_actionButtons[5].OnInteract();
 					yield break;
 				}
-				else if (args[1].Length == 2) 
+				else if (args[1].Length == 2)
 				{
 					while ((int)_bomb.GetTime() % 60 != resultc || (_glitchedButtons && BeingGlitched(_actionButtons[5]))) { yield return null; if (_wifiStatus != stw) { yield return "sendtochat Press was cancelled because status has changed."; yield break; } yield return "trycancel Press cancelled due to request."; }
 					yield return null;
@@ -1231,7 +1218,7 @@ public class CheatCheckout : MonoBehaviour
 				if (args.Length == 1)
 				{
 					yield return null;
-					
+
 					_actionButtons[6].OnInteract();
 					yield break;
 				}
@@ -1248,7 +1235,7 @@ public class CheatCheckout : MonoBehaviour
 						yield return "sendtochaterror Invalid format for command";
 						yield break;
 					}
-					if (!resultd.InRange(0,9))
+					if (!resultd.InRange(0, 9))
 					{
 						yield return "sendtochaterror Invalid format for command";
 						yield break;
@@ -1270,7 +1257,7 @@ public class CheatCheckout : MonoBehaviour
 		_forcedSolve = true;
 		while (_customerGave == -1) { yield return null; _actionButtons[3].OnInteract(); }
 		yield return null;
-		foreach (KMSelectable km in TPPriceButtonSetup(((float)Math.Round(_customerGave - _totalAmount, 3)).ToString())) 
+		foreach (KMSelectable km in TPPriceButtonSetup(((float)Math.Round(_customerGave - _totalAmount, 3)).ToString()))
 		{
 			km.OnInteract();
 			yield return new WaitForSeconds(0.1f);
