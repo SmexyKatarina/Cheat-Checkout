@@ -432,9 +432,9 @@ public class CheatCheckout : MonoBehaviour
 						break;
 					case "BFA":
 						result = (float)Math.Round(
-							float.Parse(hinfo[0].ToString())
+							(float.Parse(hinfo[0].ToString())
 							* int.Parse(hinfo[1].ToString())
-							* SL, 3)
+							* SL) / 5, 3)
 							* float.Parse(hinfo[2].ToString());
 						break;
 					default:
