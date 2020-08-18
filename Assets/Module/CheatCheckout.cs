@@ -203,7 +203,6 @@ public class CheatCheckout : MonoBehaviour
 				float answer = (float)Math.Round(_staticCustomerGave - _totalAmount, 3);
 				float min = answer - 0.011f;
 				float max = answer + 0.011f;
-				Debug.Log((_givenChange >= min && _givenChange <= max));
 				if (_givenChange < min && _givenChange > max)
 				{
 					Debug.LogFormat("[Cheat Checkout #{0}]: Incorrect amount of change. Given {1} but expected {2}.", _modID, _givenChange == -1 ? 0 : _givenChange, Math.Round(_customerGave - _totalAmount, 3));
