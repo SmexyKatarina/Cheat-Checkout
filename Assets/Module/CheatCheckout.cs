@@ -199,8 +199,12 @@ public class CheatCheckout : MonoBehaviour
 				break;
 			case 3: // submit
 				if (_customerGave == -1f && _givenChange == -1f) { Debug.LogFormat("[Cheat Checkout #{0}]: Slapped the customer for more money.", _modID); _customerSlaps++; GenerateCustomerPrice(); break; }
+				if (_givenChange == -1f) { _givenChange = 0f; }
 				float answer = (float)Math.Round(_staticCustomerGave - _totalAmount, 3);
-				if (!(Helper.WithinRange(_givenChange, answer - 0.011f, answer + 0.011f) || _givenChange == answer))
+				float min = answer - 0.011f;
+				float max = answer + 0.011f;
+				Debug.Log((_givenChange >= min && _givenChange <= max));
+				if (_givenChange < min && _givenChange > max)
 				{
 					Debug.LogFormat("[Cheat Checkout #{0}]: Incorrect amount of change. Given {1} but expected {2}.", _modID, _givenChange == -1 ? 0 : _givenChange, Math.Round(_customerGave - _totalAmount, 3));
 					GetComponent<KMBombModule>().HandleStrike();
@@ -279,6 +283,7 @@ public class CheatCheckout : MonoBehaviour
 						_wifiSymbols[_staticWifiStatus].enabled = false;
 						_wifiStatus = 2;
 						_wifiSymbols[_wifiStatus].enabled = true;
+						_LCDGlitch = false;
 						_blockDisplay = false;
 						break;
 					}
@@ -295,6 +300,7 @@ public class CheatCheckout : MonoBehaviour
 						_wifiSymbols[_staticWifiStatus].enabled = false;
 						_wifiStatus = 2;
 						_wifiSymbols[_wifiStatus].enabled = true;
+						_LCDGlitch = false;
 						_blockDisplay = false;
 						break;
 					}
@@ -332,6 +338,7 @@ public class CheatCheckout : MonoBehaviour
 						_shieldStatus = 2;
 						_shieldSymbols[_shieldStatus].enabled = true;
 						_currentGlitched = new bool[15];
+						_glitchedButtons = false;
 						_beingHacked = false;
 						break;
 					}
@@ -347,6 +354,7 @@ public class CheatCheckout : MonoBehaviour
 						_shieldStatus = 2;
 						_shieldSymbols[_shieldStatus].enabled = true;
 						_currentGlitched = new bool[15];
+						_glitchedButtons = false;
 						_beingHacked = false;
 						break;
 					}
@@ -499,7 +507,7 @@ public class CheatCheckout : MonoBehaviour
 
 	List<string> ParseDisplayHackInfo(int index)
 	{
-		if (!Helper.WithinRange(index, 0, 4)) { return null; }
+		if (!index.EqualsAny(0, 1, 2, 3, 4)) { return null; }
 		object[] hackInfo = _hackInformation[index];
 		List<string> displayInfo = new List<string>() { "Website: " + _chosenWebsites[index].Split(':')[0], "Hack Method: " + _chosenHackNames[index] };
 		switch (_chosenHackNames[index])
@@ -979,11 +987,16 @@ public class CheatCheckout : MonoBehaviour
 		return false;
 	}
 
-	KMSelectable[] TPPriceButtonSetup(string arg)
+	List<KMSelectable> TPPriceButtonSetup(string arg)
 	{
-		string price = String.Concat(arg.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries));
+		string[] split = arg.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+		if (split[1].Length != 3) 
+		{
+			split[1] += "0";
+		}
+		string price = String.Concat(split);
 		int totalButtons = 0;
-		KMSelectable[] array;
+		List<KMSelectable> array = new List<KMSelectable>();
 		if (price.Length >= 8)
 		{
 			return null;
@@ -998,7 +1011,6 @@ public class CheatCheckout : MonoBehaviour
 			totalButtons += int.Parse(c.ToString());
 			y--;
 		}
-		array = new KMSelectable[totalButtons + 1];
 		int x = 0;
 		int index = price.Length - 1;
 		int total = 0;
@@ -1013,7 +1025,7 @@ public class CheatCheckout : MonoBehaviour
 			{
 				for (int i = 0; i < int.Parse(price[x].ToString()) * 10; i++)
 				{
-					array[total] = _priceButtons[index - 1];
+					array.Add(_priceButtons[index - 1]);
 					total++;
 				}
 			}
@@ -1021,14 +1033,14 @@ public class CheatCheckout : MonoBehaviour
 			{
 				for (int i = 0; i < int.Parse(price[x].ToString()); i++)
 				{
-					array[total] = _priceButtons[index];
+					array.Add(_priceButtons[index]);
 					total++;
 				}
 			}
 			x++;
 			index--;
 		}
-		array[total] = _actionButtons[3];
+		array.Add(_actionButtons[3]);
 		return array;
 	}
 
@@ -1151,7 +1163,7 @@ public class CheatCheckout : MonoBehaviour
 					_actionButtons[3].OnInteract();
 					yield break;
 				}
-				else if (args.Length == 2 && float.TryParse(args[1], out resultb))
+				else if (args.Length == 2 && args[1].Contains(".") && float.TryParse(args[1], out resultb))
 				{
 					if (resultb * -1 > 0)
 					{
@@ -1159,14 +1171,13 @@ public class CheatCheckout : MonoBehaviour
 						yield break;
 					}
 					yield return null;
-					List<KMSelectable> butts = TPPriceButtonSetup(resultb.ToString()).ToList();
+					List<KMSelectable> butts = TPPriceButtonSetup(resultb.ToString());
 					while (butts.Count != 0)
 					{
-						Debug.Log(BeingGlitched(butts[0]));
 						while (_glitchedButtons && BeingGlitched(butts[0])) { yield return null; }
 						butts[0].OnInteract();
 						butts.RemoveAt(0);
-						yield return new WaitForSeconds(0.15f);
+						yield return new WaitForSeconds(0.05f);
 					}
 					yield return "solve";
 					yield break;
@@ -1265,14 +1276,4 @@ public class CheatCheckout : MonoBehaviour
 		yield break;
 	}
 
-}
-
-public static class Helper
-{
-	public static bool WithinRange<T>(this T value, T min, T max) where T : IComparable<T>
-	{
-		if (value.CompareTo(min) < 0) return false;
-		if (value.CompareTo(max) > 0) return false;
-		return true;
-	}
 }
