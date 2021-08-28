@@ -102,6 +102,7 @@ public class CheatCheckout : MonoBehaviour
 	bool _glitchedButtons = false;
 	bool _LCDGlitch = false;
 	bool _forcedSolve = false;
+	bool _statusLightGreen = false;
 
 	float _totalAmount = 0f;
 	float _givenChange = -1f;
@@ -970,6 +971,7 @@ public class CheatCheckout : MonoBehaviour
 			}
 		}
 		GetComponent<KMBombModule>().HandlePass();
+		_statusLightGreen = true;
 		Debug.LogFormat("[Cheat Checkout #{0}]: A correct amount of change was given. Module has been solved!", _modID);
 		yield break;
 	}
@@ -1086,7 +1088,7 @@ public class CheatCheckout : MonoBehaviour
 				}
 				else
 				{
-					yield return "sendtochaterror Invalid format for command";
+					yield return "sendtochaterror Invalid format for command.";
 					yield break;
 				}
 			case "lcd":
@@ -1131,7 +1133,7 @@ public class CheatCheckout : MonoBehaviour
 				{
 					if (resulta * -1 > 0)
 					{
-						yield return "sendtochaterror Invalid format for command";
+						yield return "sendtochaterror Invalid format for command.";
 						yield break;
 					}
 					for (int i = 0; i < resulta; i++)
@@ -1144,7 +1146,7 @@ public class CheatCheckout : MonoBehaviour
 				}
 				else
 				{
-					yield return "sendtochaterror Invalid format for command";
+					yield return "sendtochaterror Invalid format for command.";
 					yield break;
 				}
 			case "submit":
@@ -1154,13 +1156,14 @@ public class CheatCheckout : MonoBehaviour
 					yield return "sendtochaterror Invalid amount of arguments for this subcommand.";
 					yield break;
 				}
-				while (BeingGlitched(_actionButtons[4])) yield return null;
-				_actionButtons[4].OnInteract();
 				float resultb;
 				if (args.Length == 1)
 				{
 					yield return null;
-					while (BeingGlitched(_actionButtons[3])) yield return null;
+					while (BeingGlitched(_actionButtons[4])) { yield return null; if (_shieldStatus == 0) yield break; }
+					_actionButtons[4].OnInteract();
+					yield return new WaitForSeconds(0.1f);
+					while (BeingGlitched(_actionButtons[3])) { yield return null; if (_shieldStatus == 0) yield break; }
 					_actionButtons[3].OnInteract();
 					yield break;
 				}
@@ -1168,24 +1171,27 @@ public class CheatCheckout : MonoBehaviour
 				{
 					if (resultb * -1 > 0)
 					{
-						yield return "sendtochaterror Invalid format for command";
+						yield return "sendtochaterror Invalid format for command.";
 						yield break;
 					}
 					yield return null;
+					while (BeingGlitched(_actionButtons[4])) { yield return null; if (_shieldStatus == 0) yield break; }
+					_actionButtons[4].OnInteract();
+					yield return new WaitForSeconds(0.1f);
 					List<KMSelectable> butts = TPPriceButtonSetup(resultb.ToString());
 					while (butts.Count != 0)
 					{
-						while (BeingGlitched(butts[0])) { yield return null; }
+						while (BeingGlitched(butts[0])) { yield return null; if (_shieldStatus == 0) yield break; }
 						butts[0].OnInteract();
 						butts.RemoveAt(0);
-						yield return new WaitForSeconds(0.01f);
+						yield return new WaitForSeconds(0.1f);
 					}
 					yield return "solve";
 					yield break;
 				}
 				else
 				{
-					yield return "sendtochaterror Invalid format for command";
+					yield return "sendtochaterror Invalid format for command.";
 					yield break;
 				}
 			case "stabilize":
@@ -1239,17 +1245,17 @@ public class CheatCheckout : MonoBehaviour
 					int resultd;
 					if (!int.TryParse(args[1], out resultd))
 					{
-						yield return "sendtochaterror Invalid format for command";
+						yield return "sendtochaterror Invalid format for command.";
 						yield break;
 					}
 					if (resultd * -1 > 0)
 					{
-						yield return "sendtochaterror Invalid format for command";
+						yield return "sendtochaterror Invalid format for command.";
 						yield break;
 					}
 					if (!resultd.InRange(0, 9))
 					{
-						yield return "sendtochaterror Invalid format for command";
+						yield return "sendtochaterror Invalid format for command.";
 						yield break;
 					}
 					while ((int)_bomb.GetTime() % 10 != resultd) { yield return null; if (_shieldStatus != sts) { yield return "sendtochat Press was cancelled because status has changed."; yield break; } yield return "trycancel Press cancelled due to request."; }
@@ -1267,13 +1273,15 @@ public class CheatCheckout : MonoBehaviour
 	IEnumerator TwitchHandleForcedSolve()
 	{
 		_forcedSolve = true;
-		while (_customerGave == -1) { yield return null; _actionButtons[3].OnInteract(); }
 		yield return null;
+		if (_givenChange != -1f) { _actionButtons[4].OnInteract(); yield return new WaitForSeconds(0.1f); }
+		while (_customerGave == -1) { _actionButtons[3].OnInteract(); yield return new WaitForSeconds(0.1f); }
 		foreach (KMSelectable km in TPPriceButtonSetup(((float)Math.Round(_customerGave - _totalAmount, 3)).ToString()))
 		{
 			km.OnInteract();
 			yield return new WaitForSeconds(0.1f);
 		}
+		while (!_statusLightGreen) yield return true;
 		yield break;
 	}
 
