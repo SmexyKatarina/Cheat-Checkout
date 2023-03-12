@@ -9,15 +9,16 @@ using System.Text.RegularExpressions;
 
 public class CheatCheckout : MonoBehaviour
 {
-
 	public KMBombInfo _bomb;
 	public KMAudio _audio;
+	public KMColorblindMode _colorblindMode;
 
 	public KMSelectable[] _priceButtons;
 	public KMSelectable[] _actionButtons;
 
 	public TextMesh[] _displayTexts;
 	public TextMesh[] _buttonTexts;
+	public TextMesh[] _colorblindTexts;
 
 	public SpriteRenderer[] _wifiSymbols;
 	public SpriteRenderer[] _shieldSymbols;
@@ -96,13 +97,7 @@ public class CheatCheckout : MonoBehaviour
 	int _staticShieldStatus = -1;
 	int _hackIndex = 0;
 	int _hackCycle = -1;
-	bool _beingHacked = false;
-	bool _blockDisplay = false;
-	bool _timerStopPlz = false;
-	bool _glitchedButtons = false;
-	bool _LCDGlitch = false;
-	bool _forcedSolve = false;
-	bool _statusLightGreen = false;
+	bool _beingHacked, _blockDisplay, _timerStopPlz, _glitchedButtons, _LCDGlitch, _forcedSolve, _statusLightGreen, _colorblindActive;
 
 	float _totalAmount = 0f;
 	float _givenChange = -1f;
@@ -135,12 +130,21 @@ public class CheatCheckout : MonoBehaviour
 
 	void Start()
 	{
+		_colorblindActive = _colorblindMode.ColorblindModeActive;
+
+		ShowColorblindText(_colorblindActive);
 		GenerateHackInformation();
 		GenerateCustomerPrice();
 		//StartCoroutine(ModuleTimer());
 		_displayTexts[1].text = "Hack #" + (_hackIndex + 1);
 		_currentHackInfo = ParseDisplayHackInfo(_hackIndex);
 		StartCoroutine(ModuleTimer());
+	}
+
+	void ShowColorblindText(bool colorblindActive)
+	{
+		for (int i = 0; i < _colorblindTexts.Length; i++)
+			_colorblindTexts[i].gameObject.SetActive(colorblindActive);
 	}
 
 	void PriceButtons(KMSelectable km)
@@ -244,7 +248,9 @@ public class CheatCheckout : MonoBehaviour
 						_wifiSymbols[_staticWifiStatus].enabled = false;
 						_wifiStatus = 2;
 						_wifiSymbols[_wifiStatus].enabled = true;
-						_LCDGlitch = false;
+                        _colorblindTexts[0].text = "G";
+                        _colorblindTexts[0].color = new Color32(0, 255, 33, 255);
+                        _LCDGlitch = false;
 						_blockDisplay = false;
 						break;
 					}
@@ -261,7 +267,9 @@ public class CheatCheckout : MonoBehaviour
 						_wifiSymbols[_staticWifiStatus].enabled = false;
 						_wifiStatus = 2;
 						_wifiSymbols[_wifiStatus].enabled = true;
-						_LCDGlitch = false;
+                        _colorblindTexts[0].text = "G";
+                        _colorblindTexts[0].color = new Color32(0, 255, 33, 255);
+                        _LCDGlitch = false;
 						_blockDisplay = false;
 						break;
 					}
@@ -283,7 +291,9 @@ public class CheatCheckout : MonoBehaviour
 						_wifiSymbols[_staticWifiStatus].enabled = false;
 						_wifiStatus = 2;
 						_wifiSymbols[_wifiStatus].enabled = true;
-						_LCDGlitch = false;
+                        _colorblindTexts[0].text = "G";
+                        _colorblindTexts[0].color = new Color32(0, 255, 33, 255);
+                        _LCDGlitch = false;
 						_blockDisplay = false;
 						break;
 					}
@@ -318,7 +328,9 @@ public class CheatCheckout : MonoBehaviour
 					_shieldSymbols[_staticShieldStatus].enabled = false;
 					_shieldStatus = 2;
 					_shieldSymbols[_shieldStatus].enabled = true;
-					_currentGlitched = new bool[15];
+                    _colorblindTexts[1].text = "G";
+                    _colorblindTexts[1].color = new Color32(0, 255, 33, 255);
+                    _currentGlitched = new bool[15];
 					_glitchedButtons = false;
 					break;
 				}
@@ -337,6 +349,8 @@ public class CheatCheckout : MonoBehaviour
 						_shieldSymbols[_staticShieldStatus].enabled = false;
 						_shieldStatus = 2;
 						_shieldSymbols[_shieldStatus].enabled = true;
+						_colorblindTexts[1].text = "G";
+						_colorblindTexts[1].color = new Color32(0, 255, 33, 255);
 						_currentGlitched = new bool[15];
 						_glitchedButtons = false;
 						_beingHacked = false;
@@ -746,7 +760,9 @@ public class CheatCheckout : MonoBehaviour
 		_blockDisplay = true;
 		Debug.LogFormat("[Cheat Checkout #{0}]: Blocking display because of low wifi connection.", _modID);
 		StopAllCoroutines();
-		_displayTexts[1].color = new Color32(117, 4, 15, 255);
+		_colorblindTexts[0].text = "R";
+		_colorblindTexts[0].color = new Color32(255, 36, 36, 255);
+        _displayTexts[1].color = new Color32(255, 36, 36, 255);
 		_displayTexts[1].text = "-----";
 		StartCoroutine(ModuleTimer());
 	}
@@ -767,7 +783,9 @@ public class CheatCheckout : MonoBehaviour
 		{
 			tm.color = new Color32(117, 4, 15, 255);
 		}
-		StartCoroutine(WarningSound());
+		_colorblindTexts[1].text = "R";
+		_colorblindTexts[1].color = new Color32(255, 36, 36, 255);
+        StartCoroutine(WarningSound());
 		StartCoroutine(ThyHackTimer());
 	}
 
@@ -835,6 +853,9 @@ public class CheatCheckout : MonoBehaviour
 				_wifiSymbols[_wifiStatus].enabled = false;
 				_wifiStatus--;
 				_wifiSymbols[_wifiStatus].enabled = true;
+				_colorblindTexts[0].text = "RY"[_wifiStatus].ToString();
+				_colorblindTexts[0].color = new Color32[] { new Color32(255, 36, 36, 255), new Color32(255, 254, 36, 255) }[_wifiStatus];
+
 				if (_wifiStatus == 1)
 				{
 					_LCDGlitch = true;
@@ -852,7 +873,9 @@ public class CheatCheckout : MonoBehaviour
 				_shieldSymbols[_shieldStatus].enabled = false;
 				_shieldStatus--;
 				_shieldSymbols[_shieldStatus].enabled = true;
-				if (_shieldStatus == 1)
+                _colorblindTexts[1].text = "RY"[_shieldStatus].ToString();
+                _colorblindTexts[1].color = new Color32[] { new Color32(255, 36, 36, 255), new Color32(255, 254, 36, 255) }[_shieldStatus];
+                if (_shieldStatus == 1)
 				{
 					StartCoroutine(GlitchSeparator());
 					break;
@@ -1046,13 +1069,22 @@ public class CheatCheckout : MonoBehaviour
 	}
 
 #pragma warning disable 414
-	private readonly string TwitchHelpMessage = @"!{0} hack <index> [Goes to <index> hack], !{0} lcd/screen/display <amount/cycle,c/fullcycle,fc> [Goes forward on a specific hack information, cycle the whole lcd or cycle all 5 hacks], !{0} submit/sub [Submits with nothing to slap the customer], !{0} submit/sub <change> [Submits the answer into the module], !{0} stabilize/stbl <#/##> [Presses 'Stabilize' depending on what is needed], !{0} patch <None/#> [Press 'Patch' depending on what is needed]";
+	private readonly string TwitchHelpMessage = @"!{0} hack <index> [Goes to <index> hack], !{0} lcd/screen/display <amount/cycle,c/fullcycle,fc> [Goes forward on a specific hack information, cycle the whole lcd or cycle all 5 hacks], !{0} submit/sub [Submits with nothing to slap the customer], !{0} submit/sub <change> [Submits the answer into the module], !{0} stabilize/stbl <#/##> [Presses 'Stabilize' depending on what is needed], !{0} patch <None/#> [Press 'Patch' depending on what is needed], !{0} cb/colorblind/colourblind [Toggles colourblind mode].";
 #pragma warning restore 414
 
 	IEnumerator ProcessTwitchCommand(string command)
 	{
 		int stw = _wifiStatus;
 		int sts = _shieldStatus;
+
+		if(Regex.IsMatch(command, "cb|colo(u)?rblind"))
+        {
+			yield return null;
+            _colorblindActive = !_colorblindActive;
+			ShowColorblindText(_colorblindActive);
+			yield break;
+		}
+
 		string[] args = command.ToLower().Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 		if (args.Length >= 3)
 		{
