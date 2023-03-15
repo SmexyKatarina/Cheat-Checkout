@@ -11,6 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cf2299c8864afe4ab42466f546ae20d, type: 3}
   m_Name: WorkshopItem
   m_EditorClassIdentifier: 
-  WorkshopPublishedFileID: 2025174867
+  WorkshopPublishedFileID: 2947109047
   Title: Cheat Checkout
-  Tags: []
+  Tags:
+  - Regular Module
