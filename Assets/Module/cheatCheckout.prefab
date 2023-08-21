@@ -1023,8 +1023,8 @@ GameObject:
   - component: {fileID: 114520241080576970}
   - component: {fileID: 114108988641777288}
   - component: {fileID: 114156459678934850}
-  - component: {fileID: 114066084485903390}
   - component: {fileID: 114199499430827120}
+  - component: {fileID: 114330182750525712}
   m_Layer: 0
   m_Name: cheatCheckout
   m_TagString: Untagged
@@ -2079,7 +2079,7 @@ Transform:
   m_LocalScale: {x: 0.10875, y: 0.08437501, z: 0.0050000018}
   m_Children: []
   m_Father: {fileID: 4772531763644006}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!4 &4453649155148232
 Transform:
@@ -2215,7 +2215,7 @@ Transform:
   - {fileID: 4808567638129144}
   - {fileID: 4494305336364902}
   m_Father: {fileID: 4772531763644006}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4532772728781380
 Transform:
@@ -2492,8 +2492,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4828326131839638}
-  - {fileID: 4527008806575544}
   - {fileID: 4430255916633988}
+  - {fileID: 4527008806575544}
   m_Father: {fileID: 4978585533688022}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4610,7 +4610,7 @@ TextMesh:
   m_Anchor: 4
   m_Alignment: 1
   m_TabSize: 4
-  m_FontSize: 64
+  m_FontSize: 48
   m_FontStyle: 0
   m_RichText: 1
   m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
@@ -5130,85 +5130,6 @@ MonoBehaviour:
   AllowSelectionWrapY: 0
   ForceSelectionHighlight: 0
   ForceInteractionHighlight: 0
---- !u!114 &114066084485903390
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1758277834634452}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8087f9ee94bb2da40a1388d8b9324070, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _bomb: {fileID: 114520241080576970}
-  _audio: {fileID: 114312252875895856}
-  _colorblindMode: {fileID: 114199499430827120}
-  _priceButtons:
-  - {fileID: 114583936603242436}
-  - {fileID: 114568310209226984}
-  - {fileID: 114334627181075032}
-  - {fileID: 114218653217841710}
-  - {fileID: 114505265208013668}
-  - {fileID: 114943661191379064}
-  - {fileID: 114050481853426660}
-  - {fileID: 114305257968633716}
-  - {fileID: 114686042661912146}
-  - {fileID: 114040339660697580}
-  - {fileID: 114286428343844250}
-  - {fileID: 114602631846984448}
-  _actionButtons:
-  - {fileID: 114365741718253672}
-  - {fileID: 114013853463887346}
-  - {fileID: 114266578877167118}
-  - {fileID: 114046984326511420}
-  - {fileID: 114993868910080778}
-  - {fileID: 114360918018236588}
-  - {fileID: 114089453126070222}
-  _displayTexts:
-  - {fileID: 102834209253244248}
-  - {fileID: 102068415912776956}
-  _buttonTexts:
-  - {fileID: 102440354358167602}
-  - {fileID: 102522538112629910}
-  - {fileID: 102279614860168200}
-  - {fileID: 102691641727870164}
-  - {fileID: 102902281922488828}
-  - {fileID: 102917673406423214}
-  - {fileID: 102059785218186552}
-  - {fileID: 102413734571092820}
-  - {fileID: 102357447258147364}
-  - {fileID: 102858628501389394}
-  - {fileID: 102946839749857938}
-  - {fileID: 102523654212626112}
-  - {fileID: 102484534016505940}
-  - {fileID: 102984019840120372}
-  - {fileID: 102308721815375376}
-  - {fileID: 102446831111290002}
-  - {fileID: 102061927185596588}
-  - {fileID: 102653743739697462}
-  _colorblindTexts:
-  - {fileID: 102394641059833486}
-  - {fileID: 102086312044378890}
-  _wifiSymbols:
-  - {fileID: 212726235691359960}
-  - {fileID: 212293861981951438}
-  - {fileID: 212172912078066960}
-  _shieldSymbols:
-  - {fileID: 212466901716301990}
-  - {fileID: 212240264928692910}
-  - {fileID: 212769705758829560}
-  _cryptoSymbols:
-  - {fileID: 212073142647073398}
-  - {fileID: 212297947105602540}
-  - {fileID: 212953187054198494}
-  - {fileID: 212009916625698752}
-  - {fileID: 212665754919930058}
-  - {fileID: 212736955487570508}
-  - {fileID: 212862607579801480}
-  - {fileID: 212546583242683756}
-  - {fileID: 212787544066681684}
-  _HIPSound: {fileID: 8300000, guid: 13aa3f12d93a0f94a8a3f59f98c4a835, type: 3}
 --- !u!114 &114089453126070222
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5401,7 +5322,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1cfb889a07d5fd4e9baed7960bb397f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _colorblindMode: 0
+  _colorblindMode: 1
 --- !u!114 &114204441489198364
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5644,6 +5565,127 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - Sprites/Default
+--- !u!114 &114330182750525712
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1758277834634452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46ef331514ee1264c9d1a6e9a65622ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bomb: {fileID: 114520241080576970}
+  _audio: {fileID: 114312252875895856}
+  _colorblindMode: {fileID: 114199499430827120}
+  _displayButtons:
+  - {fileID: 114013853463887346}
+  - {fileID: 114266578877167118}
+  - {fileID: 114365741718253672}
+  _priceButtons:
+  - {fileID: 114583936603242436}
+  - {fileID: 114568310209226984}
+  - {fileID: 114334627181075032}
+  - {fileID: 114218653217841710}
+  - {fileID: 114505265208013668}
+  - {fileID: 114943661191379064}
+  - {fileID: 114050481853426660}
+  - {fileID: 114305257968633716}
+  - {fileID: 114686042661912146}
+  - {fileID: 114040339660697580}
+  - {fileID: 114286428343844250}
+  - {fileID: 114602631846984448}
+  _actionButtons:
+  - {fileID: 114046984326511420}
+  - {fileID: 114993868910080778}
+  - {fileID: 114360918018236588}
+  - {fileID: 114089453126070222}
+  _allButtons:
+  - {fileID: 114013853463887346}
+  - {fileID: 114266578877167118}
+  - {fileID: 114365741718253672}
+  - {fileID: 114583936603242436}
+  - {fileID: 114568310209226984}
+  - {fileID: 114334627181075032}
+  - {fileID: 114218653217841710}
+  - {fileID: 114505265208013668}
+  - {fileID: 114943661191379064}
+  - {fileID: 114050481853426660}
+  - {fileID: 114305257968633716}
+  - {fileID: 114686042661912146}
+  - {fileID: 114040339660697580}
+  - {fileID: 114286428343844250}
+  - {fileID: 114602631846984448}
+  - {fileID: 114046984326511420}
+  - {fileID: 114993868910080778}
+  - {fileID: 114360918018236588}
+  - {fileID: 114089453126070222}
+  _displayTexts:
+  - {fileID: 102061927185596588}
+  - {fileID: 102653743739697462}
+  - {fileID: 102068415912776956}
+  _priceTexts:
+  - {fileID: 102440354358167602}
+  - {fileID: 102522538112629910}
+  - {fileID: 102279614860168200}
+  - {fileID: 102691641727870164}
+  - {fileID: 102902281922488828}
+  - {fileID: 102917673406423214}
+  - {fileID: 102059785218186552}
+  - {fileID: 102413734571092820}
+  - {fileID: 102357447258147364}
+  - {fileID: 102858628501389394}
+  - {fileID: 102946839749857938}
+  - {fileID: 102523654212626112}
+  _actionTexts:
+  - {fileID: 102484534016505940}
+  - {fileID: 102984019840120372}
+  - {fileID: 102308721815375376}
+  - {fileID: 102446831111290002}
+  _colorblindTexts:
+  - {fileID: 102394641059833486}
+  - {fileID: 102086312044378890}
+  _customerText: {fileID: 102834209253244248}
+  _allTexts:
+  - {fileID: 102061927185596588}
+  - {fileID: 102653743739697462}
+  - {fileID: 102068415912776956}
+  - {fileID: 102440354358167602}
+  - {fileID: 102522538112629910}
+  - {fileID: 102279614860168200}
+  - {fileID: 102691641727870164}
+  - {fileID: 102902281922488828}
+  - {fileID: 102917673406423214}
+  - {fileID: 102059785218186552}
+  - {fileID: 102413734571092820}
+  - {fileID: 102357447258147364}
+  - {fileID: 102858628501389394}
+  - {fileID: 102946839749857938}
+  - {fileID: 102523654212626112}
+  - {fileID: 102484534016505940}
+  - {fileID: 102984019840120372}
+  - {fileID: 102308721815375376}
+  - {fileID: 102446831111290002}
+  _wifiSymbols:
+  - {fileID: 212726235691359960}
+  - {fileID: 212293861981951438}
+  - {fileID: 212172912078066960}
+  _VPNSymbols:
+  - {fileID: 212466901716301990}
+  - {fileID: 212240264928692910}
+  - {fileID: 212769705758829560}
+  _cryptoSymbols:
+  - {fileID: 212073142647073398}
+  - {fileID: 212297947105602540}
+  - {fileID: 212953187054198494}
+  - {fileID: 212009916625698752}
+  - {fileID: 212665754919930058}
+  - {fileID: 212736955487570508}
+  - {fileID: 212862607579801480}
+  - {fileID: 212546583242683756}
+  - {fileID: 212787544066681684}
+  _HIPSound: {fileID: 8300000, guid: 13aa3f12d93a0f94a8a3f59f98c4a835, type: 3}
 --- !u!114 &114334627181075032
 MonoBehaviour:
   m_ObjectHideFlags: 1
