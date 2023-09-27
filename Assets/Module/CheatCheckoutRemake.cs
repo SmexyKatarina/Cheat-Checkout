@@ -757,17 +757,16 @@ public class CheatCheckoutRemake : MonoBehaviour
         else if (Regex.IsMatch(cmd, @"^(stabilize|stbl)\s(\d{1,2})$"))
         {
             if (t.WifiStatus == 2) { yield return "sendtochaterror {0}, the WIFI is already stabilized!"; }
+            yield return "strike";
             if (t.WifiStatus == 0)
             {
                 while (t.IsGlitched(Array.IndexOf(_allButtons, _actionButtons[2])) || int.Parse(_bomb.GetFormattedTime().Split(':')[1][1].ToString()) != int.Parse(args[1])) { yield return "trycancel Stablizing was cancelled."; yield return null; }
-                yield return "strike";
                 _actionButtons[2].OnInteract();
                 yield break;
             }
             else if (t.WifiStatus == 1)
             {
                 while (t.IsGlitched(Array.IndexOf(_allButtons, _actionButtons[2])) || int.Parse(_bomb.GetFormattedTime().Split(':')[1].ToString()) != int.Parse(args[1])) { yield return "trycancel Stablizing was cancelled."; if (t.WifiStatus != 1) { yield return "sendtochaterror Module status changed. Cancelling button press"; yield break; } yield return null; }
-                yield return "strike";
                 _actionButtons[2].OnInteract();
                 yield break;
             }
@@ -776,11 +775,11 @@ public class CheatCheckoutRemake : MonoBehaviour
         else if (Regex.IsMatch(cmd, @"^(patch)|((patch)\s(\d{1}))$"))
         {
             if (t.VpnStatus == 2) { yield return "sendtochaterror {0}, the VPN is already fixed!"; }
+            yield return "strike";
             if (args.Length == 2)
             {
                 yield return null;
                 while (int.Parse(_bomb.GetFormattedTime().Split(':')[1][1].ToString()) != int.Parse(args[1])) { yield return "trycancel Fixing was cancelled."; yield return null; }
-                yield return "strike";
                 _actionButtons[3].OnInteract();
                 yield break;
             }
