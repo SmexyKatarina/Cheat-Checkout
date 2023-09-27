@@ -248,7 +248,7 @@ public class CheatCheckoutRemake : MonoBehaviour
         int timeLastTwo = int.Parse(time[1]);
         int serialSum = _bomb.GetSerialNumberNumbers().Sum();
         int serialLast = _bomb.GetSerialNumberNumbers().Last();
-        int timeLast = int.Parse(_bomb.GetFormattedTime().Split(':')[1].Last().ToString());
+        int timeLast = int.Parse(time[1].Last().ToString());
         if (t.HackingModeEnabled) 
         {
             if (index == 3) 
@@ -451,6 +451,7 @@ public class CheatCheckoutRemake : MonoBehaviour
             _customerTotal = Math.Round(rnd.Range((float)(_hackTotalInCrypto - _hackTotalInCrypto * 0.25f), (float)(_hackTotalInCrypto + _hackTotalInCrypto * 0.25f)), 3),
             _customerTotal <= _hackTotalInCrypto ? "The customer has to be slapped." : "The customer has enough. The expected change is: " + (_expectedChange = Math.Round(_customerTotal - _hackTotalInCrypto, 3)));
         _customerText.text = _customerTotal.ToString();
+        _customerText.color = new Color32(96, 188, 84, 255);
         _displayTexts[2].text = "Hack #1";
         _timer = StartCoroutine(t.StartTimer(70, 90));
     }
@@ -756,16 +757,16 @@ public class CheatCheckoutRemake : MonoBehaviour
         else if (Regex.IsMatch(cmd, @"^(stabilize|stbl)\s(\d{1,2})$"))
         {
             if (t.WifiStatus == 2) { yield return "sendtochaterror {0}, the WIFI is already stabilized!"; }
-            if (args[1].Length == 1)
+            if (t.WifiStatus == 0)
             {
                 while (t.IsGlitched(Array.IndexOf(_allButtons, _actionButtons[2])) || int.Parse(_bomb.GetFormattedTime().Split(':')[1][1].ToString()) != int.Parse(args[1])) { yield return "trycancel Stablizing was cancelled."; yield return null; }
                 yield return "strike";
                 _actionButtons[2].OnInteract();
                 yield break;
             }
-            else if (args[1].Length == 2)
+            else if (t.WifiStatus == 1)
             {
-                while (t.IsGlitched(Array.IndexOf(_allButtons, _actionButtons[2])) || int.Parse(_bomb.GetFormattedTime().Split(':')[1].ToString()) != int.Parse(args[1])) { yield return "trycancel Stablizing was cancelled."; yield return null; }
+                while (t.IsGlitched(Array.IndexOf(_allButtons, _actionButtons[2])) || int.Parse(_bomb.GetFormattedTime().Split(':')[1].ToString()) != int.Parse(args[1])) { yield return "trycancel Stablizing was cancelled."; if (t.WifiStatus != 1) { yield return "sendtochaterror Module status changed. Cancelling button press"; yield break; } yield return null; }
                 yield return "strike";
                 _actionButtons[2].OnInteract();
                 yield break;

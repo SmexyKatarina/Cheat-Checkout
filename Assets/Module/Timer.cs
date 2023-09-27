@@ -91,6 +91,7 @@ public class Timer {
                 _ccr.Strike();
                 Debug.LogFormat("[Cheat Checkout #{0}]: UH OH! Module hacked! L for you I guess, module reset!", _ccr.GetModId());
                 _ccr.GenerateModule();
+                break;
             }
             if ((warning = !warning) == false)
                 customerDisplay.text = (delay - timer).ToString();
