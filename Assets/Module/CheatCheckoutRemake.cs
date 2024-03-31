@@ -244,11 +244,11 @@ public class CheatCheckoutRemake : MonoBehaviour
     {
         int index = Array.IndexOf(_actionButtons, b);
         b.AddInteractionPunch(0.25f);
-        string[] time = _bomb.GetFormattedTime().Split(':');
-        int timeLastTwo = int.Parse(time[1]);
+        int time = (int)_bomb.GetTime();
+        int timeLastTwo = time % 60;
         int serialSum = _bomb.GetSerialNumberNumbers().Sum();
         int serialLast = _bomb.GetSerialNumberNumbers().Last();
-        int timeLast = int.Parse(time[1].Last().ToString());
+        int timeLast = time % 10;
         if (t.HackingModeEnabled) 
         {
             if (index == 3) 
@@ -760,13 +760,13 @@ public class CheatCheckoutRemake : MonoBehaviour
             yield return "strike";
             if (t.WifiStatus == 0)
             {
-                while (t.IsGlitched(Array.IndexOf(_allButtons, _actionButtons[2])) || int.Parse(_bomb.GetFormattedTime().Split(':')[1][1].ToString()) != int.Parse(args[1])) { yield return "trycancel Stablizing was cancelled."; yield return null; }
+                while (t.IsGlitched(Array.IndexOf(_allButtons, _actionButtons[2])) || (int)(_bomb.GetTime() % 10) != int.Parse(args[1])) { yield return "trycancel Stablizing was cancelled."; yield return null; }
                 _actionButtons[2].OnInteract();
                 yield break;
             }
             else if (t.WifiStatus == 1)
             {
-                while (t.IsGlitched(Array.IndexOf(_allButtons, _actionButtons[2])) || int.Parse(_bomb.GetFormattedTime().Split(':')[1].ToString()) != int.Parse(args[1])) { yield return "trycancel Stablizing was cancelled."; if (t.WifiStatus != 1) { yield return "sendtochaterror Module status changed. Cancelling button press"; yield break; } yield return null; }
+                while (t.IsGlitched(Array.IndexOf(_allButtons, _actionButtons[2])) || (int)(_bomb.GetTime() % 60) != int.Parse(args[1])) { Debug.Log(_bomb.GetTime() % 60 != int.Parse(args[1]+ "")); yield return "trycancel Stablizing was cancelled."; if (t.WifiStatus != 1) { yield return "sendtochaterror Module status changed. Cancelling button press"; yield break; } yield return null; }
                 _actionButtons[2].OnInteract();
                 yield break;
             }
@@ -779,7 +779,7 @@ public class CheatCheckoutRemake : MonoBehaviour
             if (args.Length == 2)
             {
                 yield return null;
-                while (int.Parse(_bomb.GetFormattedTime().Split(':')[1][1].ToString()) != int.Parse(args[1])) { yield return "trycancel Fixing was cancelled."; yield return null; }
+                while ((int)(_bomb.GetTime() % 10) != int.Parse(args[1])) { yield return "trycancel Fixing was cancelled."; yield return null; }
                 _actionButtons[3].OnInteract();
                 yield break;
             }

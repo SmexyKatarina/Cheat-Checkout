@@ -14,7 +14,7 @@ MonoBehaviour:
   id: kataCheatCheckout
   title: Cheat Checkout
   author: Katarina
-  description: 'Cheat Checkout - V3.2.1
+  description: 'Cheat Checkout - V3.3
 
     "Hacking service is not that easy. Also, be careful with every transaction."
 
@@ -38,6 +38,6 @@ MonoBehaviour:
     If there are any problems that you may have, contact me via Discord: xxthedweebxx
 
 '
-  version: 3.2.1
+  version: 3.3
   outputFolder: build
   previewImage: {fileID: 2800000, guid: 19e60d3832d3f884aaa03957124fa604, type: 3}
