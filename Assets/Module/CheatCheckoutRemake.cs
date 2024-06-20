@@ -157,8 +157,8 @@ public class CheatCheckoutRemake : MonoBehaviour
                     }
                     else
                     {
-                        
-                        if (++_hackCycle >= _hackList[_hackIndex].GetDisplayValues(false).Length)
+                        _hackCycle++;
+                        if (_hackCycle >= _hackList[_hackIndex].GetDisplayValues(false).Length)
                         {
                             _displayTexts[2].text = "Hack #" + (_hackIndex + 1);
                             _fastCycle = false;
