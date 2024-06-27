@@ -164,6 +164,9 @@ public class Timer {
         _glitchedButtonTexts = new Dictionary<int, string>();
         _glitched = new bool[19];
         HackingModeEnabled = false; GlitchButtons = false;
+        _ccr._hackCycle = 0;
+        _ccr._hackIndex = 0;
+        _ccr._fastCycle = false;
         DisableAll();
         _wifiSymbols[wifiStatus].enabled = true;
         _VPNSymbols[vpnStatus].enabled = true;

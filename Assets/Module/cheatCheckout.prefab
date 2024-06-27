@@ -5686,6 +5686,9 @@ MonoBehaviour:
   - {fileID: 212546583242683756}
   - {fileID: 212787544066681684}
   _HIPSound: {fileID: 8300000, guid: 13aa3f12d93a0f94a8a3f59f98c4a835, type: 3}
+  _hackIndex: 0
+  _hackCycle: 0
+  _fastCycle: 0
 --- !u!114 &114334627181075032
 MonoBehaviour:
   m_ObjectHideFlags: 1
