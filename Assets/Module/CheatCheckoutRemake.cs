@@ -209,11 +209,13 @@ public class CheatCheckoutRemake : MonoBehaviour
         switch (index) 
         {
             case 0:
-                if (--_hackIndex < 0) _hackIndex = 0;
+                _hackIndex--;
+                if (_hackIndex < 0) _hackIndex = 0;
                 _displayTexts[2].text = "Hack #" + (_hackIndex+1);
                 break;
             case 1:
-                if (++_hackIndex >= _hackList.Count) _hackIndex = _hackList.Count - 1;
+                _hackIndex++;
+                if (_hackIndex >= _hackList.Count) _hackIndex = _hackList.Count - 1;
                 _displayTexts[2].text = "Hack #" + (_hackIndex+1);
                 break;
             case 2:
