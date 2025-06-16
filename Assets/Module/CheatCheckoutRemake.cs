@@ -641,6 +641,11 @@ public class CheatCheckoutRemake : MonoBehaviour
         {
             yield return null;
             if (t.DisableDisplay) { yield return "sendtochat Display is disabled because of wifi status!"; yield break; }
+            while (_hackCycle != 0)
+            {
+                while (t.IsGlitched(Array.IndexOf(_allButtons, _displayButtons[2]))) { yield return "trycancel Cycle was cancelled."; yield return null; }
+                _displayButtons[2].OnInteractEnded();
+            }
             int index = int.Parse(args[1]) - 1;
             while (_hackIndex != index)
             {
