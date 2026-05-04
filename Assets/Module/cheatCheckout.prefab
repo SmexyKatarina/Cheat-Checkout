@@ -1024,7 +1024,7 @@ GameObject:
   - component: {fileID: 114108988641777288}
   - component: {fileID: 114156459678934850}
   - component: {fileID: 114199499430827120}
-  - component: {fileID: 114330182750525712}
+  - component: {fileID: 114714737015961090}
   m_Layer: 0
   m_Name: cheatCheckout
   m_TagString: Untagged
@@ -1967,7 +1967,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1128124662259628}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.6099999, z: 0.032}
+  m_LocalPosition: {x: 0, y: 0.6099999, z: -0.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4689782664540568}
@@ -2289,7 +2289,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1381100784051912}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.61, z: 0.032}
+  m_LocalPosition: {x: 0, y: 0.61, z: -0.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4256326486682692}
@@ -2530,7 +2530,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1499421892564748}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.55, z: 0}
+  m_LocalPosition: {x: 0, y: 0.55, z: -0.05}
   m_LocalScale: {x: 1, y: 5, z: 1}
   m_Children: []
   m_Father: {fileID: 4527008806575544}
@@ -2802,7 +2802,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2870,7 +2870,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2938,7 +2938,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3040,7 +3040,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3074,7 +3074,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3176,7 +3176,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3244,7 +3244,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3380,7 +3380,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3414,7 +3414,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3618,7 +3618,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3720,7 +3720,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3754,7 +3754,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3822,7 +3822,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3890,7 +3890,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4026,7 +4026,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4060,7 +4060,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4094,7 +4094,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4128,7 +4128,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4162,7 +4162,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4196,7 +4196,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 9513c42cc2ac3e246a69cbc6a7e20cd0, type: 2}
+  - {fileID: 2100000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4568,10 +4568,10 @@ TextMesh:
   m_Anchor: 4
   m_Alignment: 1
   m_TabSize: 4
-  m_FontSize: 28
+  m_FontSize: 24
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -4592,7 +4592,7 @@ TextMesh:
   m_FontSize: 72
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -4612,8 +4612,8 @@ TextMesh:
   m_TabSize: 4
   m_FontSize: 48
   m_FontStyle: 0
-  m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_RichText: 0
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -4655,7 +4655,7 @@ TextMesh:
   m_FontSize: 28
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -4676,7 +4676,7 @@ TextMesh:
   m_FontSize: 32
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -4697,7 +4697,7 @@ TextMesh:
   m_FontSize: 28
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -4739,7 +4739,7 @@ TextMesh:
   m_FontSize: 28
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -4757,10 +4757,10 @@ TextMesh:
   m_Anchor: 4
   m_Alignment: 1
   m_TabSize: 4
-  m_FontSize: 28
+  m_FontSize: 24
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -4781,7 +4781,7 @@ TextMesh:
   m_FontSize: 32
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -4802,7 +4802,7 @@ TextMesh:
   m_FontSize: 32
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -4823,7 +4823,7 @@ TextMesh:
   m_FontSize: 28
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -4844,7 +4844,7 @@ TextMesh:
   m_FontSize: 28
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -4865,7 +4865,7 @@ TextMesh:
   m_FontSize: 72
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -4886,7 +4886,7 @@ TextMesh:
   m_FontSize: 28
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -4907,7 +4907,7 @@ TextMesh:
   m_FontSize: 64
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -4928,7 +4928,7 @@ TextMesh:
   m_FontSize: 28
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -4949,7 +4949,7 @@ TextMesh:
   m_FontSize: 28
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -4970,7 +4970,7 @@ TextMesh:
   m_FontSize: 28
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -4991,7 +4991,7 @@ TextMesh:
   m_FontSize: 28
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -5012,7 +5012,7 @@ TextMesh:
   m_FontSize: 32
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 962f46a4693363c4799646c70464f5fd, type: 3}
+  m_Font: {fileID: 12800000, guid: a1507d21a5a4e754aaaa747782b14e4e, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4283743328
@@ -5565,130 +5565,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - Sprites/Default
---- !u!114 &114330182750525712
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1758277834634452}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46ef331514ee1264c9d1a6e9a65622ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _bomb: {fileID: 114520241080576970}
-  _audio: {fileID: 114312252875895856}
-  _colorblindMode: {fileID: 114199499430827120}
-  _displayButtons:
-  - {fileID: 114013853463887346}
-  - {fileID: 114266578877167118}
-  - {fileID: 114365741718253672}
-  _priceButtons:
-  - {fileID: 114583936603242436}
-  - {fileID: 114568310209226984}
-  - {fileID: 114334627181075032}
-  - {fileID: 114218653217841710}
-  - {fileID: 114505265208013668}
-  - {fileID: 114943661191379064}
-  - {fileID: 114050481853426660}
-  - {fileID: 114305257968633716}
-  - {fileID: 114686042661912146}
-  - {fileID: 114040339660697580}
-  - {fileID: 114286428343844250}
-  - {fileID: 114602631846984448}
-  _actionButtons:
-  - {fileID: 114046984326511420}
-  - {fileID: 114993868910080778}
-  - {fileID: 114360918018236588}
-  - {fileID: 114089453126070222}
-  _allButtons:
-  - {fileID: 114013853463887346}
-  - {fileID: 114266578877167118}
-  - {fileID: 114365741718253672}
-  - {fileID: 114583936603242436}
-  - {fileID: 114568310209226984}
-  - {fileID: 114334627181075032}
-  - {fileID: 114218653217841710}
-  - {fileID: 114505265208013668}
-  - {fileID: 114943661191379064}
-  - {fileID: 114050481853426660}
-  - {fileID: 114305257968633716}
-  - {fileID: 114686042661912146}
-  - {fileID: 114040339660697580}
-  - {fileID: 114286428343844250}
-  - {fileID: 114602631846984448}
-  - {fileID: 114046984326511420}
-  - {fileID: 114993868910080778}
-  - {fileID: 114360918018236588}
-  - {fileID: 114089453126070222}
-  _displayTexts:
-  - {fileID: 102061927185596588}
-  - {fileID: 102653743739697462}
-  - {fileID: 102068415912776956}
-  _priceTexts:
-  - {fileID: 102440354358167602}
-  - {fileID: 102522538112629910}
-  - {fileID: 102279614860168200}
-  - {fileID: 102691641727870164}
-  - {fileID: 102902281922488828}
-  - {fileID: 102917673406423214}
-  - {fileID: 102059785218186552}
-  - {fileID: 102413734571092820}
-  - {fileID: 102357447258147364}
-  - {fileID: 102858628501389394}
-  - {fileID: 102946839749857938}
-  - {fileID: 102523654212626112}
-  _actionTexts:
-  - {fileID: 102484534016505940}
-  - {fileID: 102984019840120372}
-  - {fileID: 102308721815375376}
-  - {fileID: 102446831111290002}
-  _colorblindTexts:
-  - {fileID: 102394641059833486}
-  - {fileID: 102086312044378890}
-  _customerText: {fileID: 102834209253244248}
-  _allTexts:
-  - {fileID: 102061927185596588}
-  - {fileID: 102653743739697462}
-  - {fileID: 102068415912776956}
-  - {fileID: 102440354358167602}
-  - {fileID: 102522538112629910}
-  - {fileID: 102279614860168200}
-  - {fileID: 102691641727870164}
-  - {fileID: 102902281922488828}
-  - {fileID: 102917673406423214}
-  - {fileID: 102059785218186552}
-  - {fileID: 102413734571092820}
-  - {fileID: 102357447258147364}
-  - {fileID: 102858628501389394}
-  - {fileID: 102946839749857938}
-  - {fileID: 102523654212626112}
-  - {fileID: 102484534016505940}
-  - {fileID: 102984019840120372}
-  - {fileID: 102308721815375376}
-  - {fileID: 102446831111290002}
-  _wifiSymbols:
-  - {fileID: 212726235691359960}
-  - {fileID: 212293861981951438}
-  - {fileID: 212172912078066960}
-  _VPNSymbols:
-  - {fileID: 212466901716301990}
-  - {fileID: 212240264928692910}
-  - {fileID: 212769705758829560}
-  _cryptoSymbols:
-  - {fileID: 212073142647073398}
-  - {fileID: 212297947105602540}
-  - {fileID: 212953187054198494}
-  - {fileID: 212009916625698752}
-  - {fileID: 212665754919930058}
-  - {fileID: 212736955487570508}
-  - {fileID: 212862607579801480}
-  - {fileID: 212546583242683756}
-  - {fileID: 212787544066681684}
-  _HIPSound: {fileID: 8300000, guid: 13aa3f12d93a0f94a8a3f59f98c4a835, type: 3}
-  _hackIndex: 0
-  _hackCycle: 0
-  _fastCycle: 0
 --- !u!114 &114334627181075032
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6266,6 +6142,132 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - GUI/KT 3D Text
+--- !u!114 &114714737015961090
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1758277834634452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33e01ff4e9aa7c34ba20a24cf9d2dea9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bomb: {fileID: 114520241080576970}
+  _audio: {fileID: 114312252875895856}
+  _colorblindMode: {fileID: 114199499430827120}
+  _displayButtons:
+  - {fileID: 114013853463887346}
+  - {fileID: 114266578877167118}
+  - {fileID: 114365741718253672}
+  _priceButtons:
+  - {fileID: 114583936603242436}
+  - {fileID: 114568310209226984}
+  - {fileID: 114334627181075032}
+  - {fileID: 114218653217841710}
+  - {fileID: 114505265208013668}
+  - {fileID: 114943661191379064}
+  - {fileID: 114050481853426660}
+  - {fileID: 114305257968633716}
+  - {fileID: 114686042661912146}
+  - {fileID: 114040339660697580}
+  - {fileID: 114286428343844250}
+  - {fileID: 114602631846984448}
+  _actionsButtons:
+  - {fileID: 114046984326511420}
+  - {fileID: 114993868910080778}
+  - {fileID: 114360918018236588}
+  - {fileID: 114089453126070222}
+  _allButtons:
+  - {fileID: 114013853463887346}
+  - {fileID: 114266578877167118}
+  - {fileID: 114365741718253672}
+  - {fileID: 114583936603242436}
+  - {fileID: 114568310209226984}
+  - {fileID: 114334627181075032}
+  - {fileID: 114218653217841710}
+  - {fileID: 114505265208013668}
+  - {fileID: 114943661191379064}
+  - {fileID: 114050481853426660}
+  - {fileID: 114305257968633716}
+  - {fileID: 114686042661912146}
+  - {fileID: 114040339660697580}
+  - {fileID: 114286428343844250}
+  - {fileID: 114602631846984448}
+  - {fileID: 114046984326511420}
+  - {fileID: 114993868910080778}
+  - {fileID: 114360918018236588}
+  - {fileID: 114089453126070222}
+  _displayTexts:
+  - {fileID: 102061927185596588}
+  - {fileID: 102653743739697462}
+  - {fileID: 102068415912776956}
+  _priceTexts:
+  - {fileID: 102440354358167602}
+  - {fileID: 102522538112629910}
+  - {fileID: 102279614860168200}
+  - {fileID: 102691641727870164}
+  - {fileID: 102902281922488828}
+  - {fileID: 102917673406423214}
+  - {fileID: 102059785218186552}
+  - {fileID: 102413734571092820}
+  - {fileID: 102357447258147364}
+  - {fileID: 102858628501389394}
+  - {fileID: 102946839749857938}
+  - {fileID: 102523654212626112}
+  _actionTexts:
+  - {fileID: 102484534016505940}
+  - {fileID: 102984019840120372}
+  - {fileID: 102308721815375376}
+  - {fileID: 102446831111290002}
+  _colorblindTexts:
+  - {fileID: 102394641059833486}
+  - {fileID: 102086312044378890}
+  _customerText: {fileID: 102834209253244248}
+  _allTexts:
+  - {fileID: 102061927185596588}
+  - {fileID: 102653743739697462}
+  - {fileID: 102068415912776956}
+  - {fileID: 102440354358167602}
+  - {fileID: 102522538112629910}
+  - {fileID: 102279614860168200}
+  - {fileID: 102691641727870164}
+  - {fileID: 102902281922488828}
+  - {fileID: 102917673406423214}
+  - {fileID: 102059785218186552}
+  - {fileID: 102413734571092820}
+  - {fileID: 102357447258147364}
+  - {fileID: 102858628501389394}
+  - {fileID: 102946839749857938}
+  - {fileID: 102523654212626112}
+  - {fileID: 102484534016505940}
+  - {fileID: 102984019840120372}
+  - {fileID: 102308721815375376}
+  - {fileID: 102446831111290002}
+  _wifiSymbols:
+  - {fileID: 212726235691359960}
+  - {fileID: 212293861981951438}
+  - {fileID: 212172912078066960}
+  _VPNSymbols:
+  - {fileID: 212466901716301990}
+  - {fileID: 212240264928692910}
+  - {fileID: 212769705758829560}
+  _cryptoSymbols:
+  - {fileID: 212073142647073398}
+  - {fileID: 212297947105602540}
+  - {fileID: 212953187054198494}
+  - {fileID: 212009916625698752}
+  - {fileID: 212665754919930058}
+  - {fileID: 212736955487570508}
+  - {fileID: 212862607579801480}
+  - {fileID: 212546583242683756}
+  - {fileID: 212787544066681684}
+  _HIPSound: {fileID: 8300000, guid: 13aa3f12d93a0f94a8a3f59f98c4a835, type: 3}
+  _wifiStatus: 2
+  _wifiGlitchType: 2
+  _vpnStatus: 2
+  _glitchedButtons: 
+  _hackInProgress: 0
 --- !u!114 &114730313136937660
 MonoBehaviour:
   m_ObjectHideFlags: 1
