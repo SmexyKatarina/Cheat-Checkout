@@ -237,7 +237,7 @@ public class CheatCheckoutV3 : MonoBehaviour
 				if (_glitchedButtons.Contains(Array.IndexOf(_allButtons, displayButton)))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Cheat Checkout #{0}]: Strike! You clicked a glitched button!", _modID);
+					Debug.LogFormat("[Cheat Checkout #{0}] Strike! You clicked a glitched button!", _modID);
 					return false;
 				}
 
@@ -255,7 +255,7 @@ public class CheatCheckoutV3 : MonoBehaviour
 				if (_glitchedButtons.Contains(Array.IndexOf(_allButtons, priceButton)))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Cheat Checkout #{0}]: Strike! You clicked a glitched button!", _modID);
+					Debug.LogFormat("[Cheat Checkout #{0}] Strike! You clicked a glitched button!", _modID);
 					return false;
 				}
 
@@ -273,7 +273,7 @@ public class CheatCheckoutV3 : MonoBehaviour
 				if (_glitchedButtons.Contains(Array.IndexOf(_allButtons, actionButton)))
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Cheat Checkout #{0}]: Strike! You clicked a glitched button!", _modID);
+					Debug.LogFormat("[Cheat Checkout #{0}] Strike! You clicked a glitched button!", _modID);
 					return false;
 				}
 
@@ -347,7 +347,7 @@ public class CheatCheckoutV3 : MonoBehaviour
 		_chosenCrypto = _possibleCryptos[crypto];
 		_cryptoSymbols[crypto].enabled = true;
 
-		Debug.LogFormat("[Cheat Checkout #{0}]: The chosen crypto was {1} (Priced at: {2})", _modID, _chosenCrypto.Name, _chosenCrypto.Price);
+		Debug.LogFormat("[Cheat Checkout #{0}] The chosen crypto was {1} (Priced at: {2})", _modID, _chosenCrypto.Name, _chosenCrypto.Price);
 
 		// Generate the websites and hacks
 		for (int i = 0; i < 5; i++)
@@ -357,13 +357,13 @@ public class CheatCheckoutV3 : MonoBehaviour
 			foreach (string s in hack.GetLogInfo(_modID, i + 1)) Debug.Log(s);
 		}
 
-		Debug.LogFormat("[Cheat Checkout #{0}]: The totals (after crypto conversion and rounding): {1}", _modID, _hackGenerator.GetHackCryptoTotals());
+		Debug.LogFormat("[Cheat Checkout #{0}] The totals (after crypto conversion and rounding): {1}", _modID, _hackGenerator.GetHackCryptoTotals());
 
 		// Generate the customers price, sometimes being under.
 		_customerPrice = Math.Round(rnd.Range((float)_hackGenerator.GetHackCryptoTotals() * 0.8f, (float)_hackGenerator.GetHackCryptoTotals() * 1.2f), 3);
 		_customerText.text = _customerPrice.ToString();
 
-		Debug.LogFormat("[Cheat Checkout #{0}]: The customer is offering {1}. This is {2}",
+		Debug.LogFormat("[Cheat Checkout #{0}] The customer is offering {1}. This is {2}",
 			_modID,
 			_customerPrice,
 			_customerPrice >= _hackGenerator.GetHackCryptoTotals()
@@ -415,7 +415,7 @@ public class CheatCheckoutV3 : MonoBehaviour
 		_customerPrice = Math.Round(_customerPrice * rnd.Range(1.1f, 1.25f), 3);
 		// Update text.
 		_customerText.text = _customerPrice.ToString();
-		Debug.LogFormat("[Cheat Checkout #{0}]: The customer is now offering {1}. This is {2}",
+		Debug.LogFormat("[Cheat Checkout #{0}] The customer is now offering {1}. This is {2}",
 			_modID,
 			_customerPrice,
 			_customerPrice >= _hackGenerator.GetHackCryptoTotals()
@@ -497,7 +497,7 @@ public class CheatCheckoutV3 : MonoBehaviour
 				// If the customer needs to be slapped and there is no current change being submitted
 				if (_customerPrice < total && _submittingChange == 0.0d)
 				{
-					Debug.LogFormat("[Cheat Checkout #{0}]: Slapping customer, total {1} times.", _modID, _slaps + 1);
+					Debug.LogFormat("[Cheat Checkout #{0}] Slapping customer, total {1} times.", _modID, _slaps + 1);
 					SlapCustomer();
 					break;
 				}
@@ -505,14 +505,14 @@ public class CheatCheckoutV3 : MonoBehaviour
 				else if (_customerPrice < total && _submittingChange != 0.0d)
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Cheat Checkout #{0}]: Strike! You must slap the customer due to their price being less than the total. Customer is giving {1} and the total is {2}.", _modID, _customerPrice, total);
+					Debug.LogFormat("[Cheat Checkout #{0}] Strike! You must slap the customer due to their price being less than the total. Customer is giving {1} and the total is {2}.", _modID, _customerPrice, total);
 					break;
 				}
 				// If the change being submitted is not within range of the answer
 				else if (!inRange)
 				{
 					GetComponent<KMBombModule>().HandleStrike();
-					Debug.LogFormat("[Cheat Checkout #{0}]: Strike! You gave {1} change back, but you were supposed to give them back {2} (within +- 0.01 range so {3}-{4}) ", _modID, _submittingChange, Math.Round(_customerPrice - total, 3), minRange, maxRange);
+					Debug.LogFormat("[Cheat Checkout #{0}] Strike! You gave {1} change back, but you were supposed to give them back {2} (within +- 0.01 range so {3}-{4}) ", _modID, _submittingChange, Math.Round(_customerPrice - total, 3), minRange, maxRange);
 					break;
 				}
 				// If the correct change is submitted within range.
@@ -520,7 +520,7 @@ public class CheatCheckoutV3 : MonoBehaviour
 				{
 					GetComponent<KMBombModule>().HandlePass();
 					_modSolved = true;
-					Debug.LogFormat("[Cheat Checkout #{0}]: Solved! Playing solve animation...", _modID);
+					Debug.LogFormat("[Cheat Checkout #{0}] Solved! Playing solve animation...", _modID);
 					StopAllCoroutines();
 					SolveSequence();
 					break;
@@ -543,13 +543,13 @@ public class CheatCheckoutV3 : MonoBehaviour
 					case 1:
 						if (timePressed == snSum)
 						{
-							Debug.LogFormat("[Cheat Checkout #{0}]: Wifi was stabilized.", _modID);
+							Debug.LogFormat("[Cheat Checkout #{0}] Wifi was stabilized.", _modID);
 							UpdateWifiStatus(2);
 						}
 						else
 						{
 							GetComponent<KMBombModule>().HandleStrike();
-							Debug.LogFormat("[Cheat Checkout #{0}]: Strike! You tried to stabilize your wifi at {1} but you needed to stablize at {2}.", _modID, timePressed, snSum);
+							Debug.LogFormat("[Cheat Checkout #{0}] Strike! You tried to stabilize your wifi at {1} but you needed to stablize at {2}.", _modID, timePressed, snSum);
 						}
 						break;
 					// Red, success if the last digit of the timer matches the last digit of the serial number
@@ -557,13 +557,13 @@ public class CheatCheckoutV3 : MonoBehaviour
 					case 0:
 						if (timerLast == snLast)
 						{
-							Debug.LogFormat("[Cheat Checkout #{0}]: Wifi was reset.", _modID);
+							Debug.LogFormat("[Cheat Checkout #{0}] Wifi was reset.", _modID);
 							UpdateWifiStatus(2);
 						}
 						else
 						{
 							GetComponent<KMBombModule>().HandleStrike();
-							Debug.LogFormat("[Cheat Checkout #{0}]: Strike! You tried to reset your router at {1} but you needed to reset it at {2}", _modID, timerLast, snLast);
+							Debug.LogFormat("[Cheat Checkout #{0}] Strike! You tried to reset your router at {1} but you needed to reset it at {2}", _modID, timerLast, snLast);
 						}
 						break;
 				}
@@ -577,7 +577,7 @@ public class CheatCheckoutV3 : MonoBehaviour
 						break;
 					// Yellow, success at any time.
 					case 1:
-						Debug.LogFormat("[Cheat Checkout #{0}]: VPN was repaired.", _modID);
+						Debug.LogFormat("[Cheat Checkout #{0}] VPN was repaired.", _modID);
 						UpdateVPNStatus(2);
 						break;
 					// Red, scary mode owo. Patch at the last digit of SN and timer equal the same.
@@ -585,14 +585,14 @@ public class CheatCheckoutV3 : MonoBehaviour
 					case 0:
 						if (timerLast == snLast)
 						{
-							Debug.LogFormat("[Cheat Checkout #{0}]: VPN was repaired.", _modID);
+							Debug.LogFormat("[Cheat Checkout #{0}] VPN was repaired.", _modID);
 							UpdateVPNStatus(2);
 						}
 						else
 						{
 							GetComponent<KMBombModule>().HandleStrike();
 							_hackInProgress = false;
-							Debug.LogFormat("[Cheat Checkout #{0}]: Strike! You tried to restart your VPN at {1} but you needed to restart it at {2}. The hackers have taken over the module and have now reset it!", _modID, timerLast, snLast);
+							Debug.LogFormat("[Cheat Checkout #{0}] Strike! You tried to restart your VPN at {1} but you needed to restart it at {2}. The hackers have taken over the module and have now reset it!", _modID, timerLast, snLast);
 							GenerateModule();
 						}
 						break;
@@ -706,7 +706,7 @@ public class CheatCheckoutV3 : MonoBehaviour
 	{
 		GetComponent<KMBombModule>().HandleStrike();
 		_hackInProgress = false;
-		Debug.LogFormat("[Cheat Checkout #{0}]: Strike! You didn't fix your VPN in time and the hackers have access to module and have reset it!", _modID);
+		Debug.LogFormat("[Cheat Checkout #{0}] Strike! You didn't fix your VPN in time and the hackers have access to module and have reset it!", _modID);
 		GenerateModule();
 	}
 

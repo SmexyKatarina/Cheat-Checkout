@@ -121,7 +121,7 @@ public struct DSAHack : IHack
             string.Format("PC-Type: {0}", new string[] { "Basic", "Advanced", "Super", "Quantum" }[(int)Values[0]]),
             string.Format("PCs Used: {0}", Values[1]),
             string.Format("Duration: {0}", Values[2]),
-            SuccessValue >= 1 ? new string[] { "Success: Crash Temp", "Success: Crash Perm" }[(int)Values[3]] : string.Format("Failed: {0}%", Math.Truncate(SuccessValue * 100))
+            SuccessValue >= 1 ? new string[] { "Success: Crash Temp", "Success: Crash Perm" }[(int)Values[3]] : string.Format("Failed: {0}%", Math.Round(SuccessValue * 100))
         };
     }
 
@@ -130,52 +130,52 @@ public struct DSAHack : IHack
         return new string[]
         {
             string.Format(
-                "[Cheat Checkout #{0}]: The information for hack #{1}:", 
+                "[Cheat Checkout #{0}] The information for hack #{1}:", 
                 moduleId, 
                 hackIndex
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Performing a Denial of Service hack on website '{1}'", 
+                "[Cheat Checkout #{0}] Performing a Denial of Service hack on website '{1}'", 
                 moduleId, 
                 Website.Url
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The computers used for the hack were: {1} (Base Value: {2})", 
+                "[Cheat Checkout #{0}] The computers used for the hack were: {1} (Base Value: {2})", 
                 moduleId, 
                 new string[] { "Basic PCs", "Advanced PCs", "Supercomputers", "Quantum Computers" }[(int)Values[0]],
                 new double[] { 0.8d, 1.2d, 1.6d, 2d }[(int)Values[0]]
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The number of PCs used were: {1} (PCs used: {2})",
+                "[Cheat Checkout #{0}] The number of PCs used were: {1} (PCs used: {2})",
                 moduleId,
                 Values[1],
                 Values[1]
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The hack took {1} hours to finish. (Duration: {2})",
+                "[Cheat Checkout #{0}] The hack took {1} hours to finish. (Duration: {2})",
                 moduleId,
                 Values[2],
                 Values[2]
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The hack was {1}{2}(Success rate: {3})",
+                "[Cheat Checkout #{0}] The hack was {1}{2}(Success rate: {3})",
                 moduleId,
                 SuccessValue >= 1.0d ? "Successful" : "Unsuccessful",
-                SuccessValue >= 1.0d ? string.Format(" and the hack caused the website to crash {0}. ", ((int)Values[3]) == 0 ? "temporarily" : "permanently" ) : string.Format(" and it was {0}% complete. ", Math.Truncate(SuccessValue * 100)),
+                SuccessValue >= 1.0d ? string.Format(" and the hack caused the website to crash {0}. ", ((int)Values[3]) == 0 ? "temporarily" : "permanently" ) : string.Format(" and it was {0}% complete. ", Math.Round(SuccessValue * 100)),
                 SuccessValue
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The calculation to perform: Base Value * PCs Used * (Website Security Value / 5) * Duration",
+                "[Cheat Checkout #{0}] The calculation to perform: Base Value * PCs Used * (Website Security Value / 5) * Duration",
                 moduleId
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The discount applied for {1}: {2}",
+                "[Cheat Checkout #{0}] The discount applied for {1}: {2}",
                 moduleId,
                 Weekday,
                 Discount
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Therefore, the calculations are: ({1} * {2} * ({3} / 5) * {4}) * {5}, rounded to 3 decimal places, is {6}",
+                "[Cheat Checkout #{0}] Therefore, the calculations are: ({1} * {2} * ({3} / 5) * {4}) * {5}, rounded to 3 decimal places, is {6}",
                 moduleId,
                 new double[] { 0.8d, 1.2d, 1.6d, 2d }[(int)Values[0]],
                 Values[1],
@@ -185,14 +185,14 @@ public struct DSAHack : IHack
                 Subtotal
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: {1} * {2}, rounded to 3 decimal places is: {3}",
+                "[Cheat Checkout #{0}] {1} * {2}, rounded to 3 decimal places is: {3}",
                 moduleId,
                 Subtotal,
                 Discount,
                 Total
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Finally, converting the total price of the hack {1} into {2}: {3} / {4}, rounded to 3 decimal places, is {5}",
+                "[Cheat Checkout #{0}] Finally, converting the total price of the hack {1} into {2}: {3} / {4}, rounded to 3 decimal places, is {5}",
                 moduleId,
                 Total,
                 Crypto.Name,
@@ -201,7 +201,7 @@ public struct DSAHack : IHack
                 CryptoTotal
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Therefore, the total crypto price for this hack is: {1}",
+                "[Cheat Checkout #{0}] Therefore, the total crypto price for this hack is: {1}",
                 moduleId,
                 CryptoTotal
             )
@@ -261,7 +261,7 @@ public struct WormHack : IHack
             string.Format("PC-Type: {0}", new string[] { "Defective", "Basic", "Advanced ", "Super", "Quantum" }[(int)Values[0]]),
             string.Format("Type: {0}", new string[] { "Normal", "Lethal", "Spreader" }[(int)Values[2]]),
             string.Format("Infected PCs: {0}", Values[1]),
-            SuccessValue >= 1 ? "Hack Successful" : string.Format("Failed: {0}%", Math.Truncate(SuccessValue * 100))
+            SuccessValue >= 1 ? "Hack Successful" : string.Format("Failed: {0}%", Math.Round(SuccessValue * 100))
         };
     }
 
@@ -270,52 +270,52 @@ public struct WormHack : IHack
         return new string[]
         {
             string.Format(
-                "[Cheat Checkout #{0}]: The information for hack #{1}:",
+                "[Cheat Checkout #{0}] The information for hack #{1}:",
                 moduleId,
                 hackIndex
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Performing a Worm hack on website '{1}'",
+                "[Cheat Checkout #{0}] Performing a Worm hack on website '{1}'",
                 moduleId,
                 Website.Url
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The computers that can be infected from this attack: {1} (Base Value: {2})",
+                "[Cheat Checkout #{0}] The computers that can be infected from this attack: {1} (Base Value: {2})",
                 moduleId,
                 new string[] { "Defective PCs", "Basic PCs", "Advanced PCs", "Supercomputers", "Quantum Computers" }[(int)Values[0]],
                 new double[] { 0.5d, 0.9d, 1.3d, 1.75d, 2.1d }[(int)Values[0]]
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The number of PCs that were infected: {1} (Infected PCs: {2})",
+                "[Cheat Checkout #{0}] The number of PCs that were infected: {1} (Infected PCs: {2})",
                 moduleId,
                 Values[1],
                 Values[1]
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The type of worm used was {1}. (Multiplier: {2})",
+                "[Cheat Checkout #{0}] The type of worm used was {1}. (Multiplier: {2})",
                 moduleId,
                 new string[] { "Normal", "Lethal", "Spreader" }[(int)Values[2]],
                 new double[] { 1d, 2d, 0.5d }[(int)Values[2]]
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The hack was {1}{2}(Success rate: {3})",
+                "[Cheat Checkout #{0}] The hack was {1}{2}(Success rate: {3})",
                 moduleId,
                 SuccessValue >= 1.0d ? "Successful" : "Unsuccessful",
-                SuccessValue >= 1.0d ? " " : string.Format(" and it was {0}% complete. ", Math.Truncate(SuccessValue * 100)),
+                SuccessValue >= 1.0d ? " " : string.Format(" and it was {0}% complete. ", Math.Round(SuccessValue * 100)),
                 SuccessValue
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The calculation to perform: Base Value * Infected PCs * (Website Security Value / 10) * Multiplier",
+                "[Cheat Checkout #{0}] The calculation to perform: Base Value * Infected PCs * (Website Security Value / 10) * Multiplier",
                 moduleId
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The discount applied for {1}: {2}",
+                "[Cheat Checkout #{0}] The discount applied for {1}: {2}",
                 moduleId,
                 Weekday,
                 Discount
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Therefore, the calculations are: ({1} * {2} * ({3} / 10) * {4}) * {5}, rounded to 3 decimal places, is {6}",
+                "[Cheat Checkout #{0}] Therefore, the calculations are: ({1} * {2} * ({3} / 10) * {4}) * {5}, rounded to 3 decimal places, is {6}",
                 moduleId,
                 new double[] { 0.5d, 0.9d, 1.3d, 1.75d, 2.1d }[(int)Values[0]],
                 Values[1],
@@ -325,14 +325,14 @@ public struct WormHack : IHack
                 Subtotal
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: {1} * {2}, rounded to 3 decimal places is: {3}",
+                "[Cheat Checkout #{0}] {1} * {2}, rounded to 3 decimal places is: {3}",
                 moduleId,
                 Subtotal,
                 Discount,
                 Total
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Finally, converting the total price of the hack {1} into {2}: {3} / {4}, rounded to 3 decimal places, is {5}",
+                "[Cheat Checkout #{0}] Finally, converting the total price of the hack {1} into {2}: {3} / {4}, rounded to 3 decimal places, is {5}",
                 moduleId,
                 Total,
                 Crypto.Name,
@@ -341,7 +341,7 @@ public struct WormHack : IHack
                 CryptoTotal
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Therefore, the total crypto price for this hack is: {1}",
+                "[Cheat Checkout #{0}] Therefore, the total crypto price for this hack is: {1}",
                 moduleId,
                 CryptoTotal
             )
@@ -401,7 +401,7 @@ public struct CIHack : IHack
             string.Format("Vulner.: {0}", new string[] { "SQL", "LDAP", "XPath", "NoSQL" }[(int)Values[0]]),
             string.Format("Complex.: {0}", new string[] { "Simple", "Advanced", "Complex" }[(int)Values[1]]),
             string.Format("Batches: {0}", Values[2]),
-            SuccessValue >= 1 ? new string[] { "Success: Crash Perm", "Success: Host Infl" }[(int)Values[3]] : string.Format("Failed: {0}%", Math.Truncate(SuccessValue * 100))
+            SuccessValue >= 1 ? new string[] { "Success: Crash Perm", "Success: Host Infl" }[(int)Values[3]] : string.Format("Failed: {0}%", Math.Round(SuccessValue * 100))
         };
     }
 
@@ -410,52 +410,52 @@ public struct CIHack : IHack
         return new string[]
         {
             string.Format(
-                "[Cheat Checkout #{0}]: The information for hack #{1}:",
+                "[Cheat Checkout #{0}] The information for hack #{1}:",
                 moduleId,
                 hackIndex
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Performing a Code Injection hack on website '{1}'",
+                "[Cheat Checkout #{0}] Performing a Code Injection hack on website '{1}'",
                 moduleId,
                 Website.Url
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The hack is exploiting a vulnerability with: {1} (Base Value: {2})",
+                "[Cheat Checkout #{0}] The hack is exploiting a vulnerability with: {1} (Base Value: {2})",
                 moduleId,
                 new string[] { "SQL", "LDAP", "XPath", "NoSQL" }[(int)Values[0]],
                 new double[] { 0.9d, 1.8d, 1.25d, 2.2d }[(int)Values[0]]
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The complexity of this attack on this website is {1}. (Complexity Multiplier: {2})",
+                "[Cheat Checkout #{0}] The complexity of this attack on this website is {1}. (Complexity Multiplier: {2})",
                 moduleId,
                 new string[] { "simple", "advanced", "complex" }[(int)Values[1]],
                 new double[] { 1d, 1.2d, 1.5d }[(int)Values[1]]
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: They did a total of {1} batches of attacks. (Batches: {2})",
+                "[Cheat Checkout #{0}] They did a total of {1} batches of attacks. (Batches: {2})",
                 moduleId,
                 Values[2],
                 Values[2]
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The hack was {1}{2}(Success rate: {3})",
+                "[Cheat Checkout #{0}] The hack was {1}{2}(Success rate: {3})",
                 moduleId,
                 SuccessValue >= 1.0d ? "Successful" : "Unsuccessful",
-                SuccessValue >= 1.0d ? string.Format(" and the hack {0} ", ((int)Values[3]) == 0 ? "caused the website to crash permanently" : "granted host access to the website." ) : string.Format(" and it was {0}% complete. ", Math.Truncate(SuccessValue * 100)),
+                SuccessValue >= 1.0d ? string.Format(" and the hack {0} ", ((int)Values[3]) == 0 ? "caused the website to crash permanently" : "granted host access to the website." ) : string.Format(" and it was {0}% complete. ", Math.Round(SuccessValue * 100)),
                 SuccessValue
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The calculation to perform: Base Value * Complexity Multiplier * Batches * (Website Security Value / 20)",
+                "[Cheat Checkout #{0}] The calculation to perform: Base Value * Complexity Multiplier * Batches * (Website Security Value / 20)",
                 moduleId
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The discount applied for {1}: {2}",
+                "[Cheat Checkout #{0}] The discount applied for {1}: {2}",
                 moduleId,
                 Weekday,
                 Discount
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Therefore, the calculations are: ({1} * {2} * {3} * ({4} / 20)) * {5}, rounded to 3 decimal places, is {6}",
+                "[Cheat Checkout #{0}] Therefore, the calculations are: ({1} * {2} * {3} * ({4} / 20)) * {5}, rounded to 3 decimal places, is {6}",
                 moduleId,
                 new double[] { 0.9d, 1.8d, 1.25d, 2.2d }[(int)Values[0]],
                 new double[] { 1d, 1.2d, 1.5d }[(int)Values[1]],
@@ -465,14 +465,14 @@ public struct CIHack : IHack
                 Subtotal
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: {1} * {2}, rounded to 3 decimal places is: {3}",
+                "[Cheat Checkout #{0}] {1} * {2}, rounded to 3 decimal places is: {3}",
                 moduleId,
                 Subtotal,
                 Discount,
                 Total
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Finally, converting the total price of the hack {1} into {2}: {3} / {4}, rounded to 3 decimal places, is {5}",
+                "[Cheat Checkout #{0}] Finally, converting the total price of the hack {1} into {2}: {3} / {4}, rounded to 3 decimal places, is {5}",
                 moduleId,
                 Total,
                 Crypto.Name,
@@ -481,7 +481,7 @@ public struct CIHack : IHack
                 CryptoTotal
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Therefore, the total crypto price for this hack is: {1}",
+                "[Cheat Checkout #{0}] Therefore, the total crypto price for this hack is: {1}",
                 moduleId,
                 CryptoTotal
             )
@@ -541,7 +541,7 @@ public struct XSSHack : IHack
             string.Format("Complex.: {0}", new string[] { "Ext. Basic", "Basic", "Advanced", "Complex", "Unintell." }[(int)Values[0]]),
             string.Format("Type: {0}", new string[] { "Non-Persist", "Persist", "Mutated" }[(int)Values[1]]),
             string.Format("Programs: {0}", Values[2]),
-            SuccessValue >= 1 ? "Hack Successful" : string.Format("Failed: {0}%", Math.Truncate(SuccessValue * 100))
+            SuccessValue >= 1 ? "Hack Successful" : string.Format("Failed: {0}%", Math.Round(SuccessValue * 100))
         };
     }
 
@@ -550,52 +550,52 @@ public struct XSSHack : IHack
         return new string[]
         {
             string.Format(
-                "[Cheat Checkout #{0}]: The information for hack #{1}:",
+                "[Cheat Checkout #{0}] The information for hack #{1}:",
                 moduleId,
                 hackIndex
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Performing a Cross-Site Scripting hack on website '{1}'",
+                "[Cheat Checkout #{0}] Performing a Cross-Site Scripting hack on website '{1}'",
                 moduleId,
                 Website.Url
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The complexity of this attack on this website is {1}. (Base Value: {2})",
+                "[Cheat Checkout #{0}] The complexity of this attack on this website is {1}. (Base Value: {2})",
                 moduleId,
                 new string[] { "extremely basic", "basic", "advanced", "complex", "unintelligible" }[(int)Values[0]],
                 new double[] { 0.5d, 1d, 1.5d, 2d, 2.5d }[(int)Values[0]]
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The type of scripting they are going with is {1}. (Multiplier: {2})",
+                "[Cheat Checkout #{0}] The type of scripting they are going with is {1}. (Multiplier: {2})",
                 moduleId,
                 new string[] { "non-persistent", "persistent", "mutated XSS" }[(int)Values[1]],
                 new double[] { 1d, 1.25d, 1.5d }[(int)Values[1]]
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The number of programs/scripts being sent is: {1}. (Programs: {2})",
+                "[Cheat Checkout #{0}] The number of programs/scripts being sent is: {1}. (Programs: {2})",
                 moduleId,
                 Values[2],
                 Values[2]
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The hack was {1}{2}(Success rate: {3})",
+                "[Cheat Checkout #{0}] The hack was {1}{2}(Success rate: {3})",
                 moduleId,
                 SuccessValue >= 1.0d ? "Successful" : "Unsuccessful",
-                SuccessValue >= 1.0d ? " " : string.Format(" and it was {0}% complete. ", Math.Truncate(SuccessValue * 100)),
+                SuccessValue >= 1.0d ? " " : string.Format(" and it was {0}% complete. ", Math.Round(SuccessValue * 100)),
                 SuccessValue
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The calculation to perform: Base Value * Multiplier * (Website Security Value / 8) * (Programs / 2)",
+                "[Cheat Checkout #{0}] The calculation to perform: Base Value * Multiplier * (Website Security Value / 8) * (Programs / 2)",
                 moduleId
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The discount applied for {1}: {2}",
+                "[Cheat Checkout #{0}] The discount applied for {1}: {2}",
                 moduleId,
                 Weekday,
                 Discount
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Therefore, the calculations are: ({1} * {2} * ({3} / 8) * ({4} / 2)) * {5}, rounded to 3 decimal places, is {6}",
+                "[Cheat Checkout #{0}] Therefore, the calculations are: ({1} * {2} * ({3} / 8) * ({4} / 2)) * {5}, rounded to 3 decimal places, is {6}",
                 moduleId,
                 new double[] { 0.5d, 1d, 1.5d, 2d, 2.5d }[(int)Values[0]],
                 new double[] { 1d, 1.25d, 1.5d }[(int)Values[1]],
@@ -605,14 +605,14 @@ public struct XSSHack : IHack
                 Subtotal
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: {1} * {2}, rounded to 3 decimal places is: {3}",
+                "[Cheat Checkout #{0}] {1} * {2}, rounded to 3 decimal places is: {3}",
                 moduleId,
                 Subtotal,
                 Discount,
                 Total
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Finally, converting the total price of the hack {1} into {2}: {3} / {4}, rounded to 3 decimal places, is {5}",
+                "[Cheat Checkout #{0}] Finally, converting the total price of the hack {1} into {2}: {3} / {4}, rounded to 3 decimal places, is {5}",
                 moduleId,
                 Total,
                 Crypto.Name,
@@ -621,7 +621,7 @@ public struct XSSHack : IHack
                 CryptoTotal
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Therefore, the total crypto price for this hack is: {1}",
+                "[Cheat Checkout #{0}] Therefore, the total crypto price for this hack is: {1}",
                 moduleId,
                 CryptoTotal
             )
@@ -679,7 +679,7 @@ public struct BFAHack : IHack
             "Method: BFA",
             string.Format("Attack: {0}", new string[] { "Strong Inj.", "Sneak", "Duplication" }[(int)Values[0]]),
             string.Format("Attempts: {0}", Values[1]),
-            SuccessValue >= 1 ? new string[] { "Success: Crash Perm", "Success: Host Infl" }[(int)Values[2]] : string.Format("Failed: {0}%", Math.Truncate(SuccessValue * 100))
+            SuccessValue >= 1 ? new string[] { "Success: Crash Perm", "Success: Host Infl" }[(int)Values[2]] : string.Format("Failed: {0}%", Math.Round(SuccessValue * 100))
         };
     }
 
@@ -688,46 +688,46 @@ public struct BFAHack : IHack
         return new string[]
         {
             string.Format(
-                "[Cheat Checkout #{0}]: The information for hack #{1}:",
+                "[Cheat Checkout #{0}] The information for hack #{1}:",
                 moduleId,
                 hackIndex
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Performing a Brute Force Attempt hack on website '{1}'",
+                "[Cheat Checkout #{0}] Performing a Brute Force Attempt hack on website '{1}'",
                 moduleId,
                 Website.Url
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The hack is using a {1} attack. (Base Value: {2})",
+                "[Cheat Checkout #{0}] The hack is using a {1} attack. (Base Value: {2})",
                 moduleId,
                 new string[] { "Strong Inject", "Sneak", "Duplication" }[(int)Values[0]],
                 new double[] { 2.2d, 1.6d, 1.9 }[(int)Values[0]]
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The hackers did {1} attempts at attacking. (Attempts: {2})",
+                "[Cheat Checkout #{0}] The hackers did {1} attempts at attacking. (Attempts: {2})",
                 moduleId,
                 Values[1],
                 Values[1]
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The hack was {1}{2}(Success rate: {3})",
+                "[Cheat Checkout #{0}] The hack was {1}{2}(Success rate: {3})",
                 moduleId,
                 SuccessValue >= 1.0d ? "Successful" : "Unsuccessful",
-                SuccessValue >= 1.0d ? string.Format(" and the hack {0} ", ((int)Values[2]) == 0 ? "caused the website to crash permanently" : "granted host access to the website." ) : string.Format(" and it was {0}% complete. ", Math.Truncate(SuccessValue * 100)),
+                SuccessValue >= 1.0d ? string.Format(" and the hack {0} ", ((int)Values[2]) == 0 ? "caused the website to crash permanently" : "granted host access to the website." ) : string.Format(" and it was {0}% complete. ", Math.Round(SuccessValue * 100)),
                 SuccessValue
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The calculation to perform: (Base Value * Attempts * Website Security Value) / 5",
+                "[Cheat Checkout #{0}] The calculation to perform: (Base Value * Attempts * Website Security Value) / 5",
                 moduleId
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: The discount applied for {1}: {2}",
+                "[Cheat Checkout #{0}] The discount applied for {1}: {2}",
                 moduleId,
                 Weekday,
                 Discount
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Therefore, the calculations are: (({1} * {2} * {3}) / 5) * {4}, rounded to 3 decimal places, is {5}",
+                "[Cheat Checkout #{0}] Therefore, the calculations are: (({1} * {2} * {3}) / 5) * {4}, rounded to 3 decimal places, is {5}",
                 moduleId,
                 new double[] { 2.2d, 1.6d, 1.9 }[(int)Values[0]],
                 Values[1],
@@ -736,14 +736,14 @@ public struct BFAHack : IHack
                 Subtotal
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: {1} * {2}, rounded to 3 decimal places is: {3}",
+                "[Cheat Checkout #{0}] {1} * {2}, rounded to 3 decimal places is: {3}",
                 moduleId,
                 Subtotal,
                 Discount,
                 Total
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Finally, converting the total price of the hack {1} into {2}: {3} / {4}, rounded to 3 decimal places, is {5}",
+                "[Cheat Checkout #{0}] Finally, converting the total price of the hack {1} into {2}: {3} / {4}, rounded to 3 decimal places, is {5}",
                 moduleId,
                 Total,
                 Crypto.Name,
@@ -752,7 +752,7 @@ public struct BFAHack : IHack
                 CryptoTotal
             ),
             string.Format(
-                "[Cheat Checkout #{0}]: Therefore, the total crypto price for this hack is: {1}",
+                "[Cheat Checkout #{0}] Therefore, the total crypto price for this hack is: {1}",
                 moduleId,
                 CryptoTotal
             )
